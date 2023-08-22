@@ -203,6 +203,7 @@ export default function EmployeeListADM() {
             variant="contained"
             startIcon={<Iconify icon="eva:plus-fill" />}
             onClick={NewEmployee}
+           
             sx={{ display: "none" }}
           >
             New Employee

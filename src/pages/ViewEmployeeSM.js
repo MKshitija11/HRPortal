@@ -1,6 +1,6 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { useState, useEffect } from 'react';
 // @mui
 import {
   TextField,
@@ -15,42 +15,42 @@ import {
   Select,
   FormControl,
   Switch,
-} from "@mui/material";
+} from '@mui/material';
 // components
-import Iconify from "../components/iconify";
-import Configuration from "../utils/Configuration";
+import Iconify from '../components/iconify';
+import Configuration from '../utils/Configuration';
 
 export default function ViewEmployee() {
   const [state, setState] = useState({
-    employeeFirstName: "",
-    employeeLastName: "",
-    employeeFullName: "",
-    mobileNumber: "",
-    whatsappNumber: "",
-    personalEmail: "",
-    officialEmail: "",
-    partnerName: "",
-    employeeId: "",
-    joiningDate: "",
-    newReplacement: "",
-    replacementEcode: "",
-    supportDevelopment: "",
-    reportingTeamLead: "",
-    reportingManager: "",
-    reportingAvpVpSvp: "",
-    verticalHeadHod: "",
-    functionDesc: "",
-    departmentDesc: "",
-    verticalMain: "",
-    verticalSub: "",
-    projectType: "",
-    maximusOpus: "",
-    billingSlab: "",
-    invoiceType: "",
-    createdBy: "",
-    employeeStatus: "",
-    evaluationPeriod: "",
-    reportingItSpoc: "",
+    employeeFirstName: '',
+    employeeLastName: '',
+    employeeFullName: '',
+    mobileNumber: '',
+    whatsappNumber: '',
+    personalEmail: '',
+    officialEmail: '',
+    partnerName: '',
+    employeeId: '',
+    joiningDate: '',
+    newReplacement: '',
+    replacementEcode: '',
+    supportDevelopment: '',
+    reportingTeamLead: '',
+    reportingManager: '',
+    reportingAvpVpSvp: '',
+    verticalHeadHod: '',
+    functionDesc: '',
+    departmentDesc: '',
+    verticalMain: '',
+    verticalSub: '',
+    projectType: '',
+    maximusOpus: '',
+    billingSlab: '',
+    invoiceType: '',
+    createdBy: '',
+    employeeStatus: '',
+    evaluationPeriod: '',
+    reportingItSpoc: '',
     mainVerticalList: [],
     subVerticalList: [],
     departmentList: [],
@@ -62,18 +62,18 @@ export default function ViewEmployee() {
   const handleChangeWaSwitch = (evt) => {
     console.log();
     if (evt.target.checked) {
-      document.getElementById("whatsappNumber").value = state.mobileNumber;
+      document.getElementById('whatsappNumber').value = state.mobileNumber;
       state.whatsappNumber = state.mobileNumber;
     } else {
-      document.getElementById("whatsappNumber").value = "";
-      state.whatsappNumber = "";
+      document.getElementById('whatsappNumber').value = '';
+      state.whatsappNumber = '';
     }
-    console.log("state.mobileNumber", state.mobileNumber);
-    console.log("state.whatsappNumber", state.whatsappNumber);
+    console.log('state.mobileNumber', state.mobileNumber);
+    console.log('state.whatsappNumber', state.whatsappNumber);
   };
   const handleChange = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    console.log("evt.target.name", evt.target.name);
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
 
     setState({
       ...state,
@@ -81,111 +81,109 @@ export default function ViewEmployee() {
     });
   };
   const handleChangeMv = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    console.log("evt.target.name", evt.target.name);
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
     });
-    console.log("state.empProfileSvList", state.empProfileSvList);
+    console.log('state.empProfileSvList', state.empProfileSvList);
     const getSubVerticalsReq = {
-      key: "SUB_VERTICAL",
+      key: 'SUB_VERTICAL',
       value: evt.target.value,
     };
 
-    Configuration.getSubVerticals(getSubVerticalsReq).then(
-      (getSubVerticalsRes) => {
-        state.subVerticalList = getSubVerticalsRes.data;
-        console.log("subVerticalList", state.subVerticalList);
-        setVerticalSubList(state.subVerticalList);
-        console.log("verticalSubList", verticalSubList);
-      }
-    );
+    Configuration.getSubVerticals(getSubVerticalsReq).then((getSubVerticalsRes) => {
+      state.subVerticalList = getSubVerticalsRes.data;
+      console.log('subVerticalList', state.subVerticalList);
+      setVerticalSubList(state.subVerticalList);
+      console.log('verticalSubList', verticalSubList);
+    });
   };
 
   const handleChangeSv = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    console.log("evt.target.name", evt.target.name);
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
     });
     const getDepartmentReq = {
-      key: "DEPARTMENTS",
+      key: 'DEPARTMENTS',
       value: evt.target.value,
     };
 
     Configuration.getDepartments(getDepartmentReq).then((getDepartmentRes) => {
       state.departmentList = getDepartmentRes.data;
-      console.log("departmentList", state.departmentList);
+      console.log('departmentList', state.departmentList);
       setDepartmentList(state.departmentList);
-      console.log("departmentList", departmentList);
+      console.log('departmentList', departmentList);
     });
   };
 
   const handleChangeDpt = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    console.log("evt.target.name", evt.target.name);
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
     });
     const getFunctionReq = {
-      key: "FUNCTIONS",
+      key: 'FUNCTIONS',
       value: evt.target.value,
     };
 
     Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
       state.functionsList = getFunctionsRes.data;
-      console.log("functionList", state.functionsList);
+      console.log('functionList', state.functionsList);
       setFunctionsList(state.functionsList);
-      console.log("functionsList", functionsList);
+      console.log('functionsList', functionsList);
     });
   };
 
   const handleChangeFun = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    console.log("evt.target.name", evt.target.name);
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
     });
     const getProjectsReq = {
-      key: "PROJECTS",
+      key: 'PROJECTS',
       value: evt.target.value,
     };
 
     Configuration.getProjects(getProjectsReq).then((getProjectsRes) => {
       state.projectsList = getProjectsRes.data;
-      console.log("functionList", state.projectsList);
+      console.log('functionList', state.projectsList);
       setProjectsList(state.projectsList);
-      console.log("projectsList", projectsList);
+      console.log('projectsList', projectsList);
     });
   };
 
   const handleChangeProject = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    console.log("evt.target.name", evt.target.name);
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
     });
     const getInvoiceReq = {
-      key: "INVOICE_TYPE",
+      key: 'INVOICE_TYPE',
       value: evt.target.value,
     };
 
     Configuration.getInvoice(getInvoiceReq).then((getInvoiceRes) => {
       state.invoiceList = getInvoiceRes.data;
-      console.log("functionList", state.invoiceList);
+      console.log('functionList', state.invoiceList);
       setInvoiceList(state.invoiceList);
-      console.log("invoiceList", invoiceList);
+      console.log('invoiceList', invoiceList);
     });
   };
 
   const handleChangeTeamlead = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    console.log("evt.target.name", evt.target.name);
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
 
     setState({
       ...state,
@@ -194,20 +192,29 @@ export default function ViewEmployee() {
   };
 
   const handleChangeDropDown = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    if (evt.target.value === "New") {
-      document.employeeForm.replacementEcode.value = "NA";
+    console.log('evt.target.value', evt.target.value);
+    if (evt.target.value === 'New') {
+      document.employeeForm.replacementEcode.value = 'NA';
     } else {
-      document.employeeForm.replacementEcode.value = "";
+      document.employeeForm.replacementEcode.value = '';
     }
   };
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log("location.state.id", location.state.id);
+  console.log('location.state.id', location.state.id);
   const EmployeeList = () => {
-    navigate("/employeesSM");
+    navigate('/employeesSM');
+  };
+
+  const handleRejection = () => {
+  
+    setReject(true);
+
+    setTimeout(() => {
+      updateEmployeeData(true);
+    }, 500);
   };
 
   const failFocus = (autoFocusObj) => {
@@ -216,63 +223,63 @@ export default function ViewEmployee() {
   };
 
   const validForm = () => {
-    if (document.employeeForm.employeeFirstName.value === "") {
+    if (document.employeeForm.employeeFirstName.value === '') {
       return failFocus(document.employeeForm.employeeFirstName);
     }
-    if (document.employeeForm.employeeLastName.value === "") {
+    if (document.employeeForm.employeeLastName.value === '') {
       return failFocus(document.employeeForm.employeeLastName);
     }
-    if (document.employeeForm.employeeFullName.value === "") {
+    if (document.employeeForm.employeeFullName.value === '') {
       return failFocus(document.employeeForm.employeeFullName);
     }
-    if (document.employeeForm.mobileNumber.value === "") {
+    if (document.employeeForm.mobileNumber.value === '') {
       return failFocus(document.employeeForm.mobileNumber);
     }
-    if (document.employeeForm.whatsappNumber.value === "") {
+    if (document.employeeForm.whatsappNumber.value === '') {
       return failFocus(document.employeeForm.whatsappNumber);
     }
-    if (document.employeeForm.personalEmail.value === "") {
+    if (document.employeeForm.personalEmail.value === '') {
       return failFocus(document.employeeForm.personalEmail);
     }
-    if (document.employeeForm.officialEmail.value === "") {
+    if (document.employeeForm.officialEmail.value === '') {
       return failFocus(document.employeeForm.officialEmail);
     }
 
-    if (document.employeeForm.partnerName.value === "") {
+    if (document.employeeForm.partnerName.value === '') {
       return failFocus(document.employeeForm.partnerName);
     }
 
-    if (document.employeeForm.employeeId.value === "") {
+    if (document.employeeForm.employeeId.value === '') {
       return failFocus(document.employeeForm.employeeId);
     }
 
-    if (document.employeeForm.joiningDate.value === "") {
+    if (document.employeeForm.joiningDate.value === '') {
       return failFocus(document.employeeForm.joiningDate);
     }
 
-    if (document.employeeForm.newReplacement.value === "") {
+    if (document.employeeForm.newReplacement.value === '') {
       return failFocus(document.employeeForm.newReplacement);
     }
 
-    if (document.employeeForm.replacementEcode.value === "") {
+    if (document.employeeForm.replacementEcode.value === '') {
       return failFocus(document.employeeForm.replacementEcode);
     }
 
-    if (document.employeeForm.supportDevelopment.value === "") {
+    if (document.employeeForm.supportDevelopment.value === '') {
       return failFocus(document.employeeForm.supportDevelopment);
     }
 
-    if (document.employeeForm.supportDevelopment.value === "") {
-      return failFocus(document.employeeForm.supportDevelopment);
-    }
-    if (document.employeeForm.employeeStatus.value === "") {
+    // if (document.employeeForm.supportDevelopment.value === "") {
+    //   return failFocus(document.employeeForm.supportDevelopment);
+    // }
+    if (document.employeeForm.employeeStatus.value === '') {
       return failFocus(document.employeeForm.employeeStatus);
     }
 
-    if (document.employeeForm.reportingTeamLead.value === "") {
+    if (document.employeeForm.reportingTeamLead.value === '') {
       return failFocus(document.employeeForm.reportingTeamLead);
     }
-    if (document.employeeForm.reportingManager.value === "") {
+    if (document.employeeForm.reportingManager.value === '') {
       return failFocus(document.employeeForm.reportingManager);
     }
     // if (document.employeeForm.reportingAvpVpSvp.value === "") {
@@ -281,56 +288,56 @@ export default function ViewEmployee() {
     // if (document.employeeForm.verticalHeadHod.value === "") {
     //   return failFocus(document.employeeForm.verticalHeadHod);
     // }
-    if (document.employeeForm.functionDesc.value === "") {
+    if (document.employeeForm.functionDesc.value === '') {
       return failFocus(document.employeeForm.functionDesc);
     }
-    if (document.employeeForm.departmentDesc.value === "") {
+    if (document.employeeForm.departmentDesc.value === '') {
       return failFocus(document.employeeForm.departmentDesc);
     }
-    if (document.employeeForm.verticalMain.value === "") {
+    if (document.employeeForm.verticalMain.value === '') {
       return failFocus(document.employeeForm.verticalMain);
     }
-    if (document.employeeForm.verticalSub.value === "") {
+    if (document.employeeForm.verticalSub.value === '') {
       return failFocus(document.employeeForm.verticalSub);
     }
-    if (document.employeeForm.projectType.value === "") {
+    if (document.employeeForm.projectType.value === '') {
       return failFocus(document.employeeForm.projectType);
     }
 
-    if (document.employeeForm.maximusOpus.value === "") {
+    if (document.employeeForm.maximusOpus.value === '') {
       return failFocus(document.employeeForm.maximusOpus);
     }
-    if (document.employeeForm.billingSlab.value === "") {
+    if (document.employeeForm.billingSlab.value === '') {
       return failFocus(document.employeeForm.billingSlab);
     }
-    if (document.employeeForm.invoiceType.value === "") {
+    if (document.employeeForm.invoiceType.value === '') {
       return failFocus(document.employeeForm.invoiceType);
     }
     return true;
   };
 
-  const updateEmployeeData = (event) => {
-    event.preventDefault();
-    document.getElementById("employeeStatus").value =
-      "Pending For IT Spoc Review";
-    if (validForm()) {
+  const updateEmployeeData = (param) => {
+    if (param && typeof param === 'boolean') {
+      document.getElementById('employeeStatus').value = 'Rejected by SM';
+    } else {
+      document.getElementById('employeeStatus').value = 'Pending For IT Spoc Review';
+    }
+    // event.preventDefault();
+    // document.getElementById('employeeStatus').value = 'Pending For IT Spoc Review';
+    // if (validForm()) {
       state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
-      const employeeFormObj = new FormData(
-        document.getElementById("employeeForm")
-      );
+      const employeeFormObj = new FormData(document.getElementById('employeeForm'));
 
       const employeeFormData = Object.fromEntries(employeeFormObj.entries());
-      console.log("employeeFormData::", employeeFormData);
-      console.log("JSON:employeeFormData::", JSON.stringify(employeeFormData));
+      console.log('employeeFormData::', employeeFormData);
+      console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
 
-      Configuration.updateEmployeeData(employeeFormData).then(
-        (employeeFormRes) => {
-          console.log("employeeFormRes::", employeeFormRes.data);
-          navigate("/employeesSM");
-        }
-      );
-    }
+      Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
+        console.log('employeeFormRes::', employeeFormRes.data);
+        navigate('/employeesSM');
+      });
+    // }
 
     // console.log("employeeFirstName", state.employeeFirstName);
     // console.log("employeeLastName", state.employeeLastName);
@@ -360,7 +367,8 @@ export default function ViewEmployee() {
   };
 
   const [partnerName, setPartnerName] = useState();
-
+  const [reject, setReject] = useState(false);
+  const [userProfile, setUserProfile] = useState();
   const [empData = {}, setEmpData] = useState();
 
   const [reportingList = [], setReportingList] = useState();
@@ -374,46 +382,43 @@ export default function ViewEmployee() {
   const [buttonDisable, setButtonDisable] = useState();
 
   useEffect(() => {
-    const USERDETAILS = JSON.parse(sessionStorage.getItem("USERDETAILS"));
-    const REPORTINGDETAILS = JSON.parse(
-      sessionStorage.getItem("REPORTINGDETAILS")
-    );
+    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+    const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
     if (USERDETAILS != null) {
-      console.log("USERDETAILS", USERDETAILS);
-      console.log("USERDETAILS.partnerName", USERDETAILS.partnerName);
+      console.log('USERDETAILS', USERDETAILS);
+      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
       setReportingList(REPORTINGDETAILS);
 
       setPartnerName(USERDETAILS.partnerName);
+      setUserProfile(USERDETAILS.userProfile);
       state.partnerName = USERDETAILS.partnerName;
       state.createdBy = USERDETAILS.spocEmailId;
-      console.log("partnerName", partnerName);
+      console.log('partnerName', partnerName);
 
       const mainVerticalReq = {
-        key: "MAIN_VERTICAL",
-        value: "",
+        key: 'MAIN_VERTICAL',
+        value: '',
       };
 
-      console.log("mainVerticalReq", mainVerticalReq);
-      Configuration.getMainVerticals(mainVerticalReq).then(
-        (mainVerticalRes) => {
-          console.log("mainVerticalRes", mainVerticalRes.data);
-          setVerticalMainList(mainVerticalRes);
-          console.log(" mainVerticalRes.data", verticalMainList);
-          state.mainVerticalList = mainVerticalRes.data;
-        }
-      );
+      console.log('mainVerticalReq', mainVerticalReq);
+      Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
+        console.log('mainVerticalRes', mainVerticalRes.data);
+        setVerticalMainList(mainVerticalRes);
+        console.log(' mainVerticalRes.data', verticalMainList);
+        state.mainVerticalList = mainVerticalRes.data;
+      });
     }
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     const viewEmployeeReq = {
-      id: location.state.id,
+      id: location.state.row.id,
     };
 
     Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
-      console.log("employeeFormRes::", viewEmployeeRes.data);
+      console.log('employeeFormRes::', viewEmployeeRes.data);
       const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
       const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
       setEmpData(EMP_DETAILS);
@@ -445,72 +450,68 @@ export default function ViewEmployee() {
       state.departmentDesc = EMP_DETAILS.departmentDesc;
       state.functionDesc = EMP_DETAILS.functionDesc;
 
-      if (state.employeeStatus === "Pending For IT Spoc Review") {
+      if (state.employeeStatus === 'Pending For IT Spoc Review') {
         setButtonDisable(true);
       }
 
       const getSubVerticalsReq = {
-        key: "SUB_VERTICAL",
+        key: 'SUB_VERTICAL',
         value: state.verticalMain,
       };
 
-      Configuration.getSubVerticals(getSubVerticalsReq).then(
-        (getSubVerticalsRes) => {
-          state.subVerticalList = getSubVerticalsRes.data;
-          console.log("subVerticalList", state.subVerticalList);
-          setVerticalSubList(state.subVerticalList);
-          console.log("verticalSubList", verticalSubList);
-        }
-      );
+      Configuration.getSubVerticals(getSubVerticalsReq).then((getSubVerticalsRes) => {
+        state.subVerticalList = getSubVerticalsRes.data;
+        console.log('subVerticalList', state.subVerticalList);
+        setVerticalSubList(state.subVerticalList);
+        console.log('verticalSubList', verticalSubList);
+      });
 
       const getDepartmentReq = {
-        key: "DEPARTMENTS",
+        key: 'DEPARTMENTS',
         value: state.verticalSub,
       };
 
-      Configuration.getDepartments(getDepartmentReq).then(
-        (getDepartmentRes) => {
-          state.departmentList = getDepartmentRes.data;
-          console.log("departmentList", state.departmentList);
-          setDepartmentList(state.departmentList);
-          console.log("departmentList", departmentList);
-        }
-      );
+      Configuration.getDepartments(getDepartmentReq).then((getDepartmentRes) => {
+        state.departmentList = getDepartmentRes.data;
+        console.log('departmentList', state.departmentList);
+        setDepartmentList(state.departmentList);
+        console.log('departmentList', departmentList);
+      });
 
       const getFunctionReq = {
-        key: "FUNCTIONS",
+        key: 'FUNCTIONS',
         value: state.departmentDesc,
       };
 
       Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
         state.functionsList = getFunctionsRes.data;
-        console.log("functionList", state.functionsList);
+        console.log('functionList', state.functionsList);
         setFunctionsList(state.functionsList);
-        console.log("functionsList", functionsList);
+        console.log('functionsList', functionsList);
       });
 
       const getProjectsReq = {
-        key: "PROJECTS",
+        key: 'PROJECTS',
         value: state.functionDesc,
       };
 
       Configuration.getProjects(getProjectsReq).then((getProjectsRes) => {
         state.projectsList = getProjectsRes.data;
-        console.log("functionList", state.projectsList);
+        console.log('functionList', state.projectsList);
         setProjectsList(state.projectsList);
-        console.log("projectsList", projectsList);
+        console.log('projectsList', projectsList);
       });
 
       const getInvoiceReq = {
-        key: "INVOICE_TYPE",
+        key: 'INVOICE_TYPE',
         value: state.projectType,
       };
 
       Configuration.getInvoice(getInvoiceReq).then((getInvoiceRes) => {
         state.invoiceList = getInvoiceRes.data;
-        console.log("functionList", state.invoiceList);
+        console.log('functionList', state.invoiceList);
         setInvoiceList(state.invoiceList);
-        console.log("invoiceList", invoiceList);
+        console.log('invoiceList', invoiceList);
       });
     });
     // eslint-disable-next-line
@@ -522,18 +523,9 @@ export default function ViewEmployee() {
         <title> New Employee | HR Portal </title>
       </Helmet>
       <Container>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={3}
-        >
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
           <Typography variant="h4">New Employee </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:list-fill" />}
-            onClick={EmployeeList}
-          >
+          <Button variant="contained" startIcon={<Iconify icon="eva:list-fill" />} onClick={EmployeeList}>
             Employee List
           </Button>
         </Stack>
@@ -541,13 +533,13 @@ export default function ViewEmployee() {
         <Card
           container
           sx={{
-            padding: "15px",
-            border: "1px solid lightgray",
-            borderRadius: "8px",
+            padding: '15px',
+            border: '1px solid lightgray',
+            borderRadius: '8px',
           }}
         >
           <form spacing={2} method="POST" id="employeeForm" name="employeeForm">
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Personal Information
             </Typography>
             <Grid container spacing={2}>
@@ -564,6 +556,7 @@ export default function ViewEmployee() {
                   value={state.employeeFirstName}
                   onChange={handleChange}
                   autoFocus
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
 
@@ -579,6 +572,7 @@ export default function ViewEmployee() {
                   label="Last Name"
                   value={state.employeeLastName}
                   onChange={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -593,6 +587,7 @@ export default function ViewEmployee() {
                   label="Full Name"
                   value={`${state.employeeFirstName} ${state.employeeLastName}`}
                   onChange={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
 
@@ -609,25 +604,20 @@ export default function ViewEmployee() {
                   type="number"
                   value={state.mobileNumber}
                   onChange={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
               <Grid item xs={4} textAlign="center">
-                <Typography variant="body1">
-                  WhatsApp is available on same number?
-                </Typography>
-                <Typography variant="body1" display={"inline"}>
+                <Typography variant="body1">WhatsApp is available on same number?</Typography>
+                <Typography variant="body1" display={'inline'}>
                   No
                 </Typography>
                 {state.mobileNumber === state.whatsappNumber ? (
-                  <Switch
-                    color="success"
-                    onChange={handleChangeWaSwitch}
-                    defaultChecked
-                  />
+                  <Switch color="success" onChange={handleChangeWaSwitch} defaultChecked />
                 ) : (
                   <Switch color="success" onChange={handleChangeWaSwitch} />
                 )}
-                <Typography variant="body1" display={"inline"}>
+                <Typography variant="body1" display={'inline'}>
                   Yes
                 </Typography>
               </Grid>
@@ -644,6 +634,7 @@ export default function ViewEmployee() {
                   type="number"
                   value={state.whatsappNumber}
                   onChange={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
 
@@ -660,6 +651,7 @@ export default function ViewEmployee() {
                   type="email"
                   value={state.personalEmail}
                   onChange={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -675,11 +667,12 @@ export default function ViewEmployee() {
                   type="email"
                   value={state.officialEmail}
                   onChange={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
             </Grid>
             <br />
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Employment Detaills
             </Typography>
 
@@ -696,6 +689,7 @@ export default function ViewEmployee() {
                   label="Partner Name"
                   value={empData.partnerName}
                   onBlur={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
 
@@ -712,6 +706,7 @@ export default function ViewEmployee() {
                   label="Employee Code"
                   value={state.employeeId}
                   onChange={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -727,14 +722,13 @@ export default function ViewEmployee() {
                   type="date"
                   value={state.joiningDate}
                   onChange={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
 
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    New / Replacement
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">New / Replacement</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -745,6 +739,7 @@ export default function ViewEmployee() {
                     fullWidth
                     value={state.newReplacement}
                     onChange={handleChangeDropDown}
+                    inputProps={{ readOnly: true }}
                   >
                     <MenuItem value="New">New</MenuItem>
                     <MenuItem value="Replacement">Replacement</MenuItem>
@@ -764,14 +759,13 @@ export default function ViewEmployee() {
                   label="Replacement Employee Code"
                   value={empData.replacementEcode}
                   onChange={handleChange}
+                  inputProps={{ readOnly: true }}
                 />
               </Grid>
 
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    Support / Development
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Support / Development</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -782,6 +776,7 @@ export default function ViewEmployee() {
                     fullWidth
                     onChange={handleChange}
                     value={state.supportDevelopment}
+                    inputProps={{ readOnly: true }}
                   >
                     <MenuItem value="Support">Support</MenuItem>
                     <MenuItem value="Development">Development</MenuItem>
@@ -790,16 +785,23 @@ export default function ViewEmployee() {
               </Grid>
 
               <Grid item xs={12} sm={4}>
+                {userProfile === 'BAGIC_SM' && reject ? (
+                  <input type="hidden" id="smApprovalFlag" name="smApprovalFlag" value="Rejected" />
+                ) : (
+                  <input type="hidden" id="smApprovalFlag" name="smApprovalFlag" value="Approved" />
+                )}
                 <FormControl fullWidth>
                   <input
                     type="hidden"
-                    id="employeeStatus"
-                    name="employeeStatus"
+                    id="reportingItSpoc"
+                    name="reportingItSpoc"
+                    value="pooja.rebba@bajajallianz.co.in"
                   />
+                  <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
 
-                  <InputLabel id="demo-select-small">
-                    Employee Status
-                  </InputLabel>
+                  <input type="hidden" id="employeeStatus" name="employeeStatus" />
+
+                  <InputLabel id="demo-select-small">Employee Status</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -811,19 +813,16 @@ export default function ViewEmployee() {
                     onChange={handleChange}
                     value={state.employeeStatus}
                     disabled
+                    inputProps={{ readOnly: true }}
                   >
-                    <MenuItem value={state.employeeStatus}>
-                      {state.employeeStatus}
-                    </MenuItem>
+                    <MenuItem value={state.employeeStatus}>{state.employeeStatus}</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    Evaluation Period
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Evaluation Period</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -844,16 +843,14 @@ export default function ViewEmployee() {
             </Grid>
             <br />
 
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Reporting Authorities
             </Typography>
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    Reporting Authority (TL)
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Reporting Authority (TL)</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -867,10 +864,7 @@ export default function ViewEmployee() {
                     readOnly
                   >
                     {reportingList.map((RAs) => (
-                      <MenuItem
-                        key={RAs.teamLeadEmail}
-                        value={RAs.teamLeadEmail}
-                      >
+                      <MenuItem key={RAs.teamLeadEmail} value={RAs.teamLeadEmail}>
                         {RAs.teamLeadName}
                       </MenuItem>
                     ))}
@@ -880,9 +874,7 @@ export default function ViewEmployee() {
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    Reporting Authority (SM)
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Reporting Authority (SM)</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -897,10 +889,7 @@ export default function ViewEmployee() {
                   >
                     {reportingList.map((RAs) =>
                       RAs.teamLeadEmail === state.reportingTeamLead ? (
-                        <MenuItem
-                          key={RAs.managerEmail}
-                          value={RAs.managerEmail}
-                        >
+                        <MenuItem key={RAs.managerEmail} value={RAs.managerEmail}>
                           {RAs.managerName}
                         </MenuItem>
                       ) : null
@@ -937,7 +926,7 @@ export default function ViewEmployee() {
               </Grid> */}
             </Grid>
             <br />
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Profile Details
             </Typography>
 
@@ -957,10 +946,7 @@ export default function ViewEmployee() {
                     defaultValue={state.verticalMain}
                   >
                     {state.mainVerticalList.map((KeyVal) => (
-                      <MenuItem
-                        key={KeyVal.main_vertical_id}
-                        value={KeyVal.main_vertical_desc}
-                      >
+                      <MenuItem key={KeyVal.main_vertical_id} value={KeyVal.main_vertical_desc}>
                         {KeyVal.main_vertical_desc}
                       </MenuItem>
                     ))}
@@ -983,10 +969,7 @@ export default function ViewEmployee() {
                     value={state.verticalSub}
                   >
                     {verticalSubList.map((KeyVal) => (
-                      <MenuItem
-                        key={KeyVal.sub_vertical_id}
-                        value={KeyVal.sub_vertical_desc}
-                      >
+                      <MenuItem key={KeyVal.sub_vertical_id} value={KeyVal.sub_vertical_desc}>
                         {KeyVal.sub_vertical_desc}
                       </MenuItem>
                     ))}
@@ -996,9 +979,7 @@ export default function ViewEmployee() {
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    Department (IT)
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Department (IT)</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -1012,10 +993,7 @@ export default function ViewEmployee() {
                     defaultValue={state.departmentDesc}
                   >
                     {departmentList.map((KeyVal) => (
-                      <MenuItem
-                        key={KeyVal.department_id}
-                        value={KeyVal.department_desc}
-                      >
+                      <MenuItem key={KeyVal.department_id} value={KeyVal.department_desc}>
                         {KeyVal.department_desc}
                       </MenuItem>
                     ))}
@@ -1025,7 +1003,7 @@ export default function ViewEmployee() {
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">Function (IT)</InputLabel>
+                  <InputLabel id="demo-select-small">Function</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -1038,11 +1016,8 @@ export default function ViewEmployee() {
                     value={state.functionDesc}
                     defaultValue={state.functionDesc}
                   >
-                    {state.functionsList.map((KeyVal) => (
-                      <MenuItem
-                        key={KeyVal.function_id}
-                        value={KeyVal.function_desc}
-                      >
+                    {functionsList.map((KeyVal) => (
+                      <MenuItem key={KeyVal.function_id} value={KeyVal.function_desc}>
                         {KeyVal.function_desc}
                       </MenuItem>
                     ))}
@@ -1060,17 +1035,14 @@ export default function ViewEmployee() {
                     id="projectType"
                     name="projectType"
                     label="Project Type"
-                    onChange={handleChangeProject}
-                    defaultValue={state.projectType}
-                    value={state.projectType}
                     fullWidth
+                    onChange={handleChangeProject}
+                    value={state.projectType}
+                    defaultValue={state.projectType}
                   >
-                    {state.projectsList.map((KeyVal) => (
-                      <MenuItem
-                        key={KeyVal.project_id}
-                        value={KeyVal.project_desc}
-                      >
-                        {KeyVal.project_desc}
+                    {projectsList.map((KeyVal) => (
+                      <MenuItem key={KeyVal.project_id} value={KeyVal.initcap}>
+                        {KeyVal.initcap}
                       </MenuItem>
                     ))}
                   </Select>
@@ -1093,10 +1065,7 @@ export default function ViewEmployee() {
                     value={state.invoiceType}
                   >
                     {invoiceList.map((KeyVal) => (
-                      <MenuItem
-                        key={KeyVal.invoice_type_id}
-                        value={KeyVal.invoice_type_desc}
-                      >
+                      <MenuItem key={KeyVal.invoice_type_id} value={KeyVal.invoice_type_desc}>
                         {KeyVal.invoice_type_desc}
                       </MenuItem>
                     ))}
@@ -1145,16 +1114,10 @@ export default function ViewEmployee() {
             </Grid>
             <br />
 
-            <Grid container item xs={12} justifyContent={"center"}>
+            <Grid container item xs={12} justifyContent={'center'}>
               <Stack spacing={2} direction="row" justifyContent="center">
-                {state.employeeStatus === "Active" ? (
-                  <Button
-                    size="medium"
-                    variant="contained"
-                    type="button"
-                    color="primary"
-                    onClick={updateEmployeeData}
-                  >
+                {state.employeeStatus === 'Active' ? (
+                  <Button size="medium" variant="contained" type="button" color="primary" onClick={updateEmployeeData}>
                     Update Details
                   </Button>
                 ) : (
@@ -1164,13 +1127,13 @@ export default function ViewEmployee() {
                     type="button"
                     color="primary"
                     onClick={updateEmployeeData}
-                    disabled={buttonDisable}
+                    // disabled={buttonDisable}
                   >
-                    Save Details
+                    Approve
                   </Button>
                 )}
-                <Button type="reset" variant="outlined" color="primary">
-                  Reset
+                <Button type="reset" variant="outlined" color="primary" onClick={handleRejection}>
+                  Reject
                 </Button>
               </Stack>
             </Grid>

@@ -88,7 +88,7 @@ export default function DashboardAppPage() {
         </Typography>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} lg={7} style={{ display: "" }}>
+          <Grid item xs={12}  style={{ display: "" }}>
             <AppConversionRates
               title="Partner Resources Details"
               sx={{ border: "1px solid lightgrey", borderRadius: "8px" }}
@@ -97,7 +97,7 @@ export default function DashboardAppPage() {
             />
           </Grid>
 
-          <Grid item xs={12} md={4} lg={5} style={{ display: "" }}>
+          <Grid item xs={12} md={4} lg={5} style={{ display: "none" }}>
             <AppCurrentVisits
               sx={{ border: "1px solid lightgrey", borderRadius: "8px" }}
               title="Onboarding Status"

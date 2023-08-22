@@ -1,8 +1,8 @@
-import PropTypes from "prop-types";
-import { forwardRef } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import PropTypes from 'prop-types';
+import { forwardRef } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 // import { useTheme } from "@mui/material/styles";
-import { Box, Link, Typography } from "@mui/material";
+import { Box, Link, Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -30,14 +30,25 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
       ref={ref}
       component="div"
       sx={{
-        width: 200,
-        height: 40,
-        display: "inline-flex",
+        width: 250,
+        height: 80,
+        display: 'inline-flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+
         ...sx,
       }}
       {...other}
     >
-      <Typography variant="h4">HR Portal</Typography>
+      <img
+        src={'/assets/images/covers/BajajAllianzLogo.png'}
+        alt="BajajLogo"
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      />
     </Box>
   );
 
@@ -46,13 +57,12 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
   }
 
   return (
-    <Link
-      to="/"
-      component={RouterLink}
-      sx={{ display: "contents", color: "#0072bc" }}
-    >
+    <>
       {logo}
-    </Link>
+      {/* <Link to="/" component={RouterLink} sx={{ display: 'contents', color: '#0072bc' }}>
+       {logo}
+    </Link> */}
+    </>
   );
 });
 

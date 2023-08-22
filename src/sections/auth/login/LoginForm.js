@@ -93,9 +93,24 @@ export default function LoginForm() {
     // navigate('/dashboard', { replace: true });
   };
 
+  
+
   return (
     <>
-      <Stack spacing={3}>
+      <Stack spacing={2}>
+        <img
+          src={"/assets/images/covers/HRLogo.svg"}
+          alt="text"
+          style={{
+            height: '80%', width: '80%', paddingLeft: '10%',   display: 'flex',   backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'round',
+            backgroundAttachment: 'fixed',
+            margin: 'auto',
+            position: 'relative',
+          }}
+          
+        />
         <Collapse in={open}>
           <Alert severity="warning" variant="filled">
             {errorMessage}
@@ -107,9 +122,17 @@ export default function LoginForm() {
           id="userName"
           label="Username"
           onChange={(e) => handleUsername(e)}
+          sx={{
+            width: 300,
+            backgroundColor: 'white'
+        }}
         />
 
         <TextField
+           sx={{
+            width: 300,
+            backgroundColor: 'white'
+        }}
           name="passWord"
           label="Password"
           required
@@ -151,7 +174,7 @@ export default function LoginForm() {
         sx={{ my: 2 }}
       >
         <LoadingButton
-          fullWidth
+          // fullWidth
           size="large"
           type="submit"
           variant="contained"
@@ -160,7 +183,7 @@ export default function LoginForm() {
           Email Login
         </LoadingButton>
 
-        <LoadingButton
+        {/* <LoadingButton
           fullWidth
           size="large"
           type="submit"
@@ -169,7 +192,7 @@ export default function LoginForm() {
           sx={{ backgroundColor: "purple" }}
         >
           Domain Login
-        </LoadingButton>
+        </LoadingButton> */}
       </Stack>
     </>
   );

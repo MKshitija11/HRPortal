@@ -1,6 +1,6 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { useState, useEffect } from 'react';
 // @mui
 import {
   TextField,
@@ -15,58 +15,61 @@ import {
   Select,
   FormControl,
   Switch,
-} from "@mui/material";
+} from '@mui/material';
 // components
-import Iconify from "../components/iconify";
-import Configuration from "../utils/Configuration";
+import Iconify from '../components/iconify';
+import Configuration from '../utils/Configuration';
 
 export default function ViewEmployee() {
   const [state, setState] = useState({
-    employeeFirstName: "",
-    employeeLastName: "",
-    employeeFullName: "",
-    mobileNumber: "",
-    whatsappNumber: "",
-    personalEmail: "",
-    officialEmail: "",
-    partnerName: "",
-    employeeId: "",
-    joiningDate: "",
-    newReplacement: "",
-    replacementEcode: "",
-    supportDevelopment: "",
-    reportingTeamLead: "",
-    reportingManager: "",
-    reportingAvpVpSvp: "",
-    verticalHeadHod: "",
-    functionDesc: "",
-    departmentDesc: "",
-    verticalMain: "",
-    verticalSub: "",
-    projectType: "",
-    maximusOpus: "",
-    billingSlab: "",
-    invoiceType: "",
-    createdBy: "",
-    employeeStatus: "",
-    evaluationPeriod: "",
+    employeeFirstName: '',
+    employeeLastName: '',
+    employeeFullName: '',
+    mobileNumber: '',
+    whatsappNumber: '',
+    personalEmail: '',
+    officialEmail: '',
+    partnerName: '',
+    employeeId: '',
+    joiningDate: '',
+    newReplacement: '',
+    replacementEcode: '',
+    supportDevelopment: '',
+    reportingTeamLead: '',
+    reportingManager: '',
+    reportingAvpVpSvp: '',
+    verticalHeadHod: '',
+    functionDesc: '',
+    departmentDesc: '',
+    verticalMain: '',
+    verticalSub: '',
+    projectType: '',
+    maximusOpus: '',
+    billingSlab: '',
+    invoiceType: '',
+    createdBy: '',
+    employeeStatus: '',
+    evaluationPeriod: '',
   });
+
+  const [userProfile, setUserProfile] = useState();
+  const [reject, setReject] = useState(false);
 
   const handleChangeWaSwitch = (evt) => {
     console.log();
     if (evt.target.checked) {
-      document.getElementById("whatsappNumber").value = state.mobileNumber;
+      document.getElementById('whatsappNumber').value = state.mobileNumber;
       state.whatsappNumber = state.mobileNumber;
     } else {
-      document.getElementById("whatsappNumber").value = "";
-      state.whatsappNumber = "";
+      document.getElementById('whatsappNumber').value = '';
+      state.whatsappNumber = '';
     }
-    console.log("state.mobileNumber", state.mobileNumber);
-    console.log("state.whatsappNumber", state.whatsappNumber);
+    console.log('state.mobileNumber', state.mobileNumber);
+    console.log('state.whatsappNumber', state.whatsappNumber);
   };
   const handleChange = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    console.log("evt.target.name", evt.target.name);
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
 
     setState({
       ...state,
@@ -75,8 +78,8 @@ export default function ViewEmployee() {
   };
 
   const handleChangeTeamlead = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    console.log("evt.target.name", evt.target.name);
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
 
     setState({
       ...state,
@@ -85,21 +88,29 @@ export default function ViewEmployee() {
   };
 
   const handleChangeDropDown = (evt) => {
-    console.log("evt.target.value", evt.target.value);
-    if (evt.target.value === "New") {
-      document.employeeForm.replacementEcode.value = "NA";
+    console.log('evt.target.value', evt.target.value);
+    if (evt.target.value === 'New') {
+      document.employeeForm.replacementEcode.value = 'NA';
     } else {
-      document.employeeForm.replacementEcode.value = "";
+      document.employeeForm.replacementEcode.value = '';
     }
   };
 
   const navigate = useNavigate();
   const location = useLocation();
-  console.log('LOCATION @', location)
+  console.log('LOCATION @', location);
 
-  console.log("location.state.id", location.state.id);
+  console.log('location.state.id', location.state.id);
   const EmployeeList = () => {
-    navigate("/EmployeesITS");
+    navigate('/EmployeesITS');
+  };
+
+  const handleRejection = () => {
+    setReject(true);
+
+    setTimeout(() => {
+      updateEmployeeData(true);
+    }, 500);
   };
 
   const failFocus = (autoFocusObj) => {
@@ -108,63 +119,63 @@ export default function ViewEmployee() {
   };
 
   const validForm = () => {
-    if (document.employeeForm.employeeFirstName.value === "") {
+    if (document.employeeForm.employeeFirstName.value === '') {
       return failFocus(document.employeeForm.employeeFirstName);
     }
-    if (document.employeeForm.employeeLastName.value === "") {
+    if (document.employeeForm.employeeLastName.value === '') {
       return failFocus(document.employeeForm.employeeLastName);
     }
-    if (document.employeeForm.employeeFullName.value === "") {
+    if (document.employeeForm.employeeFullName.value === '') {
       return failFocus(document.employeeForm.employeeFullName);
     }
-    if (document.employeeForm.mobileNumber.value === "") {
+    if (document.employeeForm.mobileNumber.value === '') {
       return failFocus(document.employeeForm.mobileNumber);
     }
-    if (document.employeeForm.whatsappNumber.value === "") {
+    if (document.employeeForm.whatsappNumber.value === '') {
       return failFocus(document.employeeForm.whatsappNumber);
     }
-    if (document.employeeForm.personalEmail.value === "") {
+    if (document.employeeForm.personalEmail.value === '') {
       return failFocus(document.employeeForm.personalEmail);
     }
-    if (document.employeeForm.officialEmail.value === "") {
+    if (document.employeeForm.officialEmail.value === '') {
       return failFocus(document.employeeForm.officialEmail);
     }
 
-    if (document.employeeForm.partnerName.value === "") {
+    if (document.employeeForm.partnerName.value === '') {
       return failFocus(document.employeeForm.partnerName);
     }
 
-    if (document.employeeForm.employeeId.value === "") {
+    if (document.employeeForm.employeeId.value === '') {
       return failFocus(document.employeeForm.employeeId);
     }
 
-    if (document.employeeForm.joiningDate.value === "") {
+    if (document.employeeForm.joiningDate.value === '') {
       return failFocus(document.employeeForm.joiningDate);
     }
 
-    if (document.employeeForm.newReplacement.value === "") {
+    if (document.employeeForm.newReplacement.value === '') {
       return failFocus(document.employeeForm.newReplacement);
     }
 
-    if (document.employeeForm.replacementEcode.value === "") {
+    if (document.employeeForm.replacementEcode.value === '') {
       return failFocus(document.employeeForm.replacementEcode);
     }
 
-    if (document.employeeForm.supportDevelopment.value === "") {
+    if (document.employeeForm.supportDevelopment.value === '') {
       return failFocus(document.employeeForm.supportDevelopment);
     }
 
-    if (document.employeeForm.supportDevelopment.value === "") {
+    if (document.employeeForm.supportDevelopment.value === '') {
       return failFocus(document.employeeForm.supportDevelopment);
     }
-    if (document.employeeForm.employeeStatus.value === "") {
+    if (document.employeeForm.employeeStatus.value === '') {
       return failFocus(document.employeeForm.employeeStatus);
     }
 
-    if (document.employeeForm.reportingTeamLead.value === "") {
+    if (document.employeeForm.reportingTeamLead.value === '') {
       return failFocus(document.employeeForm.reportingTeamLead);
     }
-    if (document.employeeForm.reportingManager.value === "") {
+    if (document.employeeForm.reportingManager.value === '') {
       return failFocus(document.employeeForm.reportingManager);
     }
     // if (document.employeeForm.reportingAvpVpSvp.value === "") {
@@ -173,55 +184,56 @@ export default function ViewEmployee() {
     // if (document.employeeForm.verticalHeadHod.value === "") {
     //   return failFocus(document.employeeForm.verticalHeadHod);
     // }
-    if (document.employeeForm.functionDesc.value === "") {
+    if (document.employeeForm.functionDesc.value === '') {
       return failFocus(document.employeeForm.functionDesc);
     }
-    if (document.employeeForm.departmentDesc.value === "") {
+    if (document.employeeForm.departmentDesc.value === '') {
       return failFocus(document.employeeForm.departmentDesc);
     }
-    if (document.employeeForm.verticalMain.value === "") {
+    if (document.employeeForm.verticalMain.value === '') {
       return failFocus(document.employeeForm.verticalMain);
     }
-    if (document.employeeForm.verticalSub.value === "") {
+    if (document.employeeForm.verticalSub.value === '') {
       return failFocus(document.employeeForm.verticalSub);
     }
-    if (document.employeeForm.projectType.value === "") {
+    if (document.employeeForm.projectType.value === '') {
       return failFocus(document.employeeForm.projectType);
     }
 
-    if (document.employeeForm.maximusOpus.value === "") {
+    if (document.employeeForm.maximusOpus.value === '') {
       return failFocus(document.employeeForm.maximusOpus);
     }
-    if (document.employeeForm.billingSlab.value === "") {
+    if (document.employeeForm.billingSlab.value === '') {
       return failFocus(document.employeeForm.billingSlab);
     }
-    if (document.employeeForm.invoiceType.value === "") {
+    if (document.employeeForm.invoiceType.value === '') {
       return failFocus(document.employeeForm.invoiceType);
     }
     return true;
   };
 
-  const updateEmployeeData = (event) => {
-    event.preventDefault();
-    document.getElementById("employeeStatus").value = "Active";
+  const updateEmployeeData = (param) => {
+    // event.preventDefault();
+    if (param && typeof param === 'boolean') {
+      document.getElementById('employeeStatus').value = 'Rejected by IT Spoc';
+    } else {
+      document.getElementById('employeeStatus').value = 'Active';
+    }
+    // document.getElementById('employeeStatus').value = 'Active';
 
     if (validForm()) {
       state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
-      const employeeFormObj = new FormData(
-        document.getElementById("employeeForm")
-      );
+      const employeeFormObj = new FormData(document.getElementById('employeeForm'));
 
       const employeeFormData = Object.fromEntries(employeeFormObj.entries());
-      console.log("employeeFormData::", employeeFormData);
-      console.log("JSON:employeeFormData::", JSON.stringify(employeeFormData));
+      console.log('employeeFormData::', employeeFormData);
+      console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
 
-      Configuration.updateEmployeeData(employeeFormData).then(
-        (employeeFormRes) => {
-          console.log("employeeFormRes::", employeeFormRes.data);
-          navigate("/EmployeesITS");
-        }
-      );
+      Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
+        console.log('employeeFormRes::', employeeFormRes.data);
+        navigate('/EmployeesITS');
+      });
     }
 
     // console.log("employeeFirstName", state.employeeFirstName);
@@ -260,34 +272,31 @@ export default function ViewEmployee() {
   const [buttonDisable, setButtonDisable] = useState();
 
   useEffect(() => {
-    const USERDETAILS = JSON.parse(sessionStorage.getItem("USERDETAILS"));
-    const REPORTINGDETAILS = JSON.parse(
-      sessionStorage.getItem("REPORTINGDETAILS")
-    );
+    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+    const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
 
     if (USERDETAILS != null) {
-      console.log("USERDETAILS", USERDETAILS);
-      console.log("USERDETAILS.partnerName", USERDETAILS.partnerName);
+      console.log('USERDETAILS', USERDETAILS);
+      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
       setReportingList(REPORTINGDETAILS);
 
       setPartnerName(USERDETAILS.partnerName);
+      setUserProfile(USERDETAILS.userProfile);
       state.partnerName = USERDETAILS.partnerName;
       state.createdBy = USERDETAILS.spocEmailId;
-      console.log("partnerName", partnerName);
+      console.log('partnerName', partnerName);
     }
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
- 
     const viewEmployeeReq = {
       id: location.state.id,
-     
     };
-    console.log('LOCATION.............', location.state.id,)
+    console.log('LOCATION.............', location.state.id);
     Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
-      console.log("employeeFormRes::", viewEmployeeRes.data);
+      console.log('employeeFormRes::', viewEmployeeRes.data);
       const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
       const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
       setEmpData(EMP_DETAILS);
@@ -313,7 +322,7 @@ export default function ViewEmployee() {
       state.whatsappNumber = EMP_DETAILS.whatsappNumber;
       state.joiningDate = EMP_DETAILS.joiningDate;
 
-      if (state.employeeStatus !== "Pending For IT Spoc Review") {
+      if (state.employeeStatus !== 'Pending For IT Spoc Review') {
         setButtonDisable(true);
       }
     });
@@ -326,18 +335,9 @@ export default function ViewEmployee() {
         <title> HR Portal | Employee Details (IT Spoc)</title>
       </Helmet>
       <Container>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={3}
-        >
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
           <Typography variant="h4">New Employee </Typography>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:list-fill" />}
-            onClick={EmployeeList}
-          >
+          <Button variant="contained" startIcon={<Iconify icon="eva:list-fill" />} onClick={EmployeeList}>
             Employee List
           </Button>
         </Stack>
@@ -345,13 +345,13 @@ export default function ViewEmployee() {
         <Card
           container
           sx={{
-            padding: "15px",
-            border: "1px solid lightgray",
-            borderRadius: "8px",
+            padding: '15px',
+            border: '1px solid lightgray',
+            borderRadius: '8px',
           }}
         >
           <form spacing={2} method="POST" id="employeeForm" name="employeeForm">
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Personal Information
             </Typography>
             <Grid container spacing={2}>
@@ -416,22 +416,16 @@ export default function ViewEmployee() {
                 />
               </Grid>
               <Grid item xs={4} textAlign="center">
-                <Typography variant="body1">
-                  WhatsApp is available on same number?
-                </Typography>
-                <Typography variant="body1" display={"inline"}>
+                <Typography variant="body1">WhatsApp is available on same number?</Typography>
+                <Typography variant="body1" display={'inline'}>
                   No
                 </Typography>
                 {state.mobileNumber === state.whatsappNumber ? (
-                  <Switch
-                    color="success"
-                    onChange={handleChangeWaSwitch}
-                    defaultChecked
-                  />
+                  <Switch color="success" onChange={handleChangeWaSwitch} defaultChecked />
                 ) : (
                   <Switch color="success" onChange={handleChangeWaSwitch} />
                 )}
-                <Typography variant="body1" display={"inline"}>
+                <Typography variant="body1" display={'inline'}>
                   Yes
                 </Typography>
               </Grid>
@@ -483,7 +477,7 @@ export default function ViewEmployee() {
               </Grid>
             </Grid>
             <br />
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Employment Detaills
             </Typography>
 
@@ -536,9 +530,7 @@ export default function ViewEmployee() {
 
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    New / Replacement
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">New / Replacement</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -573,9 +565,7 @@ export default function ViewEmployee() {
 
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    Support / Development
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Support / Development</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -594,16 +584,22 @@ export default function ViewEmployee() {
               </Grid>
 
               <Grid item xs={12} sm={4}>
+              {userProfile === 'BAGIC_ITS' && reject ? (
+                  <input type="hidden" id="itSpocFlag" name="itSpocFlag" value="Rejected" />
+                ) : (
+                  <input type="hidden" id="itSpocFlag" name="itSpocFlag" value="Approved" />
+                )}
                 <FormControl fullWidth>
                   <input
                     type="hidden"
-                    id="employeeStatus"
-                    name="employeeStatus"
+                    id="reportingItSpoc"
+                    name="reportingItSpoc"
+                    value="pooja.rebba@bajajallianz.co.in"
                   />
+                    <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
+                  <input type="hidden" id="employeeStatus" name="employeeStatus" />
 
-                  <InputLabel id="demo-select-small">
-                    Employee Status
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Employee Status</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -616,18 +612,14 @@ export default function ViewEmployee() {
                     value={state.employeeStatus}
                     disabled
                   >
-                    <MenuItem value={state.employeeStatus}>
-                      {state.employeeStatus}
-                    </MenuItem>
+                    <MenuItem value={state.employeeStatus}>{state.employeeStatus}</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    Evaluation Period
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Evaluation Period</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -648,16 +640,14 @@ export default function ViewEmployee() {
             </Grid>
             <br />
 
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Reporting Authorities
             </Typography>
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    Reporting Authority (TL)
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Reporting Authority (TL)</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -671,10 +661,7 @@ export default function ViewEmployee() {
                     readOnly
                   >
                     {reportingList.map((RAs) => (
-                      <MenuItem
-                        key={RAs.teamLeadEmail}
-                        value={RAs.teamLeadEmail}
-                      >
+                      <MenuItem key={RAs.teamLeadEmail} value={RAs.teamLeadEmail}>
                         {RAs.teamLeadName}
                       </MenuItem>
                     ))}
@@ -684,9 +671,7 @@ export default function ViewEmployee() {
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-select-small">
-                    Reporting Authority (SM)
-                  </InputLabel>
+                  <InputLabel id="demo-select-small">Reporting Authority (SM)</InputLabel>
 
                   <Select
                     InputLabelProps={{ shrink: true }}
@@ -701,10 +686,7 @@ export default function ViewEmployee() {
                   >
                     {reportingList.map((RAs) =>
                       RAs.teamLeadEmail === state.reportingTeamLead ? (
-                        <MenuItem
-                          key={RAs.managerEmail}
-                          value={RAs.managerEmail}
-                        >
+                        <MenuItem key={RAs.managerEmail} value={RAs.managerEmail}>
                           {RAs.managerName}
                         </MenuItem>
                       ) : null
@@ -741,7 +723,7 @@ export default function ViewEmployee() {
               </Grid> */}
             </Grid>
             <br />
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Functional Details
             </Typography>
 
@@ -804,7 +786,7 @@ export default function ViewEmployee() {
               </Grid>
             </Grid>
             <br />
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Projects Details
             </Typography>
 
@@ -839,7 +821,7 @@ export default function ViewEmployee() {
               </Grid>
             </Grid>
             <br />
-            <Typography variant="subtitle1" paddingBottom={"15px"}>
+            <Typography variant="subtitle1" paddingBottom={'15px'}>
               Costing Details
             </Typography>
 
@@ -858,33 +840,32 @@ export default function ViewEmployee() {
                   value={empData.invoiceType}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  InputLabelProps={{ shrink: true }}
-                  autoComplete="off"
-                  name="billingSlab"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="Billing Slab"
-                  label="Invoice Type"
-                  onChange={handleChange}
-                  value={empData.billingSlab}
-                />
+              <Grid item xs={12} sm={6} sx={{ display: '' }}>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-select-small">Billing Slab</InputLabel>
+
+                  <Select
+                    InputLabelProps={{ shrink: true }}
+                    labelId="demo-select-small"
+                    id="billingSlab"
+                    name="billingSlab"
+                    label="Billing Slab"
+                    fullWidth
+                    onChange={handleChange}
+                    value={state.billingSlab}
+                    defaultValue={state.billingSlab}
+                  >
+                    <MenuItem value="SLB-001">SLB-001</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
             <br />
 
-            <Grid container item xs={12} justifyContent={"center"}>
+            <Grid container item xs={12} justifyContent={'center'}>
               <Stack spacing={2} direction="row" justifyContent="center">
-                {state.employeeStatus === "Active" ? (
-                  <Button
-                    size="medium"
-                    variant="contained"
-                    type="button"
-                    color="primary"
-                    onClick={updateEmployeeData}
-                  >
+                {state.employeeStatus === 'Active' ? (
+                  <Button size="medium" variant="contained" type="button" color="primary" onClick={updateEmployeeData}>
                     Update Details
                   </Button>
                 ) : (
@@ -894,13 +875,13 @@ export default function ViewEmployee() {
                     type="button"
                     color="primary"
                     onClick={updateEmployeeData}
-                    disabled={buttonDisable}
+                    // disabled={buttonDisable}
                   >
-                    Update Details
+                    Approve
                   </Button>
                 )}
-                <Button type="reset" variant="outlined" color="primary">
-                  Reset
+                <Button type="reset" variant="outlined" color="primary" onClick={handleRejection}>
+                  Reject
                 </Button>
               </Stack>
             </Grid>

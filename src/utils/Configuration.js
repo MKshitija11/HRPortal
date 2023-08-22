@@ -1,7 +1,10 @@
 import axios from "axios";
 
 export default {
-  BASE_URL: "http://10.39.48.74:8888/HrsmApplication/",
+
+  // BASE_URL: "http://10.39.48.255:8888/HrsmApplication/",   // DEVELOPMENT
+  BASE_URL: "https://api.bagicuat.bajajallianz.com/BagicHRSM/", // UAT 
+
   login(loginReq) {
     console.log("function->", "login");
     console.log("url->", `${this.BASE_URL}login`);

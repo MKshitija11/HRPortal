@@ -329,6 +329,7 @@ export default function EmployeeListBP() {
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
+            employeeList={employeeList}
           />
 
           <Scrollbar>

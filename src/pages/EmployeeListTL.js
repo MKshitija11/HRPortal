@@ -193,7 +193,7 @@ export default function EmployeeListTL() {
         <>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-              <Typography variant="h4">Employees ({employeeList.length})</Typography>
+              {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
               <Button
                 variant="contained"
                 startIcon={<Iconify icon="eva:plus-fill" />}
@@ -214,6 +214,7 @@ export default function EmployeeListTL() {
                 numSelected={selected.length}
                 filterName={filterName}
                 onFilterName={handleFilterByName}
+                employeeList={employeeList}
               />
 
               <Scrollbar>
@@ -266,7 +267,11 @@ export default function EmployeeListTL() {
                             <TableCell align="left">{supportDevelopment}</TableCell>
 
                             <TableCell align="left">
-                              <Label color={(employeeStatus === 'Active' && 'success') || 'error'}>
+                              <Label 
+                              color={(employeeStatus === "Pending For TL Review" && 'warning')}
+                              // color={(employeeStatus === 'Active' && 'success') ||
+                              //   (employeeStatus === 'Pending For TL Review ' && 'warning') || 'error'}
+                                >
                                 {employeeStatus}
                               </Label>
                             </TableCell>

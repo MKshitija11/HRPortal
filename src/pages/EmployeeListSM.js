@@ -214,6 +214,7 @@ export default function EmployeeListSM() {
                 numSelected={selected.length}
                 filterName={filterName}
                 onFilterName={handleFilterByName}
+                employeeList={employeeList}
               />
 
               <Scrollbar>
@@ -266,7 +267,10 @@ export default function EmployeeListSM() {
                             <TableCell align="left">{supportDevelopment}</TableCell>
 
                             <TableCell align="left">
-                              <Label color={(employeeStatus === 'Active' && 'success') || 'error'}>
+                              <Label 
+                             color={(employeeStatus === "Pending For SM Review" && 'warning')}
+                            // color={(employeeStatus === 'Active' && 'success') || 'error'}
+                              >
                                 {employeeStatus}
                               </Label>
                             </TableCell>

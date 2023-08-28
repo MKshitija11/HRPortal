@@ -18,7 +18,8 @@ import {
   Modal,
   Box,
 } from '@mui/material';
-import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
+
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 // components
 import Iconify from '../components/iconify';
@@ -35,7 +36,7 @@ export default function EmployeeList() {
     officialEmail: '',
     partnerName: '',
     employeeId: '',
-    joiningDate: '',
+    joiningDate: ''.split('T')[0],
     newReplacement: '',
     replacementEcode: '',
     supportDevelopment: '',
@@ -62,8 +63,9 @@ export default function EmployeeList() {
     evaluationPeriod: '',
     remarks: '',
   });
+
   const [openModal, setOpenModal] = useState(false);
-  const [open, setOpen] = useState(false);
+
   const [isChecked, setIsChecked] = useState(false);
 
   const handleOpenModal = () => {
@@ -79,16 +81,25 @@ export default function EmployeeList() {
     if (evt.target.checked) {
       setIsChecked(!isChecked);
       document.getElementById('whatsappNumber').value = state.mobileNumber;
-      state.whatsappNumber = state.mobileNumber;
+      document.getElementById('whatsappNumber').focus();
+      document.getElementById('whatsappNumber').blur();
+
+      setState({
+        ...state,
+        whatsappNumber: state.mobileNumber,
+      });
     } else {
       setIsChecked(!isChecked);
       document.getElementById('whatsappNumber').value = '';
-      state.whatsappNumber = '';
+      setState({
+        ...state,
+        whatsappNumber: '',
+      });
     }
+
     console.log('state.mobileNumber', state.mobileNumber);
     console.log('state.whatsappNumber', state.whatsappNumber);
   };
-  console.log('WHATSAPP NUMBER', state.whatsappNumber);
 
   const handleChangeEvent = (evt) => {
     console.log('evt.target.value', evt.target.value);
@@ -104,7 +115,6 @@ export default function EmployeeList() {
     console.log('evt.target.value', evt.target.value);
     console.log('evt.target.name', evt.target.name);
 
-    console.log('state.empProfileSvList', state.empProfileSvList);
     const getSubVerticalsReq = {
       key: 'SUB_VERTICAL',
       value: evt.target.value,
@@ -114,7 +124,6 @@ export default function EmployeeList() {
       state.subVerticalList = getSubVerticalsRes.data;
       console.log('subVerticalList', state.subVerticalList);
       setVerticalSubList(state.subVerticalList);
-      console.log('verticalSubList', verticalSubList);
     });
   };
 
@@ -131,7 +140,6 @@ export default function EmployeeList() {
       state.departmentList = getDepartmentRes.data;
       console.log('departmentList', state.departmentList);
       setDepartmentList(state.departmentList);
-      console.log('departmentList', departmentList);
     });
   };
 
@@ -148,7 +156,6 @@ export default function EmployeeList() {
       state.functionsList = getFunctionsRes.data;
       console.log('functionList', state.functionsList);
       setFunctionsList(state.functionsList);
-      console.log('functionsList', functionsList);
     });
   };
 
@@ -194,21 +201,15 @@ export default function EmployeeList() {
   };
 
   const handleChangeDropDown = (evt) => {
-    console.log('evt.target.value', evt.target.value);
     if (evt.target.value === 'New') {
       document.employeeForm.replacementEcode.value = 'NA';
       document.employeeForm.replacementEcode.readOnly = true;
-      state.replacementEcode = 'NA'
+      state.replacementEcode = 'NA';
     } else {
       document.employeeForm.replacementEcode.value = '';
       document.employeeForm.replacementEcode.readOnly = false;
-      state.replacementEcode = ''
+      state.replacementEcode = '';
     }
-    setState({
-      ...state,
-      newReplacement: evt.target.value,
-    });
-   
   };
 
   const navigate = useNavigate();
@@ -221,56 +222,12 @@ export default function EmployeeList() {
     return false;
   };
 
-  // const handleReset = () => {
-  //   console.log('Inside reset');
-  //   setState({
-  //     ...state,
-  //     employeeFirstName: '',
-  //     employeeLastName: '',
-  //     employeeFullName: '',
-  //     mobileNumber: '',
-  //     whatsappNumber: '',
-  //     personalEmail: '',
-  //     officialEmail: '',
-  //     employeeId: '',
-  //     joiningDate: '',
-  //     newReplacement: '',
-  //     replacementEcode: '',
-  //     supportDevelopment: '',
-  //     reportingTeamLead: '',
-  //     reportingManager: '',
-  //     reportingAvpVpSvp: '',
-  //     verticalHeadHod: '',
-  //     functionDesc: '',
-  //     departmentDesc: '',
-  //     verticalMain: '',
-  //     verticalSub: '',
-  //     projectType: '',
-  //     maximusOpus: '',
-  //     billingSlab: '',
-  //     invoiceType: '',
-  //     createdBy: '',
-  //     employeeStatus: '',
-  //     mainVerticalList: [],
-  //     subVerticalList: [],
-  //     departmentList: [],
-  //     functionsList: [],
-  //     projectsList: [],
-  //     invoiceList: [],
-  //     evaluationPeriod: '',
-  //     remarks: '',
-  //   });
-  //   setIsChecked(false);
-  //   // console.log('REST emp name after', state.employeeFirstName);
-  // };
-
   const validForm = () => {
-    console.log('INSIDE VALID FORM');
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
-    console.log('VALID FORM employeeFormData::', employeeFormData);
-    console.log(' VALID FORM JSON:employeeFormData::', JSON.stringify(employeeFormData));
+
+    console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
     if (document.employeeForm.employeeFirstName.value === '') {
       return failFocus(document.employeeForm.employeeFirstName);
     }
@@ -278,7 +235,6 @@ export default function EmployeeList() {
       return failFocus(document.employeeForm.employeeLastName);
     }
     if (document.employeeForm.employeeFullName.value === '') {
-      console.log('document.employeeForm.employeeFirstName.value');
       return failFocus(document.employeeForm.employeeFullName);
     }
     if (document.employeeForm.mobileNumber.value === '') {
@@ -318,9 +274,9 @@ export default function EmployeeList() {
       return failFocus(document.employeeForm.supportDevelopment);
     }
 
-    // if (document.employeeForm.supportDevelopment.value === '') {
-    //   return failFocus(document.employeeForm.supportDevelopment);
-    // }
+    if (document.employeeForm.supportDevelopment.value === '') {
+      return failFocus(document.employeeForm.supportDevelopment);
+    }
     if (document.employeeForm.employeeStatus.value === '') {
       return failFocus(document.employeeForm.employeeStatus);
     }
@@ -371,9 +327,8 @@ export default function EmployeeList() {
   const saveEmployeeData = (event) => {
     // handleOpenModal();
     // event.preventDefault();
-    console.log('INSIDE SAVE EMP ');
+
     if (validForm()) {
-      console.log('FROM VAID FORM');
       state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
       const employeeFormObj = new FormData(document.getElementById('employeeForm'));
@@ -385,7 +340,6 @@ export default function EmployeeList() {
       Configuration.saveEmployeeData(employeeFormData).then((employeeFormRes) => {
         console.log('employeeFormRes::', employeeFormRes.data);
         navigate('/EmployeesBP');
-        // handleOpenModal();
       });
     }
   };
@@ -435,15 +389,13 @@ export default function EmployeeList() {
 
     // eslint-disable-next-line
   }, []);
-  console.log('CREATED BY', state.replacementEcode)
 
   const initialValues = {
     employeeFirstName: state.employeeFirstName,
     employeeLastName: state.employeeLastName,
-    employeeFullName: state.employeeFullName,
+    employeeFullName: `${state.employeeFirstName} ${state.employeeLastName}`,
     mobileNumber: state.mobileNumber,
     whatsappNumber: state.whatsappNumber,
-    // whatsappNumber: state.whatsappNumber,
     personalEmail: state.personalEmail,
     officialEmail: state.officialEmail,
     // partnerName: state.partnerName,
@@ -463,7 +415,7 @@ export default function EmployeeList() {
     billingSlab: state.billingSlab,
     isChecked,
   };
-  console.log('REPLACEMENT CODE', initialValues.replacementEcode);
+
   const validationSchema = Yup.object({
     employeeFirstName: Yup.string()
       .required('First name is required')
@@ -476,7 +428,7 @@ export default function EmployeeList() {
         message: 'Please enter valid number.',
         excludeEmptyString: false,
       })
-      .required('Mobile Number is required'),
+      .required('Contact Number is required'),
 
     whatsappNumber: Yup.string()
       .matches(/^[6-9]\d{9}$/, {
@@ -494,10 +446,11 @@ export default function EmployeeList() {
     joiningDate: Yup.string().required('Required'),
 
     newReplacement: Yup.string().oneOf(['New', 'Replacement']).required('Select an option'),
-    // replacementEcode: Yup.string().required('Required'),
-    supportDevelopment: Yup.string().oneOf(['Support', 'Development'], 'Invalid option').required('Select an option'),
+    // replacementEcode: Yup.string().required('Required'),    
+    supportDevelopment: Yup.string().oneOf(['Support', 'Development', 'NRCR'], 'Invalid option').required('Select an option'),  
+      // supportDevelopment: Yup.string().required('Please Select'),
     evaluationPeriod: Yup.string()
-      .oneOf(['1 Month', '2 Months', '3 Months'], 'Invalid option')
+      .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
       .required('Select an option'),
     reportingTeamLead: Yup.string().required('Please Select'),
     reportingManager: Yup.string().required('Please Select'),
@@ -505,11 +458,46 @@ export default function EmployeeList() {
     billingSlab: Yup.string().required('Please Select'),
   });
 
-  console.log('CHECKED', isChecked);
-
-  const handleWhatsappField = (formik) => {
-    // formik.setFieldTouched('whatsappNumber', true, false)
-    formik.setFieldTouched('whatsappNumber', true, true);
+  const handleReset = () => {
+    console.log('Inside reset');
+    setState({
+      ...state,
+      employeeFirstName: '',
+      employeeLastName: '',
+      employeeFullName: '',
+      mobileNumber: '',
+      whatsappNumber: '',
+      personalEmail: '',
+      officialEmail: '',
+      employeeId: '',
+      joiningDate: '',
+      newReplacement: '',
+      replacementEcode: '',
+      supportDevelopment: '',
+      reportingTeamLead: '',
+      reportingManager: '',
+      reportingAvpVpSvp: '',
+      verticalHeadHod: '',
+      functionDesc: '',
+      departmentDesc: '',
+      verticalMain: '',
+      verticalSub: '',
+      projectType: '',
+      maximusOpus: '',
+      billingSlab: '',
+      invoiceType: '',
+      createdBy: '',
+      employeeStatus: '',
+      mainVerticalList: [],
+      subVerticalList: [],
+      departmentList: [],
+      functionsList: [],
+      projectsList: [],
+      invoiceList: [],
+      evaluationPeriod: '',
+      remarks: '',
+    });
+    setIsChecked(false);
   };
 
   return (
@@ -530,16 +518,7 @@ export default function EmployeeList() {
         </Stack>
 
         <Stack alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
-          <Modal
-            open={openModal}
-            // onClose={() => {
-            //   setOpenModal(false);
-            //   saveEmployeeData();
-            //   // navigate('/EmployeesBP');
-            // }}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
+          <Modal open={openModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box
               sx={{
                 position: 'absolute',
@@ -555,21 +534,6 @@ export default function EmployeeList() {
               }}
               component="form"
             >
-              {/* <Grid container item xs={12} justifyContent={'center'}>
-                <Stack spacing={2} direction="row" justifyContent="center">
-                  <Iconify
-                    icon="material-symbols:check-circle-outline-rounded"
-                    width={50}
-                    height={50}
-                    sx={{ display: 'flex', alignItems: 'flex-end' }}
-                    color="#0a3b8a"
-                  />
-                </Stack>
-              </Grid> */}
-
-              {/* <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ textAlign: 'center', mt: 2 }}>
-                Thankyou!
-              </Typography> */}
               <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
                 Are you sure you want to save details ?
               </Typography>
@@ -624,7 +588,6 @@ export default function EmployeeList() {
             onSubmit={(values) => console.log('in on submit .............', values)}
           >
             {(formik) => {
-            
               const {
                 values,
                 handleChange,
@@ -635,6 +598,7 @@ export default function EmployeeList() {
                 setFieldTouched,
                 isValid,
                 dirty,
+                setFieldValue,
               } = formik;
               return (
                 <form onSubmit={handleSubmit} spacing={2} method="POST" id="employeeForm" name="employeeForm">
@@ -742,60 +706,32 @@ export default function EmployeeList() {
                           Yes
                         </Typography>
                       </div>
-                      {console.log('IS CHECKED VALUES', values.isChecked)}
-                      <input
-                          type="hidden"
-                          id="isChecked"
-                          name="isChecked"
-                          value={values.isChecked}
-                        />
+                      <input type="hidden" id="isChecked" name="isChecked" value={values.isChecked} />
                     </Grid>
 
-                    {isChecked === true ? (
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          autoComplete="off"
-                          name="whatsappNumber"
-                          variant="outlined"
-                          required
-                          fullWidth
-                          id="whatsappNumber"
-                          label="Whatsapp Number"
-                          value={state.whatsappNumber}
-                          onChange={(evt) => {
-                            handleChange(evt);
-                            handleChangeEvent(evt);
-                          }}
-                          onBlur={handleBlur}
-                          error={formik.touched.whatsappNumber && Boolean(formik.errors.whatsappNumber)}
-                          helperText={formik.touched.whatsappNumber && formik.errors.whatsappNumber}
-                        />
-                      </Grid>
-                    ) : (
-                      <Grid item xs={4}>
-                        <TextField
-                          InputLabelProps={{ shrink: true }}
-                          autoComplete="off"
-                          name="whatsappNumber"
-                          variant="outlined"
-                          // required
-                          fullWidth
-                          type="number"
-                          id="whatsappNumber"
-                          label="WhatApp Number"
-                          value={values.whatsappNumber}
-                          // value={isChecked === false ? state.whatsappNumber : values.mobileNumber}
-                          onChange={(evt) => {
-                            handleChange(evt);
-                            handleChangeEvent(evt);
-                          }}
-                          // onBlur={() => handleWhatsappField(formik)}
-                          onBlur={handleBlur}
-                          // error={touched.whatsappNumber && Boolean(errors.whatsappNumber)}
-                          // helperText={touched.whatsappNumber && errors.whatsappNumber}
-                        />
-                      </Grid>
-                    )}
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        autoComplete="off"
+                        name="whatsappNumber"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="whatsappNumber"
+                        label="Whatsapp Number"
+                        value={state.whatsappNumber}
+                        onBlur={(evt) => {
+                          handleChange(evt);
+                          handleChangeEvent(evt);
+                        }}
+                        onChange={(evt) => {
+                          handleChange(evt);
+                          handleChangeEvent(evt);
+                        }}
+                   
+                        error={formik.touched.whatsappNumber && Boolean(formik.errors.whatsappNumber)}
+                        helperText={formik.touched.whatsappNumber && formik.errors.whatsappNumber}
+                      />
+                    </Grid>
 
                     <Grid item xs={6}>
                       <TextField
@@ -893,22 +829,45 @@ export default function EmployeeList() {
                         required
                         fullWidth
                         type="date"
+                        // type="date"
                         id="joiningDate"
                         label="Date of Joining"
+                        inputProps={{
+                          min: new Date().toISOString().split('T')[0],
+                        }}
                         value={values.joiningDate}
                         onChange={(evt) => {
                           handleChange(evt);
                           handleChangeEvent(evt);
                         }}
                         onBlur={handleBlur}
-                        error={formik.touched.joiningDate && Boolean(formik.errors.joiningDate)}
-                        helperText={formik.touched.joiningDate && formik.errors.joiningDate}
                       />
                     </Grid>
 
                     <Grid item xs={12} sm={4}>
                       <FormControl fullWidth>
                         <InputLabel id="demo-select-small">New / Replacement</InputLabel>
+                        {/* <Select
+                          InputLabelProps={{ shrink: true }}
+                          labelId="demo-select-small"
+                          id="newReplacement"
+                          name="newReplacement"
+                          label="New / Replacement"
+                          fullWidth
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeDropDown(evt);
+                          }}
+                          autoComplete="off"
+                          // value={values.newReplacement}
+                          onBlur={handleBlur}
+                          error={formik.touched.newReplacement && Boolean(formik.errors.newReplacement)}
+                          helperText={formik.touched.newReplacement && formik.errors.newReplacement}
+                        >
+                          <MenuItem value="New">New</MenuItem>
+                          <MenuItem value="Replacement">Replacement</MenuItem>
+                        </Select> */}
+
                         <Select
                           InputLabelProps={{ shrink: true }}
                           labelId="demo-select-small"
@@ -920,9 +879,8 @@ export default function EmployeeList() {
                             handleChange(evt);
                             handleChangeDropDown(evt);
                           }}
-                          // autoComplete="off"
+                          autoComplete="off"
                           value={values.newReplacement}
-                          
                           onBlur={handleBlur}
                           error={formik.touched.newReplacement && Boolean(formik.errors.newReplacement)}
                           helperText={formik.touched.newReplacement && formik.errors.newReplacement}
@@ -942,11 +900,11 @@ export default function EmployeeList() {
                         fullWidth
                         id="replacementEcode"
                         label="Replacement Employee Code"
-                        defaultValue={state.replacementEcode}
-                        value={values.replacementEcode}
+                        // defaultValue={state.replacementEcode}
+                        value={state.replacementEcode}
                         onChange={(evt) => {
-                          handleChange(evt);
                           handleChangeEvent(evt);
+                          handleChange(evt);
                         }}
                         onBlur={handleBlur}
                         error={formik.touched.replacementEcode && Boolean(formik.errors.replacementEcode)}
@@ -977,6 +935,7 @@ export default function EmployeeList() {
                         >
                           <MenuItem value="Support">Support</MenuItem>
                           <MenuItem value="Development">Development</MenuItem>
+                          <MenuItem value="NRCR">NRCR</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -1037,10 +996,10 @@ export default function EmployeeList() {
                           value={values.evaluationPeriod}
                           autoComplete="off"
                         >
-                          {/* <MenuItem><em>None</em></MenuItem> */}
-                          <MenuItem value="1 Month">1 Month</MenuItem>
-                          <MenuItem value="2 Months">2 Months</MenuItem>
-                          <MenuItem value="3 Months">3 Months</MenuItem>
+                          <MenuItem value="15 Days">15 Days</MenuItem>
+                          <MenuItem value="30 Days">30 Days</MenuItem>
+                          <MenuItem value="45 Days">45 Days</MenuItem>
+                          <MenuItem value="60 Days">60 Days</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -1116,7 +1075,32 @@ export default function EmployeeList() {
                     </Grid>
 
                     <Grid item xs={12} sm={6}>
-                      <TextField
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-select-small">Approve / Reject</InputLabel>
+
+                        <Select
+                          required
+                          InputLabelProps={{ shrink: true }}
+                          labelId="demo-select-small"
+                          id="remarks"
+                          name="remarks"
+                          label="Approve / Reject"
+                          fullWidth
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          value={values.remarks}
+                          autoComplete="off"
+                          onBlur={handleBlur}
+                          error={formik.touched.remarks && Boolean(formik.errors.remarks)}
+                          helperText={formik.touched.remarks && formik.errors.remarks}
+                        >
+                          <MenuItem value="Approve">Approve</MenuItem>
+                          <MenuItem value="Reject">Reject</MenuItem>
+                        </Select>
+                      </FormControl>
+                      {/* <TextField
                         InputLabelProps={{ shrink: true }}
                         multiline
                         name="remarks"
@@ -1135,7 +1119,7 @@ export default function EmployeeList() {
                         onBlur={handleBlur}
                         error={formik.touched.remarks && Boolean(formik.errors.remarks)}
                         helperText={formik.touched.remarks && formik.errors.remarks}
-                      />
+                      /> */}
                     </Grid>
 
                     <Grid item xs={12} sm={6}>
@@ -1389,25 +1373,22 @@ export default function EmployeeList() {
                         size="medium"
                         variant="contained"
                         type="submit"
-                        className={!(dirty && isValid) ? 'disabled-btn' : ''}
-                        disabled={!(dirty && isValid)}
+                        className={!isValid ? 'disabled-btn' : ''}
+                        disabled={!isValid}
                         color="primary"
-                        // onClick={handleSubmit}
-                        // onClick={saveEmployeeData}
                         onClick={() => handleOpenModal()}
                       >
                         Save
                       </Button>
+                      {console.log('Values===', values)}
                       <Button
                         type="reset"
                         variant="outlined"
                         color="primary"
-                        //  onClick={() => formik.resetForm({
-                        //   values: {
-                        //    title: '',
-                        //   })
-                        onClick={() => formik.resetForm()}
-                        // onClick={handleReset}
+                        onClick={() => {
+                          formik.resetForm();
+                          handleReset();
+                        }}
                       >
                         Reset
                       </Button>

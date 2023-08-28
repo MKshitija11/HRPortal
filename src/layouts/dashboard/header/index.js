@@ -23,7 +23,7 @@ const HEADER_DESKTOP = 90;
 const StyledRoot = styled(AppBar)(({ theme }) => ({
   ...bgBlur({ color: '#0072BC' }),
 
-  // backgroundImage: "url('/assets/images/covers/Banner.png')",
+  backgroundImage: "url('/assets/images/covers/BannerBackground.png')",
 
   [theme.breakpoints.up('xs')]: {
     width: `calc(100% - ${NAV_WIDTH + 1}px)`,

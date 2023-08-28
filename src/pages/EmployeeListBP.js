@@ -188,7 +188,7 @@ export default function EmployeeListBP() {
       {/* <Container disableGutters> */}
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-          <Typography variant="h4">Employees ({employeeList.length})</Typography>
+          {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
           <Button
             variant="contained"
             startIcon={<Iconify icon="material-symbols:person-add-outline" />}
@@ -225,6 +225,8 @@ export default function EmployeeListBP() {
                   numSelected={selected.length}
                   filterName={filterName}
                   onFilterName={handleFilterByName}
+                  employeeList={employeeList}
+                  
                 />
 
                 <Scrollbar>

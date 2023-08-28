@@ -180,7 +180,7 @@ export default function LoginForm() {
           variant="contained"
           onClick={handleClick}
         >
-          Email Login
+          Domain Login
         </LoadingButton>
 
         {/* <LoadingButton

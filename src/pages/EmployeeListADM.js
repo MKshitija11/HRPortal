@@ -220,6 +220,7 @@ export default function EmployeeListADM() {
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
+            employeeList={employeeList}
           />
 
           <Scrollbar>

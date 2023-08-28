@@ -240,7 +240,11 @@ export default function EmployeeListHR() {
                           tabIndex={-1}
                           role="checkbox"
                           selected={selectedUser}
-                          onClick={() => ViewEmployee(row.id)}
+                          // onClick={() => ViewEmployee(row.id)}
+                          onClick={() => {
+                            console.log('EMPLOYEE DETAILS.....', row);
+                            navigate('/ViewEmployeeITS', { state: { row } });
+                          }}
                           sx={{ cursor: 'pointer' }}
                         >
                           <TableCell align="left">{employeeId}</TableCell>

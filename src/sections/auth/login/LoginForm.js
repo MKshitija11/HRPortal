@@ -85,6 +85,7 @@ export default function LoginForm() {
             sessionStorage.setItem("REPORTINGDETAILS", REPORTINGDETAILS);
           });
         } else {
+        // setErrorMessage('INCORRECT')
           setErrorMessage(LoginResponse.data.errorDesc);
           setOpen(true);
         }

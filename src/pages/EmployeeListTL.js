@@ -203,7 +203,14 @@ export default function EmployeeListTL() {
                 New Employee
               </Button>
             </Stack>
-
+            {filteredUsers.length === 0 ? (
+              <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
+                <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
+                <Typography variant="h4" noWrap color="black">
+                  No Records Found!!
+                </Typography>
+              </Stack>
+            ) : (
             <Card
               sx={{
                 border: '1px solid lightgray',
@@ -322,6 +329,7 @@ export default function EmployeeListTL() {
                 onRowsPerPageChange={handleChangeRowsPerPage}
               />
             </Card>
+             )}
           </Container>
         </>
       )}

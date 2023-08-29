@@ -61,7 +61,7 @@ export default function EmployeeList() {
     projectsList: [],
     invoiceList: [],
     evaluationPeriod: '',
-    remarks: '',
+    // remarks: '',
   });
 
   const [openModal, setOpenModal] = useState(false);
@@ -287,9 +287,9 @@ export default function EmployeeList() {
     if (document.employeeForm.reportingManager.value === '') {
       return failFocus(document.employeeForm.reportingManager);
     }
-    if (document.employeeForm.remarks.value === '') {
-      return failFocus(document.employeeForm.remarks);
-    }
+    // if (document.employeeForm.remarks.value === '') {
+    //   return failFocus(document.employeeForm.remarks);
+    // }
     // if (document.employeeForm.reportingAvpVpSvp.value === "") {
     //   return failFocus(document.employeeForm.reportingAvpVpSvp);
     // }
@@ -411,7 +411,7 @@ export default function EmployeeList() {
     verticalSub: state.verticalSub,
     departmentDesc: state.departmentDesc,
     functionDesc: state.functionDesc,
-    remarks: state.remarks,
+    // remarks: state.remarks,
     billingSlab: state.billingSlab,
     isChecked,
   };
@@ -446,16 +446,18 @@ export default function EmployeeList() {
     joiningDate: Yup.string().required('Required'),
 
     newReplacement: Yup.string().oneOf(['New', 'Replacement']).required('Select an option'),
-    // replacementEcode: Yup.string().required('Required'),    
-    supportDevelopment: Yup.string().oneOf(['Support', 'Development', 'NRCR'], 'Invalid option').required('Select an option'),  
-      // supportDevelopment: Yup.string().required('Please Select'),
+    // replacementEcode: Yup.string().required('Required'),
+    supportDevelopment: Yup.string()
+      .oneOf(['Support', 'Development', 'NRCR'], 'Invalid option')
+      .required('Select an option'),
+    // supportDevelopment: Yup.string().required('Please Select'),
     evaluationPeriod: Yup.string()
       .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
       .required('Select an option'),
     reportingTeamLead: Yup.string().required('Please Select'),
     reportingManager: Yup.string().required('Please Select'),
-    remarks: Yup.string().required('Remarks Required'),
-    billingSlab: Yup.string().required('Please Select'),
+    // remarks: Yup.string().required('Remarks Required'),
+    billingSlab: Yup.string().required('Billing Slab is required'),
   });
 
   const handleReset = () => {
@@ -495,7 +497,7 @@ export default function EmployeeList() {
       projectsList: [],
       invoiceList: [],
       evaluationPeriod: '',
-      remarks: '',
+      // remarks: '',
     });
     setIsChecked(false);
   };
@@ -727,7 +729,6 @@ export default function EmployeeList() {
                           handleChange(evt);
                           handleChangeEvent(evt);
                         }}
-                   
                         error={formik.touched.whatsappNumber && Boolean(formik.errors.whatsappNumber)}
                         helperText={formik.touched.whatsappNumber && formik.errors.whatsappNumber}
                       />
@@ -934,7 +935,7 @@ export default function EmployeeList() {
                           helperText={formik.touched.supportDevelopment && formik.errors.supportDevelopment}
                         >
                           <MenuItem value="Support">Support</MenuItem>
-                          <MenuItem value="Development">Development</MenuItem>
+                          {/* <MenuItem value="Development">Development</MenuItem> */}
                           <MenuItem value="NRCR">NRCR</MenuItem>
                         </Select>
                       </FormControl>
@@ -1074,7 +1075,7 @@ export default function EmployeeList() {
                       </FormControl>
                     </Grid>
 
-                    <Grid item xs={12} sm={6}>
+                    {/* <Grid item xs={12} sm={6}>
                       <FormControl fullWidth>
                         <InputLabel id="demo-select-small">Approve / Reject</InputLabel>
 
@@ -1100,30 +1101,28 @@ export default function EmployeeList() {
                           <MenuItem value="Reject">Reject</MenuItem>
                         </Select>
                       </FormControl>
-                      {/* <TextField
-                        InputLabelProps={{ shrink: true }}
-                        multiline
-                        name="remarks"
+                    
+                    </Grid> */}
+
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        autoComplete="off"
+                        name="billingSlab"
                         variant="outlined"
                         required
                         fullWidth
-                        id="remarks"
-                        label="Approve / Reject"
-                        inputProps={{ maxLength: 400 }}
+                        id="billingSlab"
+                        label="Billing Slab"
+                        value={values.billingSlab}
                         onChange={(evt) => {
                           handleChange(evt);
                           handleChangeEvent(evt);
                         }}
-                        value={values.remarks}
-                        autoComplete="off"
                         onBlur={handleBlur}
-                        error={formik.touched.remarks && Boolean(formik.errors.remarks)}
-                        helperText={formik.touched.remarks && formik.errors.remarks}
-                      /> */}
-                    </Grid>
-
-                    <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth>
+                        error={formik.touched.billingSlab && Boolean(formik.errors.billingSlab)}
+                        helperText={formik.touched.billingSlab && formik.errors.billingSlab}
+                      />
+                      {/* <FormControl fullWidth>
                         <InputLabel id="demo-select-small">Billing Slab</InputLabel>
 
                         <Select
@@ -1146,7 +1145,7 @@ export default function EmployeeList() {
                         >
                           <MenuItem value="SLB-001">SLB-001</MenuItem>
                         </Select>
-                      </FormControl>
+                      </FormControl> */}
                     </Grid>
                   </Grid>
 

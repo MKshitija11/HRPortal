@@ -432,7 +432,7 @@ export default function ViewEmployee() {
     // eslint-disable-next-line
   }, []);
 
-  console.log('EMP DATA', empData.employeeFirstName);
+  console.log('EMP DATA', location.state.row.billingSlab);
   console.log('EMP DATA STATE', state.employeeFirstName);
 
   useEffect(() => {
@@ -471,7 +471,7 @@ export default function ViewEmployee() {
       state.verticalSub = EMP_DETAILS.verticalSub;
       state.departmentDesc = EMP_DETAILS.departmentDesc;
       state.functionDesc = EMP_DETAILS.functionDesc;
-      console.log('ID', empData);
+      // console.log('ID', empData);
 
       if (state.employeeStatus === 'Pending For SM Review') {
         setButtonDisable(true);
@@ -557,13 +557,13 @@ export default function ViewEmployee() {
     evaluationPeriod: location.state.row.evaluationPeriod,
     employeeStatus: location.state.row.employeeStatus,
     reportingTeamLead: location.state.row.reportingTeamLead,
-    reportingManager: state.reportingManager,
+    reportingManager: location.state.row.reportingManager,
     verticalMain: state.verticalMain,
     verticalSub: state.verticalSub,
     departmentDesc: state.departmentDesc,
     functionDesc: state.functionDesc,
-    remarks: state.remarks,
-    billingSlab: state.billingSlab,
+    // remarks: state.remarks,
+    // billingSlab: state.billingSlab,
     projectType: state.projectType,
     invoiceType: state.invoiceType,
     maximusOpus: state.maximusOpus,
@@ -605,9 +605,9 @@ export default function ViewEmployee() {
       .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
       .required('Select an option'),
     // reportingTeamLead: Yup.string().required('Please Select'),
-    reportingManager: Yup.string().required('Please Select'),
-    remarks: Yup.string().required('Remarks Required'),
-    billingSlab: Yup.string().required('Please Select'),
+    // reportingManager: Yup.string().required('Please Select'),
+    // remarks: Yup.string().required('Remarks Required'),
+    // billingSlab: Yup.string().required('Please Select'),
     verticalMain: Yup.string().required('Please Select'),
     verticalSub: Yup.string().required('Please Select'),
     departmentDesc: Yup.string().required('Please Select'),
@@ -640,6 +640,7 @@ export default function ViewEmployee() {
           }}
         >
           <Formik
+            enableReinitialize
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={(values) => console.log('in on submit .............', values)}
@@ -682,11 +683,11 @@ export default function ViewEmployee() {
                       >
                         {opneApprovalModal ? (
                           <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                            Are you sure you want to Approve the Employee ?
+                            Are you sure you want to Approve the Employee?
                           </Typography>
                         ) : (
                           <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                            Are you sure you want to Reject the Employee ?
+                            Are you sure you want to Reject the Employee?
                           </Typography>
                         )}
 
@@ -922,6 +923,12 @@ export default function ViewEmployee() {
 
                       <Grid item xs={12} sm={4}>
                         <input type="hidden" value={state.id} id="id" name="id" />
+                        <input
+                          type="hidden"
+                          value={location.state.row.billingSlab}
+                          id="billingSlab"
+                          name="billingSlab"
+                        />
                         <TextField
                           InputLabelProps={{ shrink: true }}
                           autoComplete="off"
@@ -1146,6 +1153,8 @@ export default function ViewEmployee() {
                             }}
                             value={values.reportingTeamLead || ''}
                             autoComplete="off"
+                            inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                            focused={false}
                             // onBlur={handleBlur}
                             // error={formik.touched.reportingTeamLead && Boolean(formik.errors.reportingTeamLead)}
                             // helperText={formik.touched.reportingTeamLead && formik.errors.reportingTeamLead}
@@ -1176,9 +1185,11 @@ export default function ViewEmployee() {
                             }}
                             autoComplete="off"
                             value={values.reportingManager}
-                            onBlur={handleBlur}
-                            error={formik.touched.reportingManager && Boolean(formik.errors.reportingManager)}
-                            helperText={formik.touched.reportingManager && formik.errors.reportingManager}
+                            inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                            focused={false}
+                            // onBlur={handleBlur}
+                            // error={formik.touched.reportingManager && Boolean(formik.errors.reportingManager)}
+                            // helperText={formik.touched.reportingManager && formik.errors.reportingManager}
                           >
                             {reportingList.map((RAs) =>
                               RAs.teamLeadEmail === state.reportingTeamLead ? (
@@ -1435,33 +1446,8 @@ export default function ViewEmployee() {
                           </Select>
                         </FormControl>
                       </Grid>
-                      <Grid item xs={12} sm={6} sx={{ display: '' }}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Billing Slab</InputLabel>
 
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="billingSlab"
-                            name="billingSlab"
-                            label="Billing Slab"
-                            fullWidth
-                            required
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeEvent(evt);
-                            }}
-                            value={values.billingSlab}
-                            autoComplete="off"
-                            onBlur={handleBlur}
-                            error={formik.touched.billingSlab && Boolean(formik.errors.billingSlab)}
-                            helperText={formik.touched.billingSlab && formik.errors.billingSlab}
-                          >
-                            <MenuItem value="SLB-001">SLB-001</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
+                      {/* <Grid item xs={12} sm={6}>
                         <FormControl fullWidth>
                           <InputLabel id="demo-select-small">Approve / Reject</InputLabel>
 
@@ -1487,27 +1473,7 @@ export default function ViewEmployee() {
                             <MenuItem value="Reject">Reject</MenuItem>
                           </Select>
                         </FormControl>
-                        {/* <TextField
-                        InputLabelProps={{ shrink: true }}
-                        multiline
-                        name="remarks"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="remarks"
-                        label="Approve / Reject"
-                        inputProps={{ maxLength: 400 }}
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          handleChangeEvent(evt);
-                        }}
-                        value={values.remarks}
-                        autoComplete="off"
-                        onBlur={handleBlur}
-                        error={formik.touched.remarks && Boolean(formik.errors.remarks)}
-                        helperText={formik.touched.remarks && formik.errors.remarks}
-                      /> */}
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                     <br />
 
@@ -1531,8 +1497,8 @@ export default function ViewEmployee() {
                             color="primary"
                             // onClick={() => updateEmployeeData(false, setFieldValue)}
                             onClick={() => handleOpenApprovalModal()}
-                            className={!(dirty && isValid) ? 'disabled-btn' : ''}
-                            disabled={!(dirty && isValid)}
+                            className={!isValid ? 'disabled-btn' : ''}
+                            disabled={!isValid}
                           >
                             Approve
                           </Button>

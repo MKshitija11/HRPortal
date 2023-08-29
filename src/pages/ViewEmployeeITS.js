@@ -15,6 +15,8 @@ import {
   Select,
   FormControl,
   Switch,
+  Modal,
+  Box,
 } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -56,6 +58,8 @@ export default function ViewEmployee() {
 
   const [userProfile, setUserProfile] = useState();
   const [reject, setReject] = useState(false);
+  const [opneApprovalModal, setApprovalModal] = useState(false);
+  const [openRejectionModal, setRejectionModal] = useState(false);
 
   const handleChangeWaSwitch = (evt) => {
     console.log();
@@ -107,12 +111,32 @@ export default function ViewEmployee() {
     navigate('/EmployeesITS');
   };
 
-  const handleRejection = (setFieldValue) => {
-    setReject(true);
+  // const handleRejection = (setFieldValue) => {
+  //   setReject(true);
 
+  //   setTimeout(() => {
+  //     updateEmployeeData(true, setFieldValue);
+  //   }, 500);
+  // };
+
+  const handleOpenApprovalModal = () => {
+    setApprovalModal(true);
+  };
+  const handleApprovalModal = (param, setFieldValue) => {
+    setApprovalModal(false);
+    updateEmployeeData(false, setFieldValue);
+  };
+
+  const handleOpenRejectionModal = () => {
+    setRejectionModal(true);
+  };
+
+  const handleRejectionModal = (param, setFieldValue) => {
+    setReject(true);
+    setRejectionModal(false);
     setTimeout(() => {
       updateEmployeeData(true, setFieldValue);
-    }, 500);
+    }, 1000);
   };
 
   const failFocus = (autoFocusObj) => {
@@ -254,7 +278,7 @@ export default function ViewEmployee() {
   const [empData = {}, setEmpData] = useState();
 
   const [reportingList = [], setReportingList] = useState();
-  console.log("Reporting list", reportingList)
+  // console.log('Reporting list', reportingList.teamLeadName);
 
   const [buttonDisable, setButtonDisable] = useState();
   console.log('EMP DATA', empData);
@@ -339,8 +363,8 @@ export default function ViewEmployee() {
     verticalSub: location.state.row.verticalSub,
     departmentDesc: location.state.row.departmentDesc,
     functionDesc: location.state.row.functionDesc,
-    remarks: state.remarks,
-    billingSlab: state.billingSlab,
+    // remarks: state.remarks,
+    billingSlab: location.state.row.billingSlab,
     projectType: location.state.row.projectType,
     invoiceType: location.state.row.invoiceType,
     maximusOpus: location.state.row.maximusOpus,
@@ -383,8 +407,8 @@ export default function ViewEmployee() {
       .required('Select an option'),
     // reportingTeamLead: Yup.string().required('Please Select'),
     // reportingManager: Yup.string().required('Please Select'),
-    remarks: Yup.string().required('Remarks Required'),
-    billingSlab: Yup.string().required('Please Select'),
+    // remarks: Yup.string().required('Remarks Required'),
+    // billingSlab: Yup.string().required('Billing Slab is required'),
     // verticalMain: Yup.string().required('Please Select'),
     // verticalSub: Yup.string().required('Please Select'),
     // departmentDesc: Yup.string().required('Please Select'),
@@ -434,254 +458,351 @@ export default function ViewEmployee() {
                 setFieldValue,
               } = formik;
               return (
-                <form spacing={2} method="POST" id="employeeForm" name="employeeForm">
-                  <Typography variant="subtitle1" paddingBottom={'15px'}>
-                    Personal Information
-                  </Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="employeeFirstName"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="employeeFirstName"
-                        label="First Name"
-                        value={values.employeeFirstName}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
+                <>
+                  <Stack alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
+                    <Modal
+                      open={opneApprovalModal || openRejectionModal}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          width: 410,
+                          bgcolor: 'background.paper',
+                          border: '2px solid transparent',
+                          boxShadow: 24,
+                          p: 4,
+                          borderRadius: '8px',
+                        }}
+                        component="form"
+                      >
+                        {opneApprovalModal ? (
+                          <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
+                            Are you sure you want to Approve the Employee?
+                          </Typography>
+                        ) : (
+                          <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
+                            Are you sure you want to Reject the Employee?
+                          </Typography>
+                        )}
 
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="employeeLastName"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="employeeLastName"
-                        label="Last Name"
-                        value={values.employeeLastName}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="employeeFullName"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="employeeFullName"
-                        label="Full Name"
-                        value={values.employeeFullName}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
+                        <Grid
+                          container
+                          item
+                          xs={12}
+                          justifyContent={'center'}
+                          style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
+                        >
+                          {opneApprovalModal ? (
+                            <>
+                              <Stack justifyContent="center">
+                                <Button
+                                  size="medium"
+                                  variant="contained"
+                                  type="button"
+                                  color="primary"
+                                  onClick={() => handleApprovalModal(false, setFieldValue)}
+                                  sx={{ mt: 2 }}
+                                >
+                                  Yes
+                                </Button>
+                              </Stack>
+                              <Stack direction="row" justifyContent="center">
+                                <Button
+                                  size="medium"
+                                  variant="contained"
+                                  type="button"
+                                  color="primary"
+                                  onClick={() => setApprovalModal(false)}
+                                  sx={{ mt: 2 }}
+                                >
+                                  No
+                                </Button>
+                              </Stack>
+                            </>
+                          ) : (
+                            <>
+                              <Stack justifyContent="center">
+                                <Button
+                                  size="medium"
+                                  variant="contained"
+                                  type="button"
+                                  color="primary"
+                                  onClick={() => handleRejectionModal(true, setFieldValue)}
+                                  sx={{ mt: 2 }}
+                                >
+                                  Yes
+                                </Button>
+                              </Stack>
+                              <Stack direction="row" justifyContent="center">
+                                <Button
+                                  size="medium"
+                                  variant="contained"
+                                  type="button"
+                                  color="primary"
+                                  onClick={() => setRejectionModal(false)}
+                                  sx={{ mt: 2 }}
+                                >
+                                  No
+                                </Button>
+                              </Stack>
+                            </>
+                          )}
+                        </Grid>
+                      </Box>
+                    </Modal>
+                  </Stack>
+                  <form spacing={2} method="POST" id="employeeForm" name="employeeForm">
+                    <Typography variant="subtitle1" paddingBottom={'15px'}>
+                      Personal Information
+                    </Typography>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="employeeFirstName"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="employeeFirstName"
+                          label="First Name"
+                          value={values.employeeFirstName}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
 
-                    <Grid item xs={4}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="mobileNumber"
-                        label="Mobile Number"
-                        name="mobileNumber"
-                        autoComplete="off"
-                        type="number"
-                        value={values.mobileNumber}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                    <Grid item xs={4} textAlign="center">
-                      <Typography variant="body1">WhatsApp is available on same number?</Typography>
-                      <Typography variant="body1" display={'inline'}>
-                        No
-                      </Typography>
-                      {state.mobileNumber === state.whatsappNumber ? (
-                        <Switch color="success" onChange={handleChangeWaSwitch} defaultChecked disabled />
-                      ) : (
-                        <Switch color="success" onChange={handleChangeWaSwitch} disabled />
-                      )}
-                      <Typography variant="body1" display={'inline'}>
-                        Yes
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        variant="outlined"
-                        required
-                        fullWidth
-                        name="whatsappNumber"
-                        label="WhatApp Number"
-                        id="whatsappNumber"
-                        autoComplete="off"
-                        type="number"
-                        value={values.whatsappNumber}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="employeeLastName"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="employeeLastName"
+                          label="Last Name"
+                          value={values.employeeLastName}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="employeeFullName"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="employeeFullName"
+                          label="Full Name"
+                          value={values.employeeFullName}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
 
-                    <Grid item xs={6}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="personalEmail"
-                        label="Personal Email"
-                        name="personalEmail"
-                        autoComplete="off"
-                        type="email"
-                        value={values.personalEmail}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        variant="outlined"
-                        required
-                        fullWidth
-                        name="officialEmail"
-                        label="Official Email"
-                        id="officialEmail"
-                        autoComplete="off"
-                        type="email"
-                        value={values.officialEmail}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                  </Grid>
-                  <br />
-                  <Typography variant="subtitle1" paddingBottom={'15px'}>
-                    Employment Detaills
-                  </Typography>
+                      <Grid item xs={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="mobileNumber"
+                          label="Mobile Number"
+                          name="mobileNumber"
+                          autoComplete="off"
+                          type="number"
+                          value={values.mobileNumber}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
+                      <Grid item xs={4} textAlign="center">
+                        <Typography variant="body1">WhatsApp is available on same number?</Typography>
+                        <Typography variant="body1" display={'inline'}>
+                          No
+                        </Typography>
+                        {state.mobileNumber === state.whatsappNumber ? (
+                          <Switch color="success" onChange={handleChangeWaSwitch} defaultChecked disabled />
+                        ) : (
+                          <Switch color="success" onChange={handleChangeWaSwitch} disabled />
+                        )}
+                        <Typography variant="body1" display={'inline'}>
+                          Yes
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          variant="outlined"
+                          required
+                          fullWidth
+                          name="whatsappNumber"
+                          label="WhatApp Number"
+                          id="whatsappNumber"
+                          autoComplete="off"
+                          type="number"
+                          value={values.whatsappNumber}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
 
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="partnerName"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="partnerName"
-                        label="Partner Name"
-                        value={values.partnerName}
-                        onBlur={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
+                      <Grid item xs={6}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="personalEmail"
+                          label="Personal Email"
+                          name="personalEmail"
+                          autoComplete="off"
+                          type="email"
+                          value={values.personalEmail}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          variant="outlined"
+                          required
+                          fullWidth
+                          name="officialEmail"
+                          label="Official Email"
+                          id="officialEmail"
+                          autoComplete="off"
+                          type="email"
+                          value={values.officialEmail}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
                     </Grid>
+                    <br />
+                    <Typography variant="subtitle1" paddingBottom={'15px'}>
+                      Employment Detaills
+                    </Typography>
 
-                    <Grid item xs={12} sm={4}>
-                      <input type="hidden" value={state.id} id="id" name="id" />
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="employeeId"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="employeeId"
-                        label="Employee Code"
-                        value={values.employeeId}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="joiningDate"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="joiningDate"
-                        label="Date of Joining"
-                        type="date"
-                        value={values.joiningDate}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="partnerName"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="partnerName"
+                          label="Partner Name"
+                          value={values.partnerName}
+                          onBlur={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
 
-                    <Grid item xs={12} sm={4}>
-                    <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="newReplacement"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="newReplacement"
-                        label="New / Replacement"
-                        value={values.newReplacement}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    
-                    </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <input type="hidden" value={state.id} id="id" name="id" />
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="employeeId"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="employeeId"
+                          label="Employee Code"
+                          value={values.employeeId}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="joiningDate"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="joiningDate"
+                          label="Date of Joining"
+                          type="date"
+                          value={values.joiningDate}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
 
-                    <Grid item xs={12} sm={4}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="replacementEcode"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="replacementEcode"
-                        label="Replacement Employee Code"
-                        value={values.replacementEcode}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="newReplacement"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="newReplacement"
+                          label="New / Replacement"
+                          value={values.newReplacement}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
 
-                    <Grid item xs={12} sm={4}>
-                    <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="supportDevelopment"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="supportDevelopment"
-                        label="Support / Development"
-                        value={values.supportDevelopment}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                      {/* <FormControl fullWidth>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="replacementEcode"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="replacementEcode"
+                          label="Replacement Employee Code"
+                          value={values.replacementEcode}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="supportDevelopment"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="supportDevelopment"
+                          label="Support / Development"
+                          value={values.supportDevelopment}
+                          onChange={handleChange}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                        {/* <FormControl fullWidth>
                         <InputLabel id="demo-select-small">Support / Development</InputLabel>
 
                         <Select
@@ -700,25 +821,25 @@ export default function ViewEmployee() {
                           <MenuItem value="Development">Development</MenuItem>
                         </Select>
                       </FormControl> */}
-                    </Grid>
+                      </Grid>
 
-                    <Grid item xs={12} sm={4}>
-                      {userProfile === 'BAGIC_ITS' && reject ? (
-                        <input type="hidden" id="itSpocFlag" name="itSpocFlag" value="Rejected" />
-                      ) : (
-                        <input type="hidden" id="itSpocFlag" name="itSpocFlag" value="Approved" />
-                      )}
-                      <FormControl fullWidth>
-                        <input
-                          type="hidden"
-                          id="reportingItSpoc"
-                          name="reportingItSpoc"
-                          value="pooja.rebba@bajajallianz.co.in"
-                        />
-                        <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
-                        {/* <input type="hidden" id="employeeStatus" name="employeeStatus" /> */}
+                      <Grid item xs={12} sm={4}>
+                        {userProfile === 'BAGIC_ITS' && reject ? (
+                          <input type="hidden" id="itSpocFlag" name="itSpocFlag" value="Rejected" />
+                        ) : (
+                          <input type="hidden" id="itSpocFlag" name="itSpocFlag" value="Approved" />
+                        )}
+                        <FormControl fullWidth>
+                          <input
+                            type="hidden"
+                            id="reportingItSpoc"
+                            name="reportingItSpoc"
+                            value="pooja.rebba@bajajallianz.co.in"
+                          />
+                          <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
+                          {/* <input type="hidden" id="employeeStatus" name="employeeStatus" /> */}
 
-                        {/* <InputLabel id="demo-select-small">Employee Status</InputLabel>
+                          {/* <InputLabel id="demo-select-small">Employee Status</InputLabel>
 
                         <Select
                           InputLabelProps={{ shrink: true }}
@@ -734,136 +855,152 @@ export default function ViewEmployee() {
                         >
                           <MenuItem value={state.employeeStatus}>{state.employeeStatus}</MenuItem>
                         </Select> */}
-                        <TextField
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            autoComplete="off"
+                            name="employeeStatus"
+                            variant="outlined"
+                            required
+                            fullWidth
+                            id="employeeStatus"
+                            label="Employee Status"
+                            value={values.employeeStatus}
+                            onChange={handleChange}
+                            inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                            focused={false}
+                          />
+                        </FormControl>
+                      </Grid>
+
+                      <Grid item xs={12} sm={4}>
+                        {/* <TextField
                           InputLabelProps={{ shrink: true }}
                           autoComplete="off"
-                          name="employeeStatus"
+                          name="evaluationPeriod"
                           variant="outlined"
                           required
                           fullWidth
-                          id="employeeStatus"
-                          label="Employee Status"
-                          value={values.employeeStatus}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
-                        />
-                      </FormControl>
-                    </Grid>
-
-                    <Grid item xs={12} sm={4}>
-                    <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="evaluationPeriod"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="evaluationPeriod"
-                        label="Evaluation Period"
-                        value={values.evaluationPeriod}
-                        onChange={handleChange}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                      {/* <FormControl fullWidth>
-                        <InputLabel id="demo-select-small">Evaluation Period</InputLabel>
-
-                        <Select
-                          InputLabelProps={{ shrink: true }}
-                          labelId="demo-select-small"
                           id="evaluationPeriod"
-                          name="evaluationPeriod"
                           label="Evaluation Period"
-                          fullWidth
-                          onChange={(evt) => {
-                            handleChange(evt);
-                            handleChangeEvent(evt);
-                          }}
+                          value={values.evaluationPeriod}
+                          onChange={handleChange}
                           onBlur={handleBlur}
                           error={formik.touched.evaluationPeriod && Boolean(formik.errors.evaluationPeriod)}
                           helperText={formik.touched.evaluationPeriod && formik.errors.evaluationPeriod}
-                          value={values.evaluationPeriod}
-                          autoComplete="off"
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
-                        >
-                          <MenuItem value="15 Days">15 Days</MenuItem>
-                          <MenuItem value="30 Days">30 Days</MenuItem>
-                          <MenuItem value="45 Days">45 Days</MenuItem>
-                          <MenuItem value="60 Days">60 Days</MenuItem>
-                        </Select>
-                      </FormControl> */}
+                        
+                        /> */}
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-select-small">Evaluation Period</InputLabel>
+
+                          <Select
+                            InputLabelProps={{ shrink: true }}
+                            labelId="demo-select-small"
+                            id="evaluationPeriod"
+                            name="evaluationPeriod"
+                            label="Evaluation Period"
+                            fullWidth
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            onBlur={handleBlur}
+                            error={formik.touched.evaluationPeriod && Boolean(formik.errors.evaluationPeriod)}
+                            helperText={formik.touched.evaluationPeriod && formik.errors.evaluationPeriod}
+                            value={values.evaluationPeriod}
+                            autoComplete="off"
+                          >
+                            <MenuItem value="15 Days">15 Days</MenuItem>
+                            <MenuItem value="30 Days">30 Days</MenuItem>
+                            <MenuItem value="45 Days">45 Days</MenuItem>
+                            <MenuItem value="60 Days">60 Days</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                  <br />
+                    <br />
 
-                  <Typography variant="subtitle1" paddingBottom={'15px'}>
-                    Reporting Authorities
-                  </Typography>
+                    <Typography variant="subtitle1" paddingBottom={'15px'}>
+                      Reporting Authorities
+                    </Typography>
 
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                  
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-select-small">Reporting Authority (TL)</InputLabel>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                      {/* <TextField
+                            InputLabelProps={{ shrink: true }}
+                            autoComplete="off"
+                            name="reportingTeamLead"
+                            variant="outlined"
+                            required
+                            fullWidth
+                            id="reportingTeamLead"
+                            label="Reporting Authority  (TL)"
+                            value={values.reportingTeamLead}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeTeamlead(evt);
+                            }}
+                            inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                            focused={false}
+                          /> */}
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-select-small">Reporting Authority (TL)</InputLabel>
 
-                        <Select
-                          InputLabelProps={{ shrink: true }}
-                          labelId="demo-select-small"
-                          id="reportingTeamLead"
-                          name="reportingTeamLead"
-                          label="Reporting Authority  (TL)"
-                          fullWidth
-                          onChange={(evt) => {
-                            handleChange(evt);
-                            handleChangeTeamlead(evt);
-                          }}
-                          value={values.reportingTeamLead || ''}
-                          autoComplete="off"
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
-                        >
-                          {reportingList.map((RAs) => (
-                            <MenuItem key={RAs.teamLeadEmail} value={RAs.teamLeadEmail}>
-                              {RAs.teamLeadName}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-select-small">Reporting Authority (SM)</InputLabel>
-
-                        <Select
-                          InputLabelProps={{ shrink: true }}
-                          labelId="demo-select-small"
-                          id="reportingManager"
-                          name="reportingManager"
-                          label="Reporting Authority (SM)"
-                          fullWidth
-                          onChange={(evt) => {
-                            handleChange(evt);
-                            handleChangeEvent(evt);
-                          }}
-                          value={values.reportingManager}
-                          autoComplete="off"
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
-                        >
-                          {reportingList.map((RAs) =>
-                            RAs.teamLeadEmail === state.reportingTeamLead ? (
-                              <MenuItem key={RAs.managerEmail} value={RAs.managerEmail}>
-                                {RAs.managerName}
+                          <Select
+                            InputLabelProps={{ shrink: true }}
+                            labelId="demo-select-small"
+                            id="reportingTeamLead"
+                            name="reportingTeamLead"
+                            label="Reporting Authority  (TL)"
+                            fullWidth
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeTeamlead(evt);
+                            }}
+                            value={values.reportingTeamLead || ''}
+                            autoComplete="off"
+                            inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                            focused={false}
+                          >
+                            {reportingList.map((RAs) => (
+                              <MenuItem key={RAs.teamLeadEmail} value={RAs.teamLeadEmail}>
+                                {RAs.teamLeadName}
                               </MenuItem>
-                            ) : null
-                          )}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                    {/* <Grid item xs={12} sm={6}>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-select-small">Reporting Authority (SM)</InputLabel>
+
+                          <Select
+                            InputLabelProps={{ shrink: true }}
+                            labelId="demo-select-small"
+                            id="reportingManager"
+                            name="reportingManager"
+                            label="Reporting Authority (SM)"
+                            fullWidth
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            value={values.reportingManager}
+                            autoComplete="off"
+                            inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                            focused={false}
+                          >
+                            {reportingList.map((RAs) =>
+                              RAs.teamLeadEmail === state.reportingTeamLead ? (
+                                <MenuItem key={RAs.managerEmail} value={RAs.managerEmail}>
+                                  {RAs.managerName}
+                                </MenuItem>
+                              ) : null
+                            )}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      {/* <Grid item xs={12} sm={6}>
                 <TextField
                   InputLabelProps={{ shrink: true }}
                   autoComplete="off"
@@ -890,157 +1027,157 @@ export default function ViewEmployee() {
                   onChange={handleChange}
                 />
               </Grid> */}
-                  </Grid>
-                  <br />
-                  <Typography variant="subtitle1" paddingBottom={'15px'}>
-                    Functional Details
-                  </Typography>
+                    </Grid>
+                    <br />
+                    <Typography variant="subtitle1" paddingBottom={'15px'}>
+                      Functional Details
+                    </Typography>
 
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="functionDesc"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="functionDesc"
-                        label="Function (IT)"
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          // handleChangeFun(evt);
-                        }}
-                        value={values.functionDesc}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                        onBlur={handleBlur}
-                        error={formik.touched.functionDesc && Boolean(formik.errors.functionDesc)}
-                        helperText={formik.touched.functionDesc && formik.errors.functionDesc}
-                      />
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="functionDesc"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="functionDesc"
+                          label="Function (IT)"
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            // handleChangeFun(evt);
+                          }}
+                          value={values.functionDesc}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                          onBlur={handleBlur}
+                          error={formik.touched.functionDesc && Boolean(formik.errors.functionDesc)}
+                          helperText={formik.touched.functionDesc && formik.errors.functionDesc}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="departmentDesc"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="departmentDesc"
+                          label="Department"
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            // handleChangeDpt(evt);
+                          }}
+                          value={values.departmentDesc}
+                          onBlur={handleBlur}
+                          // error={formik.touched.departmentDesc && Boolean(formik.errors.departmentDesc)}
+                          // helperText={formik.touched.departmentDesc && formik.errors.departmentDesc}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="verticalMain"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="verticalMain"
+                          label="Main Vertical"
+                          // onChange={(evt) => {
+                          //   handleChange(evt);
+                          //   handleChangeMv(evt);
+                          // }}
+                          onChange={handleChange}
+                          value={values.verticalMain}
+                          onBlur={handleBlur}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="verticalSub"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="verticalSub"
+                          label="Sub Vertical"
+                          onChange={handleChange}
+                          value={values.verticalSub}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="departmentDesc"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="departmentDesc"
-                        label="Department"
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          // handleChangeDpt(evt);
-                        }}
-                        value={values.departmentDesc}
-                        onBlur={handleBlur}
-                        // error={formik.touched.departmentDesc && Boolean(formik.errors.departmentDesc)}
-                        // helperText={formik.touched.departmentDesc && formik.errors.departmentDesc}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="verticalMain"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="verticalMain"
-                        label="Main Vertical"
-                        // onChange={(evt) => {
-                        //   handleChange(evt);
-                        //   handleChangeMv(evt);
-                        // }}
-                        onChange={handleChange}
-                        value={values.verticalMain}
-                        onBlur={handleBlur}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="verticalSub"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="verticalSub"
-                        label="Sub Vertical"
-                        onChange={handleChange}
-                        value={values.verticalSub}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                  </Grid>
-                  <br />
-                  <Typography variant="subtitle1" paddingBottom={'15px'}>
-                    Projects Details
-                  </Typography>
+                    <br />
+                    <Typography variant="subtitle1" paddingBottom={'15px'}>
+                      Projects Details
+                    </Typography>
 
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="projectType"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="projectType"
-                        label="Project Type"
-                        onChange={handleChange}
-                        value={values.projectType}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="projectType"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="projectType"
+                          label="Project Type"
+                          onChange={handleChange}
+                          value={values.projectType}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="maximusOpus"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="maximusOpus"
+                          label="Maximus / Opus"
+                          onChange={handleChange}
+                          value={empData.maximusOpus}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="maximusOpus"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="maximusOpus"
-                        label="Maximus / Opus"
-                        onChange={handleChange}
-                        value={empData.maximusOpus}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                  </Grid>
-                  <br />
-                  <Typography variant="subtitle1" paddingBottom={'15px'}>
-                    Costing Details
-                  </Typography>
+                    <br />
+                    <Typography variant="subtitle1" paddingBottom={'15px'}>
+                      Costing Details
+                    </Typography>
 
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="invoiceType"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="invoiceType"
-                        label="Invoice Type"
-                        onChange={handleChange}
-                        value={empData.invoiceType}
-                        inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                        focused={false}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="invoiceType"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="invoiceType"
+                          label="Invoice Type"
+                          onChange={handleChange}
+                          value={empData.invoiceType}
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
+                      {/* <Grid item xs={12} sm={6}>
                       <FormControl fullWidth>
                         <InputLabel id="demo-select-small">Approve / Reject</InputLabel>
 
@@ -1067,68 +1204,61 @@ export default function ViewEmployee() {
                           <MenuItem value="Reject">Reject</MenuItem>
                         </Select>
                       </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6} sx={{ display: '' }}>
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-select-small">Billing Slab</InputLabel>
-
-                        <Select
-                          InputLabelProps={{ shrink: true }}
-                          labelId="demo-select-small"
-                          id="billingSlab"
+                    </Grid> */}
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          autoComplete="off"
                           name="billingSlab"
-                          label="Billing Slab"
-                          fullWidth
-                          // autoFocus
+                          variant="outlined"
                           required
+                          fullWidth
+                          id="billingSlab"
+                          label="Billing Slab"
+                          value={values.billingSlab}
                           onChange={(evt) => {
                             handleChange(evt);
                             handleChangeEvent(evt);
                           }}
-                          value={values.billingSlab}
-                          autoComplete="off"
                           onBlur={handleBlur}
                           error={formik.touched.billingSlab && Boolean(formik.errors.billingSlab)}
                           helperText={formik.touched.billingSlab && formik.errors.billingSlab}
-                        >
-                          <MenuItem value="SLB-001">SLB-001</MenuItem>
-                        </Select>
-                      </FormControl>
+                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                          focused={false}
+                        />
+                      </Grid>
                     </Grid>
-                  </Grid>
-                  <br />
+                    <br />
 
-                  <Grid container item xs={12} justifyContent={'center'}>
-                    <Stack spacing={2} direction="row" justifyContent="center">
-                      {state.employeeStatus === 'Active' ? (
-                        <Button
-                          size="medium"
-                          variant="contained"
-                          type="button"
-                          color="primary"
-                          onClick={updateEmployeeData}
-                        >
-                          Update Details
-                        </Button>
-                      ) : (
-                        <Button
-                          size="medium"
-                          variant="contained"
-                          type="button"
-                          color="primary"
-                          onClick={() => updateEmployeeData(false, setFieldValue)}
-                          className={!(dirty && isValid) ? 'disabled-btn' : ''}
-                          disabled={!(dirty && isValid)}
-                        >
-                          Approve
-                        </Button>
+                    <Grid container item xs={12} justifyContent={'center'}>
+                      {state.employeeStatus === 'Active' ? null : (
+                        <Stack spacing={2} direction="row" justifyContent="center">
+                          <Button
+                            size="medium"
+                            variant="contained"
+                            type="button"
+                            color="primary"
+                            // onClick={() => updateEmployeeData(false, setFieldValue)}
+                            onClick={() => handleOpenApprovalModal()}
+                            className={!(isValid) ? 'disabled-btn' : ''}
+                            disabled={!( isValid)}
+                          >
+                            Approve
+                          </Button>
+
+                          <Button
+                            type="reset"
+                            variant="outlined"
+                            color="primary"
+                            // onClick={() => handleRejection(setFieldValue)}
+                            onClick={() => handleOpenRejectionModal()}
+                          >
+                            Reject
+                          </Button>
+                        </Stack>
                       )}
-                      <Button type="reset" variant="outlined" color="primary"  onClick={() => handleRejection(setFieldValue)}>
-                        Reject
-                      </Button>
-                    </Stack>
-                  </Grid>
-                </form>
+                    </Grid>
+                  </form>
+                </>
               );
             }}
           </Formik>

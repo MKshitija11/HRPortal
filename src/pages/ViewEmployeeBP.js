@@ -240,19 +240,19 @@ export default function ViewEmployee() {
     // event.preventDefault();
     console.log('INSIDE saveEmployeeData VALID FORM', event);
     // if (validForm()) {
-      console.log('FROM VALID FORM');
-      state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
+    console.log('FROM VALID FORM');
+    state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
-      const employeeFormObj = new FormData(document.getElementById('employeeForm'));
+    const employeeFormObj = new FormData(document.getElementById('employeeForm'));
 
-      const employeeFormData = Object.fromEntries(employeeFormObj.entries());
-      console.log('employeeFormData::', employeeFormData);
-      console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
+    const employeeFormData = Object.fromEntries(employeeFormObj.entries());
+    console.log('employeeFormData::', employeeFormData);
+    console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
 
-      Configuration.saveEmployeeData(employeeFormData).then((employeeFormRes) => {
-        console.log('employeeFormRes::', employeeFormRes.data);
-        navigate('/EmployeesBP');
-      });
+    Configuration.saveEmployeeData(employeeFormData).then((employeeFormRes) => {
+      console.log('employeeFormRes::', employeeFormRes.data);
+      navigate('/EmployeesBP');
+    });
     // }
   };
 
@@ -313,7 +313,7 @@ export default function ViewEmployee() {
     });
     // eslint-disable-next-line
   }, []);
-  console.log("REMARKS", empData.remarks)
+
 
   const initialValues = {
     employeeFirstName: state.employeeFirstName,
@@ -336,7 +336,7 @@ export default function ViewEmployee() {
     verticalSub: state.verticalSub,
     departmentDesc: state.departmentDesc,
     functionDesc: state.functionDesc,
-    remarks: empData.remarks,
+    // remarks: empData.remarks,
     billingSlab: state.billingSlab,
   };
 
@@ -371,14 +371,16 @@ export default function ViewEmployee() {
 
     newReplacement: Yup.string().oneOf(['New', 'Replacement']).required('Select an option'),
     // replacementEcode: Yup.string().required('Required'),
-    supportDevelopment: Yup.string().oneOf(['Support', 'Development', 'NRCR'], 'Invalid option').required('Select an option'),  
+    supportDevelopment: Yup.string()
+      .oneOf(['Support', 'Development', 'NRCR'], 'Invalid option')
+      .required('Select an option'),
     evaluationPeriod: Yup.string()
       .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
       .required('Select an option'),
     reportingTeamLead: Yup.string().required('Please Select'),
     reportingManager: Yup.string().required('Please Select'),
-    remarks: Yup.string().required('Remarks Required'),
-    billingSlab: Yup.string().required('Please Select'),
+    // remarks: Yup.string().required('Remarks Required'),
+    billingSlab: Yup.string().required('Billing Slab is required'),
   });
 
   return (
@@ -614,9 +616,9 @@ export default function ViewEmployee() {
                         No
                       </Typography>
                       {state.mobileNumber === state.whatsappNumber ? (
-                        <Switch color="success" onChange={handleChangeWaSwitch} defaultChecked disabled/>
+                        <Switch color="success" onChange={handleChangeWaSwitch} defaultChecked disabled />
                       ) : (
-                        <Switch color="success" onChange={handleChangeWaSwitch} disabled/>
+                        <Switch color="success" onChange={handleChangeWaSwitch} disabled />
                       )}
                       <Typography variant="body1" display={'inline'}>
                         Yes
@@ -872,7 +874,6 @@ export default function ViewEmployee() {
                         fullWidth
                         id="replacementEcode"
                         label="Replacement Employee Code"
-                      
                         value={values.replacementEcode}
                         onChange={(evt) => {
                           handleChange(evt);
@@ -917,7 +918,7 @@ export default function ViewEmployee() {
                           }
                         >
                           <MenuItem value="Support">Support</MenuItem>
-                          <MenuItem value="Development">Development</MenuItem>
+                          {/* <MenuItem value="Development">Development</MenuItem> */}
                           <MenuItem value="NRCR">NRCR</MenuItem>
                         </Select>
                       </FormControl>
@@ -1068,36 +1069,8 @@ export default function ViewEmployee() {
                     </Grid>
 
                     <br />
-                    <Grid item xs={12} sm={6}>
-              
-                      <TextField
-                        InputLabelProps={{ shrink: true }}
-                        autoComplete="off"
-                        name="remarks"
-                        variant="outlined"
-                        required
-                        fullWidth
-                        id="remarks"
-                        label="Approve / Reject"
-                      
-                        value={values.remarks}
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          handleChangeEvent(evt);
-                        }}
-                        onBlur={handleBlur}
-                        error={Boolean(formik.errors.remarks)}
-                        helperText={formik.errors.remarks}
-                        disabled={
-                          state.employeeStatus === 'Pending For TL Review' ||
-                          state.employeeStatus === 'Pending For SM Review' ||
-                          state.employeeStatus === 'Pending For IT Spoc Review' ||
-                          state.employeeStatus === 'Active'
-                        }
-                      />
-          
-
-                      {/* <FormControl fullWidth>
+                    {/* <Grid item xs={12} sm={6}>
+                      <FormControl fullWidth>
                         <InputLabel id="demo-select-small">Approve / Reject</InputLabel>
 
                         <Select
@@ -1115,16 +1088,34 @@ export default function ViewEmployee() {
                           value={values.remarks}
                           autoComplete="off"
                           onBlur={handleBlur}
-                          error={Boolean(formik.errors.remarks)}
-                          helperText={formik.errors.remarks}
+                          error={formik.touched.remarks && Boolean(formik.errors.remarks)}
+                          helperText={formik.touched.remarks && formik.errors.remarks}
                         >
                           <MenuItem value="Approve">Approve</MenuItem>
                           <MenuItem value="Reject">Reject</MenuItem>
                         </Select>
-                      </FormControl> */}
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth>
+                      </FormControl>
+                    </Grid> */}
+                        <Grid item xs={12} sm={6}>
+                      <TextField
+                        autoComplete="off"
+                        name="billingSlab"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id="billingSlab"
+                        label="Billing Slab"
+                        value={values.billingSlab}
+                        onChange={(evt) => {
+                          handleChange(evt);
+                          handleChangeEvent(evt);
+                        }}
+                        onBlur={handleBlur}
+                        error={formik.touched.billingSlab && Boolean(formik.errors.billingSlab)}
+                        helperText={formik.touched.billingSlab && formik.errors.billingSlab}
+                       
+                      />
+                      {/* <FormControl fullWidth>
                         <InputLabel id="demo-select-small">Billing Slab</InputLabel>
 
                         <Select
@@ -1140,19 +1131,14 @@ export default function ViewEmployee() {
                             handleChangeEvent(evt);
                           }}
                           value={values.billingSlab}
+                          autoComplete="off"
                           onBlur={handleBlur}
-                          error={Boolean(formik.errors.billingSlab)}
-                          helperText={formik.errors.billingSlab}
-                          disabled={
-                            state.employeeStatus === 'Pending For TL Review' ||
-                            state.employeeStatus === 'Pending For SM Review' ||
-                            state.employeeStatus === 'Pending For IT Spoc Review' ||
-                            state.employeeStatus === 'Active'
-                          }
+                          error={formik.touched.billingSlab && Boolean(formik.errors.billingSlab)}
+                          helperText={formik.touched.billingSlab && formik.errors.billingSlab}
                         >
                           <MenuItem value="SLB-001">SLB-001</MenuItem>
                         </Select>
-                      </FormControl>
+                      </FormControl> */}
                     </Grid>
                     {/* <Grid item xs={12} sm={6}>
                 <TextField
@@ -1336,7 +1322,7 @@ export default function ViewEmployee() {
                     <Stack spacing={2} direction="row" justifyContent="center">
                       {state.employeeStatus === 'Rejected by TL' ||
                       state.employeeStatus === 'Rejected by SM' ||
-                      state.employeeStatus === 'Rejected by ITSpoc' ? (
+                      state.employeeStatus === 'Rejected by IT Spoc' ? (
                         <Button
                           size="medium"
                           variant="contained"

@@ -1113,7 +1113,12 @@ export default function ViewEmployee() {
                         onBlur={handleBlur}
                         error={formik.touched.billingSlab && Boolean(formik.errors.billingSlab)}
                         helperText={formik.touched.billingSlab && formik.errors.billingSlab}
-                       
+                        disabled={
+                          state.employeeStatus === 'Pending For TL Review' ||
+                          state.employeeStatus === 'Pending For SM Review' ||
+                          state.employeeStatus === 'Pending For IT Spoc Review' ||
+                          state.employeeStatus === 'Active'
+                        }
                       />
                       {/* <FormControl fullWidth>
                         <InputLabel id="demo-select-small">Billing Slab</InputLabel>

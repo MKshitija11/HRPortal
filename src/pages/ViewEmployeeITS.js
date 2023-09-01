@@ -60,6 +60,15 @@ export default function ViewEmployee() {
   const [reject, setReject] = useState(false);
   const [opneApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
+ 
+  const [verticalMainList = [], setVerticalMainList] = useState();
+  const [verticalSubList = [], setVerticalSubList] = useState();
+  const [departmentList = [], setDepartmentList] = useState();
+  const [functionsList = [], setFunctionsList] = useState();
+  const [projectsList = [], setProjectsList] = useState();
+  const [invoiceList = [], setInvoiceList] = useState();
+
+  const [teamLeadSelected, setTeamLeadSelected] = useState();
 
   const handleChangeWaSwitch = (evt) => {
     console.log();
@@ -83,6 +92,69 @@ export default function ViewEmployee() {
     });
   };
 
+  const handleChangeMv = (evt) => {
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
+
+    const getSubVerticalsReq = {
+      key: 'SUB_VERTICAL',
+      value: evt.target.value,
+    };
+
+    Configuration.getSubVerticals(getSubVerticalsReq).then((getSubVerticalsRes) => {
+      state.subVerticalList = getSubVerticalsRes.data;
+      console.log('subVerticalList', state.subVerticalList);
+      setVerticalSubList(state.subVerticalList);
+    });
+  };
+
+  const handleChangeSv = (evt) => {
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
+
+    const getDepartmentReq = {
+      key: 'DEPARTMENTS',
+      value: evt.target.value,
+    };
+
+    Configuration.getDepartments(getDepartmentReq).then((getDepartmentRes) => {
+      state.departmentList = getDepartmentRes.data;
+      console.log('departmentList', state.departmentList);
+      setDepartmentList(state.departmentList);
+    });
+  };
+
+  const handleChangeDpt = (evt) => {
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
+
+    const getFunctionReq = {
+      key: 'FUNCTIONS',
+      value: evt.target.value,
+    };
+
+    Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
+      state.functionsList = getFunctionsRes.data;
+      console.log('functionList', state.functionsList);
+      setFunctionsList(state.functionsList);
+    });
+  };
+
+  const handleChangeFun = (evt) => {
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
+
+    const getProjectsReq = {
+      key: 'PROJECTS',
+      value: evt.target.value,
+    };
+
+    Configuration.getProjects(getProjectsReq).then((getProjectsRes) => {
+      state.projectsList = getProjectsRes.data;
+      setProjectsList(state.projectsList);
+    });
+  };
+
   const handleChangeTeamlead = (evt) => {
     console.log('evt.target.value', evt.target.value);
     console.log('evt.target.name', evt.target.name);
@@ -102,6 +174,21 @@ export default function ViewEmployee() {
     }
   };
 
+  const handleChangeProject = (evt) => {
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
+
+    const getInvoiceReq = {
+      key: 'INVOICE_TYPE',
+      value: evt.target.value,
+    };
+
+    Configuration.getInvoice(getInvoiceReq).then((getInvoiceRes) => {
+      state.invoiceList = getInvoiceRes.data;
+      setInvoiceList(state.invoiceList);
+    });
+  };
+
   const navigate = useNavigate();
   const location = useLocation();
   console.log('LOCATION @', location);
@@ -110,14 +197,6 @@ export default function ViewEmployee() {
   const EmployeeList = () => {
     navigate('/EmployeesITS');
   };
-
-  // const handleRejection = (setFieldValue) => {
-  //   setReject(true);
-
-  //   setTimeout(() => {
-  //     updateEmployeeData(true, setFieldValue);
-  //   }, 500);
-  // };
 
   const handleOpenApprovalModal = () => {
     setApprovalModal(true);
@@ -572,7 +651,10 @@ export default function ViewEmployee() {
                           id="employeeFirstName"
                           label="First Name"
                           value={values.employeeFirstName}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -589,7 +671,10 @@ export default function ViewEmployee() {
                           id="employeeLastName"
                           label="Last Name"
                           value={values.employeeLastName}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -605,7 +690,10 @@ export default function ViewEmployee() {
                           id="employeeFullName"
                           label="Full Name"
                           value={values.employeeFullName}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -623,7 +711,10 @@ export default function ViewEmployee() {
                           autoComplete="off"
                           type="number"
                           value={values.mobileNumber}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -654,7 +745,11 @@ export default function ViewEmployee() {
                           autoComplete="off"
                           type="number"
                           value={values.whatsappNumber}
-                          onChange={handleChange}
+                          
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -672,7 +767,10 @@ export default function ViewEmployee() {
                           autoComplete="off"
                           type="email"
                           value={values.personalEmail}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -689,7 +787,10 @@ export default function ViewEmployee() {
                           autoComplete="off"
                           type="email"
                           value={values.officialEmail}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -712,7 +813,10 @@ export default function ViewEmployee() {
                           id="partnerName"
                           label="Partner Name"
                           value={values.partnerName}
-                          onBlur={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -730,7 +834,10 @@ export default function ViewEmployee() {
                           id="employeeId"
                           label="Employee Code"
                           value={values.employeeId}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -747,7 +854,10 @@ export default function ViewEmployee() {
                           label="Date of Joining"
                           type="date"
                           value={values.joiningDate}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -764,7 +874,10 @@ export default function ViewEmployee() {
                           id="newReplacement"
                           label="New / Replacement"
                           value={values.newReplacement}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeDropDown(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -781,7 +894,10 @@ export default function ViewEmployee() {
                           id="replacementEcode"
                           label="Replacement Employee Code"
                           value={values.replacementEcode}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -798,7 +914,10 @@ export default function ViewEmployee() {
                           id="supportDevelopment"
                           label="Support / Development"
                           value={values.supportDevelopment}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
                         />
@@ -865,7 +984,10 @@ export default function ViewEmployee() {
                             id="employeeStatus"
                             label="Employee Status"
                             value={values.employeeStatus}
-                            onChange={handleChange}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
                             inputProps={{ readOnly: true, style: { color: 'grey' } }}
                             focused={false}
                           />
@@ -1046,7 +1168,7 @@ export default function ViewEmployee() {
                           label="Function (IT)"
                           onChange={(evt) => {
                             handleChange(evt);
-                            // handleChangeFun(evt);
+                            handleChangeFun(evt);
                           }}
                           value={values.functionDesc}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
@@ -1068,7 +1190,7 @@ export default function ViewEmployee() {
                           label="Department"
                           onChange={(evt) => {
                             handleChange(evt);
-                            // handleChangeDpt(evt);
+                            handleChangeDpt(evt);
                           }}
                           value={values.departmentDesc}
                           onBlur={handleBlur}
@@ -1088,11 +1210,11 @@ export default function ViewEmployee() {
                           fullWidth
                           id="verticalMain"
                           label="Main Vertical"
-                          // onChange={(evt) => {
-                          //   handleChange(evt);
-                          //   handleChangeMv(evt);
-                          // }}
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeMv(evt);
+                          }}
+                        
                           value={values.verticalMain}
                           onBlur={handleBlur}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
@@ -1109,7 +1231,10 @@ export default function ViewEmployee() {
                           fullWidth
                           id="verticalSub"
                           label="Sub Vertical"
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeSv(evt);
+                          }}
                           value={values.verticalSub}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
@@ -1132,7 +1257,10 @@ export default function ViewEmployee() {
                           fullWidth
                           id="projectType"
                           label="Project Type"
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeProject(evt);
+                          }}
                           value={values.projectType}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
@@ -1148,7 +1276,10 @@ export default function ViewEmployee() {
                           fullWidth
                           id="maximusOpus"
                           label="Maximus / Opus"
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           value={empData.maximusOpus}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
@@ -1171,7 +1302,10 @@ export default function ViewEmployee() {
                           fullWidth
                           id="invoiceType"
                           label="Invoice Type"
-                          onChange={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           value={empData.invoiceType}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}

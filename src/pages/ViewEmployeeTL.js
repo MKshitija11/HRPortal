@@ -68,7 +68,6 @@ export default function ViewEmployee() {
   const [openRejectionModal, setRejectionModal] = useState(false);
 
   const handleChangeWaSwitch = (evt) => {
-    console.log();
     if (evt.target.checked) {
       document.getElementById('whatsappNumber').value = state.mobileNumber;
       state.whatsappNumber = state.mobileNumber;
@@ -89,7 +88,7 @@ export default function ViewEmployee() {
     });
   };
 
-  const handleChangeMv = (evt) => {
+  const handleChangeMv = (evt, setFieldValue) => {
     console.log('evt.target.value', evt.target.value);
     console.log('evt.target.name', evt.target.name);
     setState({
@@ -104,25 +103,59 @@ export default function ViewEmployee() {
     };
 
     Configuration.getSubVerticals(getSubVerticalsReq).then((getSubVerticalsRes) => {
+      console.log('verticalSubList', getSubVerticalsRes?.data?.[0]?.sub_vertical_desc);
       state.subVerticalList = getSubVerticalsRes.data;
       console.log('subVerticalList', state.subVerticalList);
       setVerticalSubList(state.subVerticalList);
-      console.log('verticalSubList', verticalSubList);
+      // if (getSubVerticalsRes.data.length === 1) {
+      //   console.log('INSIDE IF');
+      //   const subVerticalData = getSubVerticalsRes?.data?.[0]?.sub_vertical_desc;
+      //   handleChangeSv(evt, {
+      //     verticalSub: subVerticalData,
+      //     verticalMain: evt.target.value,
+      //   });
+      // } else {
+      //   console.log('INSIDE ELSE');
+      //   state.subVerticalList = getSubVerticalsRes.data;
+      //   console.log('subVerticalList', state.subVerticalList);
+      //   setVerticalSubList(state.subVerticalList);
+      // }
     });
   };
 
   const handleChangeSv = (evt) => {
-    console.log('evt.target.value', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
+    console.log('evt.target.value SV', evt.target.value);
+    console.log('evt.target.name SV', evt.target.name);
+    // console.log('AUTO FILL', autoFill);
+    // console.log('AUTO FILL EVENT ', evt.target);
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
     });
+   
+    // if (autoFill) {
+    
+    //   console.log('INSIDE AUTO FILL OF SV ', evt.target.name, autoFill, {
+    //     verticalSub: autoFill ? autoFill.verticalSub : evt.target.value,
+    //     [evt.target.name]: autoFill.verticalMain,
+    //   });
+    //   setState({
+    //     ...state,
+    //     [evt.target.name]: autoFill ? autoFill.verticalSub : evt.target.value,
+    //     verticalMain: autoFill.verticalMain,
+    //   });
+    // } else {
+    //   console.log('OUTSIDE AUTO FILL', evt.target.value);
+    //   setState({
+    //     verticalMain: state.verticalMain,
+    //     [evt.target.name]: evt.target.value,
+    //   });
+    // }
+
     const getDepartmentReq = {
       key: 'DEPARTMENTS',
       value: evt.target.value,
     };
-
     Configuration.getDepartments(getDepartmentReq).then((getDepartmentRes) => {
       state.departmentList = getDepartmentRes.data;
       console.log('departmentList', state.departmentList);
@@ -217,7 +250,6 @@ export default function ViewEmployee() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log('location.state.id', location.state);
   const EmployeeList = () => {
     navigate('/EmployeesTL');
   };
@@ -256,7 +288,6 @@ export default function ViewEmployee() {
   };
 
   const validForm = () => {
-    console.log('Inside update employee valid form');
     if (document.employeeForm.employeeFirstName.value === '') {
       return failFocus(document.employeeForm.employeeFirstName);
     }
@@ -376,7 +407,6 @@ export default function ViewEmployee() {
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
 
     console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
-    console.log('Reject...........', state.employeeStatus);
 
     Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
       console.log('employeeFormRes::', employeeFormRes.data);
@@ -405,7 +435,6 @@ export default function ViewEmployee() {
 
     if (USERDETAILS != null) {
       console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
       setReportingList(REPORTINGDETAILS);
 
@@ -413,14 +442,12 @@ export default function ViewEmployee() {
       setUserProfile(USERDETAILS.userProfile);
       state.partnerName = USERDETAILS.partnerName;
       state.createdBy = USERDETAILS.spocEmailId;
-      console.log('partnerName', partnerName);
 
       const mainVerticalReq = {
         key: 'MAIN_VERTICAL',
         value: '',
       };
 
-      console.log('mainVerticalReq', mainVerticalReq);
       Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
         console.log('mainVerticalRes', mainVerticalRes.data);
         setVerticalMainList(mainVerticalRes);
@@ -432,11 +459,7 @@ export default function ViewEmployee() {
     // eslint-disable-next-line
   }, []);
 
-  console.log('EMP DATA', location.state.row.billingSlab);
-  console.log('EMP DATA STATE', state.employeeFirstName);
-
   useEffect(() => {
-    console.log('ID FROM TL', location.state.row.id);
     const viewEmployeeReq = {
       id: location.state.row.id,
     };
@@ -471,7 +494,6 @@ export default function ViewEmployee() {
       state.verticalSub = EMP_DETAILS.verticalSub;
       state.departmentDesc = EMP_DETAILS.departmentDesc;
       state.functionDesc = EMP_DETAILS.functionDesc;
-      // console.log('ID', empData);
 
       if (state.employeeStatus === 'Pending For SM Review') {
         setButtonDisable(true);
@@ -619,7 +641,6 @@ export default function ViewEmployee() {
 
   return (
     <>
-      {console.log('state reject', reject)}
       <Helmet>
         <title> HR Portal | Employee Details (Team Lead)</title>
       </Helmet>
@@ -1249,7 +1270,7 @@ export default function ViewEmployee() {
                             required
                             onChange={(evt) => {
                               handleChange(evt);
-                              handleChangeMv(evt);
+                              handleChangeMv(evt, setFieldValue);
                             }}
                             value={values.verticalMain}
                             onBlur={handleBlur}
@@ -1275,11 +1296,13 @@ export default function ViewEmployee() {
                             name="verticalSub"
                             label="Sub Vertical"
                             fullWidth
+                            autoFill
                             required
                             // onChange={handleChangeSv}
                             onChange={(evt) => {
                               handleChange(evt);
-                              handleChangeSv(evt);
+                              // handleChangeSv(evt, false);
+                              handleChangeSv(evt)
                             }}
                             value={values.verticalSub}
                             autoComplete="off"

@@ -545,13 +545,13 @@ export default function ViewEmployee() {
     employeeId: location.state.row.employeeId,
     joiningDate: location.state.row.joiningDate,
     newReplacement: location.state.row.newReplacement,
-    replacementEcode: location.state.row.employeeFirstName,
+    replacementEcode: location.state.row.replacementEcode,
     supportDevelopment: location.state.row.supportDevelopment,
     evaluationPeriod: location.state.row.evaluationPeriod,
     employeeStatus: location.state.row.employeeStatus,
     reportingTeamLead: location.state.row.reportingTeamLead,
     reportingManager: location.state.row.reportingManager,
-    verticalMain: location.state.row.verticalMain ,
+    verticalMain: location.state.row.verticalMain,
     // verticalSub: location.state.row.verticalSub,
     verticalSub: state.verticalSub,
     departmentDesc: location.state.row.departmentDesc,
@@ -613,7 +613,7 @@ export default function ViewEmployee() {
 
   return (
     <>
-    {console.log("VERTICAL SUB===>", state.verticalSub)}
+ 
       <Helmet>
         <title> New Employee | HR Portal </title>
       </Helmet>
@@ -634,7 +634,7 @@ export default function ViewEmployee() {
           }}
         >
           <Formik
-          enableReinitialize
+            enableReinitialize
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={(values) => console.log('in on submit .............', values)}
@@ -1229,7 +1229,6 @@ export default function ViewEmployee() {
 
                           <Select
                             InputLabelProps={{ shrink: true }}
-                        
                             labelId="demo-select-small"
                             id="verticalSub"
                             name="verticalSub"
@@ -1471,8 +1470,8 @@ export default function ViewEmployee() {
                             color="primary"
                             // onClick={() => updateEmployeeData(false, setFieldValue)}
                             onClick={() => handleOpenApprovalModal()}
-                            className={!(isValid) ? 'disabled-btn' : ''}
-                            disabled={!( isValid)}
+                            className={!isValid ? 'disabled-btn' : ''}
+                            disabled={!isValid}
                           >
                             Approve
                           </Button>

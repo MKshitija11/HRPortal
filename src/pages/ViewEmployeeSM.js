@@ -64,7 +64,7 @@ export default function ViewEmployee() {
   });
   const [opneApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
-  console.log('SUB', state.verticalSub)
+  console.log('SUB', state.verticalSub);
 
   const handleChangeWaSwitch = (evt) => {
     console.log();
@@ -383,7 +383,7 @@ export default function ViewEmployee() {
   const [reject, setReject] = useState(false);
   const [userProfile, setUserProfile] = useState();
   const [empData = {}, setEmpData] = useState();
-  console.log('EMP DATA', empData.verticalMain)
+  console.log('EMP DATA', empData.verticalMain);
 
   const [reportingList = [], setReportingList] = useState();
   const [verticalMainList = [], setVerticalMainList] = useState();
@@ -613,7 +613,6 @@ export default function ViewEmployee() {
 
   return (
     <>
- 
       <Helmet>
         <title> New Employee | HR Portal </title>
       </Helmet>
@@ -1261,7 +1260,6 @@ export default function ViewEmployee() {
                             InputLabelProps={{ shrink: true }}
                             labelId="demo-select-small"
                             id="departmentDesc"
-                    
                             name="departmentDesc"
                             label="Department (IT)"
                             fullWidth
@@ -1452,39 +1450,32 @@ export default function ViewEmployee() {
 
                     <Grid container item xs={12} justifyContent={'center'}>
                       <Stack spacing={2} direction="row" justifyContent="center">
-                        {state.employeeStatus === 'Active' ? (
-                          <Button
-                            size="medium"
-                            variant="contained"
-                            type="button"
-                            color="primary"
-                            onClick={updateEmployeeData}
-                          >
-                            Update Details
-                          </Button>
-                        ) : (
-                          <Button
-                            size="medium"
-                            variant="contained"
-                            type="button"
-                            color="primary"
-                            // onClick={() => updateEmployeeData(false, setFieldValue)}
-                            onClick={() => handleOpenApprovalModal()}
-                            className={!isValid ? 'disabled-btn' : ''}
-                            disabled={!isValid}
-                          >
-                            Approve
-                          </Button>
+                        {state.employeeStatus === 'Active' ? null : (
+                          <>
+                            <Button
+                              size="medium"
+                              variant="contained"
+                              type="button"
+                              color="primary"
+                              // onClick={() => updateEmployeeData(false, setFieldValue)}
+                              onClick={() => handleOpenApprovalModal()}
+                              className={!isValid ? 'disabled-btn' : ''}
+                              disabled={!isValid}
+                            >
+                              Approve
+                            </Button>
+
+                            <Button
+                              type="reset"
+                              variant="outlined"
+                              color="primary"
+                              // onClick={() => handleRejection(setFieldValue)}
+                              onClick={() => handleOpenRejectionModal()}
+                            >
+                              Reject
+                            </Button>
+                          </>
                         )}
-                        <Button
-                          type="reset"
-                          variant="outlined"
-                          color="primary"
-                          // onClick={() => handleRejection(setFieldValue)}
-                          onClick={() => handleOpenRejectionModal()}
-                        >
-                          Reject
-                        </Button>
                       </Stack>
                     </Grid>
                   </form>

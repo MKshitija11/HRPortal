@@ -202,16 +202,8 @@ export default function EmployeeListSM() {
                 New Employee
               </Button>
             </Stack>
-            {filteredUsers.length === 0 ? (
-              <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
-                <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
-                <Typography variant="h4" noWrap color="black">
-                  No Records Found!!
-                </Typography>
-              </Stack>
-            ) : (
+          
               <>
-              
                 <Card
                   sx={{
                     border: '1px solid lightgray',
@@ -224,119 +216,138 @@ export default function EmployeeListSM() {
                     onFilterName={handleFilterByName}
                     employeeList={employeeList}
                   />
+                  {filteredUsers.length === 0 ? (
+                    <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
+                      <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
+                      <Typography variant="h4" noWrap color="black">
+                        No Records Found!!
+                      </Typography>
+                    </Stack>
+                  ) : (
+                    <>
+                      <Scrollbar>
+                        <TableContainer sx={{ minWidth: 800 }}>
+                          <Table>
+                            <UserListHead
+                              order={order}
+                              orderBy={orderBy}
+                              headLabel={TABLE_HEAD}
+                              rowCount={employeeList.length}
+                              numSelected={selected.length}
+                              onRequestSort={handleRequestSort}
+                              onSelectAllClick={handleSelectAllClick}
+                            />
+                            <TableBody>
+                              {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                const {
+                                  id,
+                                  employeeId,
+                                  employeeFullName,
+                                  employeeStatus,
+                                  partnerName,
+                                  supportDevelopment,
+                                } = row;
+                                const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
-                  <Scrollbar>
-                    <TableContainer sx={{ minWidth: 800 }}>
-                      <Table>
-                        <UserListHead
-                          order={order}
-                          orderBy={orderBy}
-                          headLabel={TABLE_HEAD}
-                          rowCount={employeeList.length}
-                          numSelected={selected.length}
-                          onRequestSort={handleRequestSort}
-                          onSelectAllClick={handleSelectAllClick}
-                        />
-                        <TableBody>
-                          {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                            const {
-                              id,
-                              employeeId,
-                              employeeFullName,
-                              employeeStatus,
-                              partnerName,
-                              supportDevelopment,
-                            } = row;
-                            const selectedUser = selected.indexOf(employeeFullName) !== -1;
+                                return (
+                                  <TableRow
+                                    hover
+                                    key={id}
+                                    tabIndex={-1}
+                                    role="checkbox"
+                                    selected={selectedUser}
+                                    // onClick={() => ViewEmployee(row.id)}
+                                    onClick={() => {
+                                      console.log('EMPLOYEE DETAILS.....', row);
+                                      navigate('/ViewEmployeeSM', { state: { row } });
+                                    }}
+                                    sx={{ cursor: 'pointer' }}
+                                  >
+                                    <TableCell align="left">{employeeId}</TableCell>
 
-                            return (
-                              <TableRow
-                                hover
-                                key={id}
-                                tabIndex={-1}
-                                role="checkbox"
-                                selected={selectedUser}
-                                // onClick={() => ViewEmployee(row.id)}
-                                onClick={() => {
-                                  console.log('EMPLOYEE DETAILS.....', row);
-                                  navigate('/ViewEmployeeSM', { state: { row } });
-                                }}
-                                sx={{ cursor: 'pointer' }}
-                              >
-                                <TableCell align="left">{employeeId}</TableCell>
-
-                                <TableCell component="th" scope="row" padding="none">
-                                  {/* <Stack
+                                    <TableCell component="th" scope="row" padding="none">
+                                      {/* <Stack
                               direction="row"
                               alignItems="center"
                               spacing={2}
                             > */}
-                                  {/* <Avatar alt={empoyeeFullName} src={avatarUrl} /> */}
-                                  <Typography noWrap>{employeeFullName}</Typography>
-                                  {/* </Stack> */}
-                                </TableCell>
+                                      {/* <Avatar alt={empoyeeFullName} src={avatarUrl} /> */}
+                                      <Typography noWrap>{employeeFullName}</Typography>
+                                      {/* </Stack> */}
+                                    </TableCell>
 
-                                <TableCell align="left">{partnerName}</TableCell>
+                                    <TableCell align="left">{partnerName}</TableCell>
 
-                                <TableCell align="left">{supportDevelopment}</TableCell>
+                                    <TableCell align="left">{supportDevelopment}</TableCell>
 
-                                <TableCell align="left">
-                                  <Label
+                                    <TableCell align="left">
+                                      {/* <Label
                                     color={employeeStatus === 'Pending For SM Review' && 'warning'}
                                     // color={(employeeStatus === 'Active' && 'success') || 'error'}
                                   >
                                     {employeeStatus}
-                                  </Label>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                          {emptyRows > 0 && (
-                            <TableRow style={{ height: 53 * emptyRows }}>
-                              <TableCell colSpan={6} />
-                            </TableRow>
-                          )}
-                        </TableBody>
+                                  </Label> */}
+                                      <Label
+                                        color={
+                                          (employeeStatus === 'Pending For SM Review' && 'warning') ||
+                                          (employeeStatus === 'Active' && 'success') ||
+                                          'warning'
+                                        }
+                                      >
+                                        {employeeStatus}
+                                      </Label>
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
+                              {emptyRows > 0 && (
+                                <TableRow style={{ height: 53 * emptyRows }}>
+                                  <TableCell colSpan={6} />
+                                </TableRow>
+                              )}
+                            </TableBody>
 
-                        {isNotFound && (
-                          <TableBody>
-                            <TableRow>
-                              <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                <Paper
-                                  sx={{
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  <Typography variant="h6" paragraph>
-                                    Not found
-                                  </Typography>
+                            {isNotFound && (
+                              <TableBody>
+                                <TableRow>
+                                  <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                                    <Paper
+                                      sx={{
+                                        textAlign: 'center',
+                                      }}
+                                    >
+                                      <Typography variant="h6" paragraph>
+                                        Not found
+                                      </Typography>
 
-                                  <Typography variant="body2">
-                                    No results found for &nbsp;
-                                    <strong>&quot;{filterName}&quot;</strong>.
-                                    <br /> Try checking for typos or using complete words.
-                                  </Typography>
-                                </Paper>
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        )}
-                      </Table>
-                    </TableContainer>
-                  </Scrollbar>
+                                      <Typography variant="body2">
+                                        No results found for &nbsp;
+                                        <strong>&quot;{filterName}&quot;</strong>.
+                                        <br /> Try checking for typos or using complete words.
+                                      </Typography>
+                                    </Paper>
+                                  </TableCell>
+                                </TableRow>
+                              </TableBody>
+                            )}
+                          </Table>
+                        </TableContainer>
+                      </Scrollbar>
 
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={employeeList.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={employeeList.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    </>
+                  )}
                 </Card>
               </>
-            )}
+        
           </Container>
         </>
       )}

@@ -354,7 +354,7 @@ export default function EmployeeListBP() {
                         employeeFullName,
                         employeeStatus,
                         partnerName,
-                        departmentDesc,
+                        supportDevelopment,
                       } = row;
                       const selectedUser =
                         selected.indexOf(employeeFullName) !== -1;
@@ -377,7 +377,7 @@ export default function EmployeeListBP() {
 
                           <TableCell align="left">{partnerName}</TableCell>
 
-                          <TableCell align="left">{departmentDesc}</TableCell>
+                          <TableCell align="left">{supportDevelopment}</TableCell>
                           <TableCell align="left">
                             <Label
                               color={

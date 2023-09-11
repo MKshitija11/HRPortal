@@ -132,9 +132,9 @@ export default function ViewEmployee() {
       ...state,
       [evt.target.name]: evt.target.value,
     });
-   
+
     // if (autoFill) {
-    
+
     //   console.log('INSIDE AUTO FILL OF SV ', evt.target.name, autoFill, {
     //     verticalSub: autoFill ? autoFill.verticalSub : evt.target.value,
     //     [evt.target.name]: autoFill.verticalMain,
@@ -426,7 +426,7 @@ export default function ViewEmployee() {
   const [functionsList = [], setFunctionsList] = useState();
   const [projectsList = [], setProjectsList] = useState();
   const [invoiceList = [], setInvoiceList] = useState();
-
+  const [maximusOpusList = [], setMaximusOpusList] = useState();
   const [buttonDisable, setButtonDisable] = useState();
 
   useEffect(() => {
@@ -580,16 +580,17 @@ export default function ViewEmployee() {
     employeeStatus: location.state.row.employeeStatus,
     reportingTeamLead: location.state.row.reportingTeamLead,
     reportingManager: location.state.row.reportingManager,
-    verticalMain: state.verticalMain,
-    verticalSub: state.verticalSub,
-    departmentDesc: state.departmentDesc,
-    functionDesc: state.functionDesc,
+    verticalMain: location.state.row.verticalMain || state.verticalMain,
+    verticalSub: location.state.row.verticalSub || state.verticalSub,
+    departmentDesc: location.state.row.departmentDesc || state.departmentDesc,
+    functionDesc: location.state.row.functionDesc || state.functionDesc,
     // remarks: state.remarks,
     // billingSlab: state.billingSlab,
-    projectType: state.projectType,
-    invoiceType: state.invoiceType,
-    maximusOpus: state.maximusOpus,
+    projectType: location.state.row.projectType || state.projectType,
+    invoiceType: location.state.row.invoiceType || state.invoiceType,
+    maximusOpus: location.state.row.maximusOpus || state.maximusOpus,
   };
+  console.log('FUNCTION ====', location.state.row.maximusOpus);
 
   const validationSchema = Yup.object({
     // employeeFirstName: Yup.string()
@@ -623,9 +624,9 @@ export default function ViewEmployee() {
     // newReplacement: Yup.string().oneOf(['New', 'Replacement']).required('Select an option'),
     // // replacementEcode: Yup.string().required('Required'),
     // supportDevelopment: Yup.string().oneOf(['Support', 'Development'], 'Invalid option').required('Select an option'),
-    evaluationPeriod: Yup.string()
-      .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
-      .required('Select an option'),
+    // evaluationPeriod: Yup.string()
+    //   .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
+    //   .required('Select an option'),
     // reportingTeamLead: Yup.string().required('Please Select'),
     // reportingManager: Yup.string().required('Please Select'),
     // remarks: Yup.string().required('Remarks Required'),
@@ -661,7 +662,7 @@ export default function ViewEmployee() {
           }}
         >
           <Formik
-            enableReinitialize
+            // enableReinitialize
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={(values) => console.log('in on submit .............', values)}
@@ -1136,9 +1137,9 @@ export default function ViewEmployee() {
                               handleChange(evt);
                               handleChangeEvent(evt);
                             }}
-                            onBlur={handleBlur}
-                            error={formik.touched.evaluationPeriod && Boolean(formik.errors.evaluationPeriod)}
-                            helperText={formik.touched.evaluationPeriod && formik.errors.evaluationPeriod}
+                            // onBlur={handleBlur}
+                            // error={formik.touched.evaluationPeriod && Boolean(formik.errors.evaluationPeriod)}
+                            // helperText={formik.touched.evaluationPeriod && formik.errors.evaluationPeriod}
                             value={values.evaluationPeriod}
                             autoComplete="off"
                           >
@@ -1302,7 +1303,7 @@ export default function ViewEmployee() {
                             onChange={(evt) => {
                               handleChange(evt);
                               // handleChangeSv(evt, false);
-                              handleChangeSv(evt)
+                              handleChangeSv(evt);
                             }}
                             value={values.verticalSub}
                             autoComplete="off"
@@ -1463,9 +1464,15 @@ export default function ViewEmployee() {
                             onBlur={handleBlur}
                             error={formik.touched.maximusOpus && Boolean(formik.errors.maximusOpus)}
                             helperText={formik.touched.maximusOpus && formik.errors.maximusOpus}
+                            // defaultValue={location.state.row.maximusOpus}
                           >
                             <MenuItem value="Maximus">Maximus</MenuItem>
                             <MenuItem value="Opus">Opus</MenuItem>
+                            {/* {maximusOpusList.map((KeyVal) => (
+                              <MenuItem key={KeyVal.invoice_type_id} value={KeyVal.invoice_type_desc}>
+                                {KeyVal.invoice_type_desc}
+                              </MenuItem>
+                            ))} */}
                           </Select>
                         </FormControl>
                       </Grid>
@@ -1502,39 +1509,32 @@ export default function ViewEmployee() {
 
                     <Grid container item xs={12} justifyContent={'center'}>
                       <Stack spacing={2} direction="row" justifyContent="center">
-                        {state.employeeStatus === 'Active' ? (
-                          <Button
-                            size="medium"
-                            variant="contained"
-                            type="button"
-                            color="primary"
-                            onClick={updateEmployeeData}
-                          >
-                            Save Details
-                          </Button>
-                        ) : (
-                          <Button
-                            size="medium"
-                            variant="contained"
-                            type="button"
-                            color="primary"
-                            // onClick={() => updateEmployeeData(false, setFieldValue)}
-                            onClick={() => handleOpenApprovalModal()}
-                            className={!isValid ? 'disabled-btn' : ''}
-                            disabled={!isValid}
-                          >
-                            Approve
-                          </Button>
+                        {state.employeeStatus === 'Active' ? null : (
+                          <>
+                            <Button
+                              size="medium"
+                              variant="contained"
+                              type="button"
+                              color="primary"
+                              // onClick={() => updateEmployeeData(false, setFieldValue)}
+                              onClick={() => handleOpenApprovalModal()}
+                              className={!isValid ? 'disabled-btn' : ''}
+                              disabled={!isValid}
+                            >
+                              Approve
+                            </Button>
+
+                            <Button
+                              type="reset"
+                              variant="outlined"
+                              color="primary"
+                              // onClick={() => handleRejection(setFieldValue)}
+                              onClick={() => handleOpenRejectionModal()}
+                            >
+                              Reject
+                            </Button>
+                          </>
                         )}
-                        <Button
-                          type="reset"
-                          variant="outlined"
-                          color="primary"
-                          // onClick={() => handleRejection(setFieldValue)}
-                          onClick={() => handleOpenRejectionModal()}
-                        >
-                          Reject
-                        </Button>
                       </Stack>
                     </Grid>
                   </form>

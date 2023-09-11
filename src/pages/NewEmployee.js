@@ -1379,7 +1379,7 @@ export default function EmployeeList() {
                       >
                         Save
                       </Button>
-                      {console.log('Values===', values)}
+                     
                       <Button
                         type="reset"
                         variant="outlined"

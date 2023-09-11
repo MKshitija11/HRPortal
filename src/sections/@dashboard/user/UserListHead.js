@@ -1,12 +1,6 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 // @mui
-import {
-  Box,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableSortLabel,
-} from "@mui/material";
+import { Box, TableRow, TableCell, TableHead, TableSortLabel } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -14,27 +8,22 @@ const visuallyHidden = {
   border: 0,
   margin: -1,
   padding: 0,
-  width: "1px",
-  height: "1px",
-  overflow: "hidden",
-  position: "absolute",
-  whiteSpace: "nowrap",
-  clip: "rect(0 0 0 0)",
+  width: '1px',
+  height: '1px',
+  overflow: 'hidden',
+  position: 'absolute',
+  whiteSpace: 'nowrap',
+  clip: 'rect(0 0 0 0)',
 };
 
 UserListHead.propTypes = {
-  order: PropTypes.oneOf(["asc", "desc"]),
+  order: PropTypes.oneOf(['asc', 'desc']),
   orderBy: PropTypes.string,
   headLabel: PropTypes.array,
   onRequestSort: PropTypes.func,
 };
 
-export default function UserListHead({
-  order,
-  orderBy,
-  headLabel,
-  onRequestSort,
-}) {
+export default function UserListHead({ order, orderBy, headLabel, onRequestSort }) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -42,12 +31,12 @@ export default function UserListHead({
   return (
     <TableHead>
       <TableRow>
-        {headLabel.map((headCell) => (
+        {/* {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.alignRight ? "right" : "left"}
             sortDirection={orderBy === headCell.id ? order : false}
-            sx={{ backgroundColor: "#ddd", color: "#004A98" }}
+            sx={{ backgroundColor: "#ddd", color: "#6C63FF" }}
           >
             <TableSortLabel
               hideSortIcon
@@ -62,6 +51,11 @@ export default function UserListHead({
                 </Box>
               ) : null}
             </TableSortLabel>
+          </TableCell>
+        ))} */}
+        {headLabel.map((headCell) => (
+          <TableCell key={headCell.id} sx={{ backgroundColor: '#E3E5E894', color: '#6C63FF' }}>
+            <TableSortLabel>{headCell.label}</TableSortLabel>
           </TableCell>
         ))}
       </TableRow>

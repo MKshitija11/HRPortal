@@ -37,7 +37,7 @@ UserListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
-  employeeList: PropTypes.number,
+  employeeList: PropTypes.any,
 };
 
 export default function UserListToolbar({ numSelected, filterName, onFilterName, employeeList }) {

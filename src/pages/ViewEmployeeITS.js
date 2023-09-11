@@ -504,7 +504,7 @@ export default function ViewEmployee() {
       </Helmet>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-          <Typography variant="h4">New Employee </Typography>
+          {/* <Typography variant="h4">New Employee </Typography> */}
           <Button variant="contained" startIcon={<Iconify icon="eva:list-fill" />} onClick={EmployeeList}>
             Employee List
           </Button>

@@ -27,7 +27,6 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import Configuration from '../utils/Configuration';
 
-
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -69,7 +68,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function EmployeeListBP() {
+export default function RejectedEmployeeListBP() {
   const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
@@ -174,11 +173,16 @@ export default function EmployeeListBP() {
   };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
-console.log('emp list====', employeeList)
+
   const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
-  
-  const activeEmployees  = filteredUsers.filter((employees) => employees.employeeStatus === "Active");
-  console.log('FILTER USERS', filteredUsers);
+
+  const rejectedEmployees = filteredUsers.filter(
+    (employees) =>
+      employees.employeeStatus === 'Rejected by TL' ||
+      employees.employeeStatus === 'Rejected by SM' ||
+      employees.employeeStatus === 'Rejected by IT Spoc'
+  );
+  console.log('FILTER USERS', filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -220,10 +224,10 @@ console.log('emp list====', employeeList)
                 numSelected={selected.length}
                 filterName={filterName}
                 onFilterName={handleFilterByName}
-                employeeList={activeEmployees}
+                employeeList={rejectedEmployees}
               />
 
-              {activeEmployees.length === 0 ? (
+              {rejectedEmployees.length === 0 ? (
                 <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
                   <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
                   <Typography variant="h4" noWrap color="black">
@@ -239,14 +243,14 @@ console.log('emp list====', employeeList)
                           order={order}
                           orderBy={orderBy}
                           headLabel={TABLE_HEAD}
-                          rowCount={activeEmployees.length}
+                          rowCount={employeeList.length}
                           numSelected={selected.length}
                           onRequestSort={handleRequestSort}
                           onSelectAllClick={handleSelectAllClick}
                         />
 
                         <TableBody>
-                          {activeEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                          {rejectedEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                             const {
                               id,
                               employeeId,
@@ -329,7 +333,7 @@ console.log('emp list====', employeeList)
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={activeEmployees.length}
+                    count={rejectedEmployees.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

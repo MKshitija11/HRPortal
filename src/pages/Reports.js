@@ -1,8 +1,8 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import { filter } from "lodash";
-import { useState, useEffect } from "react";
-import * as XLSX from "xlsx";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { filter } from 'lodash';
+import { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
 
 // @mui
 import {
@@ -18,24 +18,25 @@ import {
   Typography,
   TableContainer,
   TablePagination,
-} from "@mui/material";
+} from '@mui/material';
 // components
-import Label from "../components/label";
-import Iconify from "../components/iconify";
-import Scrollbar from "../components/scrollbar";
+import Loader from '../components/Loader/Loader';
+import Label from '../components/label';
+import Iconify from '../components/iconify';
+import Scrollbar from '../components/scrollbar';
 // sections
-import { UserListHead, UserListToolbar } from "../sections/@dashboard/user";
+import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import Configuration from "../utils/Configuration";
+import Configuration from '../utils/Configuration';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "empId", label: "Employee Code", alignRight: false },
-  { id: "name", label: "Name", alignRight: false },
-  { id: "company", label: "Company", alignRight: false },
-  { id: "role", label: "Role", alignRight: false },
-  { id: "status", label: "Status", alignRight: false },
+  { id: 'empId', label: 'Employee Code', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'company', label: 'Company', alignRight: false },
+  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -51,7 +52,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === "desc"
+  return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -64,11 +65,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(
-      array,
-      (_user) =>
-        _user.employeeFullName.toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
+    return filter(array, (_user) => _user.employeeFullName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -79,37 +76,39 @@ export default function EmployeeListBP() {
 
   const [page, setPage] = useState(0);
 
-  const [order, setOrder] = useState("asc");
+  const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState("empId");
+  const [orderBy, setOrderBy] = useState('empId');
 
-  const [filterName, setFilterName] = useState("");
+  const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [employeeList = [], setEmployeeList] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [csvData = [], setCsvData] = useState();
+  console.log('LOCATION', location);
 
   useEffect(() => {
-    const USERDETAILS = JSON.parse(sessionStorage.getItem("USERDETAILS"));
+    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log("USERDETAILS", USERDETAILS);
-      console.log("USERDETAILS.partnerName", USERDETAILS.partnerName);
+      console.log('USERDETAILS', USERDETAILS);
+      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
-      let dynaPartnerName = "";
-      let dynaStatusName = "";
+      let dynaPartnerName = '';
+      let dynaStatusName = '';
       try {
         dynaPartnerName = location.state.partnerNameChart;
       } catch (error) {
-        dynaPartnerName = "";
+        dynaPartnerName = '';
       }
       try {
         dynaStatusName = location.state.empStatus;
       } catch (error) {
-        dynaStatusName = "";
+        dynaStatusName = '';
       }
 
       let empListVendorReq = {};
@@ -117,38 +116,37 @@ export default function EmployeeListBP() {
       if (dynaPartnerName === undefined) {
         empListVendorReq = {
           itSpocId: dynaStatusName,
-          partnerName: "NA",
+          partnerName: 'NA',
         };
       } else if (dynaStatusName === undefined) {
         empListVendorReq = {
           partnerName: dynaPartnerName,
-          itSpocId: "NA",
+          itSpocId: 'NA',
         };
       } else {
         empListVendorReq = {
-          partnerName: "NA",
-          itSpocId: "NA",
+          partnerName: 'NA',
+          itSpocId: 'NA',
         };
       }
       console.log(empListVendorReq);
-
-      Configuration.getEmpListVendor(empListVendorReq).then(
-        (empListVendorRes) => {
-          console.log("empListVendorRes", empListVendorRes);
-          setEmployeeList(empListVendorRes.data);
-          console.log("employeeList", employeeList);
-          setCsvData(empListVendorRes.data);
-        }
-      );
+      setIsLoading(true);
+      Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
+        console.log('empListVendorRes', empListVendorRes);
+        setEmployeeList(empListVendorRes.data);
+        console.log('employeeList', employeeList);
+        setCsvData(empListVendorRes.data);
+        setIsLoading(false);
+      });
     } else {
-      navigate("/login");
+      navigate('/login');
     }
     // eslint-disable-next-line
   }, []);
 
   const ViewEmployee = (rowId) => {
-    console.log("rowId", rowId);
-    navigate("/ViewEmployeeITS", {
+    console.log('rowId', rowId);
+    navigate('/ViewEmployeeITS', {
       state: {
         id: rowId,
       },
@@ -156,8 +154,8 @@ export default function EmployeeListBP() {
   };
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
@@ -202,46 +200,41 @@ export default function EmployeeListBP() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
 
-  const filteredUsers = applySortFilter(
-    employeeList,
-    getComparator(order, orderBy),
-    filterName
-  );
+  const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
-  console.log("csvData", csvData);
+  console.log('csvData', csvData);
   const Heading = [
     [
-      "Partner Name",
-      "Employee ID",
-      "First Name",
-      "Last Name",
-      "Full Name",
-      "Status",
-      "Official Email",
-      "Personal Email",
-      "Mobile Number",
-      "Whatsapp Number",
-      "Joining Date",
-      "ReportingTeamLead",
-      "ReportingManager",
-      "ReportingItSpoc",
-      "BillingSlab",
-      "EvaluationPeriod",
-      "NewReplacement",
-      "ReplacementEcode",
-      "SupportDevelopment",
-      "Function",
-      "Department",
-      "Vertical(Main)",
-      "Vertical(Sub)",
-      "Project Type",
-      "Maximus/Opus",
-      "Invoice Type",
+      'Partner Name',
+      'Employee ID',
+      'First Name',
+      'Last Name',
+      'Full Name',
+      'Status',
+      'Official Email',
+      'Personal Email',
+      'Mobile Number',
+      'Whatsapp Number',
+      'Joining Date',
+      'ReportingTeamLead',
+      'ReportingManager',
+      'ReportingItSpoc',
+      'BillingSlab',
+      'EvaluationPeriod',
+      'NewReplacement',
+      'ReplacementEcode',
+      'SupportDevelopment',
+      'Function',
+      'Department',
+      'Vertical(Main)',
+      'Vertical(Sub)',
+      'Project Type',
+      'Maximus/Opus',
+      'Invoice Type',
     ],
   ];
   const selectedCols = csvData.map((n) => [
@@ -273,7 +266,7 @@ export default function EmployeeListBP() {
     n.invoiceType,
   ]);
 
-  console.log("selectedCols", selectedCols);
+  console.log('selectedCols', selectedCols);
 
   const exportToCSV = () => {
     const wb = XLSX.utils.book_new();
@@ -281,13 +274,13 @@ export default function EmployeeListBP() {
     XLSX.utils.sheet_add_aoa(ws, Heading);
 
     XLSX.utils.sheet_add_json(ws, selectedCols, {
-      origin: "A2",
+      origin: 'A2',
       skipHeader: true,
     });
 
-    XLSX.utils.book_append_sheet(wb, ws, "DATA");
+    XLSX.utils.book_append_sheet(wb, ws, 'DATA');
 
-    XLSX.writeFile(wb, "EmployeeData.xlsx");
+    XLSX.writeFile(wb, 'EmployeeData.xlsx');
   };
 
   return (
@@ -298,15 +291,7 @@ export default function EmployeeListBP() {
 
       {/* <Container disableGutters> */}
       <Container>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={3}
-        >
-          <Typography variant="h4">
-            Employees ({employeeList.length})
-          </Typography>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
           <Button
             variant="contained"
             startIcon={<Iconify icon="ri:file-excel-2-line" />}
@@ -318,46 +303,41 @@ export default function EmployeeListBP() {
           </Button>
         </Stack>
 
-        <Card
-          container
-          sx={{
-            border: "1px solid lightgray",
-            borderRadius: "8px",
-          }}
-        >
-          <UserListToolbar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-            employeeList={employeeList}
-          />
+        {isLoading ? (
+          <Stack justifyContent="center" alignItems="center">
+            <Loader />
+          </Stack>
+        ) : (
+          <Card
+            container
+            sx={{
+              border: '1px solid lightgray',
+              borderRadius: '8px',
+            }}
+          >
+            <UserListToolbar
+              numSelected={selected.length}
+              filterName={filterName}
+              onFilterName={handleFilterByName}
+              employeeList={employeeList}
+            />
 
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={employeeList.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const {
-                        id,
-                        employeeId,
-                        employeeFullName,
-                        employeeStatus,
-                        partnerName,
-                        supportDevelopment,
-                      } = row;
-                      const selectedUser =
-                        selected.indexOf(employeeFullName) !== -1;
+            <Scrollbar>
+              <TableContainer sx={{ minWidth: 800 }}>
+                <Table>
+                  <UserListHead
+                    order={order}
+                    orderBy={orderBy}
+                    headLabel={TABLE_HEAD}
+                    rowCount={employeeList.length}
+                    numSelected={selected.length}
+                    onRequestSort={handleRequestSort}
+                    onSelectAllClick={handleSelectAllClick}
+                  />
+                  <TableBody>
+                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      const { id, employeeId, employeeFullName, employeeStatus, partnerName, supportDevelopment } = row;
+                      const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
                       return (
                         <TableRow
@@ -367,7 +347,7 @@ export default function EmployeeListBP() {
                           role="checkbox"
                           selected={selectedUser}
                           onClick={() => ViewEmployee(row.id)}
-                          sx={{ cursor: "pointer" }}
+                          sx={{ cursor: 'pointer' }}
                         >
                           <TableCell align="left">{employeeId}</TableCell>
 
@@ -379,63 +359,58 @@ export default function EmployeeListBP() {
 
                           <TableCell align="left">{supportDevelopment}</TableCell>
                           <TableCell align="left">
-                            <Label
-                              color={
-                                (employeeStatus === "Active" && "success") ||
-                                "warning"
-                              }
-                            >
+                            <Label color={(employeeStatus === 'Active' && 'success') || 'warning'}>
                               {employeeStatus}
                             </Label>
                           </TableCell>
                         </TableRow>
                       );
                     })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: "center",
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                            Not found
-                          </Typography>
-
-                          <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete
-                            words.
-                          </Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={6} />
+                      </TableRow>
+                    )}
                   </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={employeeList.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
+                  {isNotFound && (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                          <Paper
+                            sx={{
+                              textAlign: 'center',
+                            }}
+                          >
+                            <Typography variant="h6" paragraph>
+                              Not found
+                            </Typography>
+
+                            <Typography variant="body2">
+                              No results found for &nbsp;
+                              <strong>&quot;{filterName}&quot;</strong>.
+                              <br /> Try checking for typos or using complete words.
+                            </Typography>
+                          </Paper>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  )}
+                </Table>
+              </TableContainer>
+            </Scrollbar>
+
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={employeeList.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Card>
+        )}
       </Container>
     </>
   );

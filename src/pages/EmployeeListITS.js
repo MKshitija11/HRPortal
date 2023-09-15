@@ -175,6 +175,8 @@ export default function EmployeeListHR() {
 
   const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
 
+  const activeEmployees  = filteredUsers.filter((employees) => employees.employeeStatus === "Active");
+
   const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
@@ -202,7 +204,7 @@ export default function EmployeeListHR() {
                 New Employee
               </Button>
             </Stack>
-            {filteredUsers.length === 0 ? (
+            {activeEmployees.length === 0 ? (
               <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
                 <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
                 <Typography variant="h4" noWrap color="black">
@@ -220,7 +222,7 @@ export default function EmployeeListHR() {
                   numSelected={selected.length}
                   filterName={filterName}
                   onFilterName={handleFilterByName}
-                  employeeList={employeeList}
+                  employeeList={activeEmployees}
                 />
                 {filteredUsers.length === 0 ? (
                   <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
@@ -244,7 +246,7 @@ export default function EmployeeListHR() {
                             onSelectAllClick={handleSelectAllClick}
                           />
                           <TableBody>
-                            {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                            {activeEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                               const {
                                 id,
                                 employeeId,
@@ -332,7 +334,7 @@ export default function EmployeeListHR() {
                     <TablePagination
                       rowsPerPageOptions={[5, 10, 25]}
                       component="div"
-                      count={employeeList.length}
+                      count={activeEmployees.length}
                       rowsPerPage={rowsPerPage}
                       page={page}
                       onPageChange={handleChangePage}

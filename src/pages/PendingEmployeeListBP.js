@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
@@ -26,7 +26,6 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import Configuration from '../utils/Configuration';
-
 
 // ----------------------------------------------------------------------
 
@@ -69,8 +68,11 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function EmployeeListBP() {
+export default function PendingEmployeeListBP(){
+  
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log('LOCATION', location);
 
   const [page, setPage] = useState(0);
 
@@ -174,11 +176,15 @@ export default function EmployeeListBP() {
   };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
-console.log('emp list====', employeeList)
+
   const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
-  
-  const activeEmployees  = filteredUsers.filter((employees) => employees.employeeStatus === "Active");
-  console.log('FILTER USERS', filteredUsers);
+  const pendingEmployees = filteredUsers.filter(
+    (employees) =>
+      employees.employeeStatus === 'Pending For TL Review' ||
+      employees.employeeStatus === 'Pending For SM Review' ||
+      employees.employeeStatus === 'Pending For IT Spoc Review'
+  );
+  console.log('FILTER USERS', filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -220,10 +226,10 @@ console.log('emp list====', employeeList)
                 numSelected={selected.length}
                 filterName={filterName}
                 onFilterName={handleFilterByName}
-                employeeList={activeEmployees}
+                employeeList={pendingEmployees}
               />
 
-              {activeEmployees.length === 0 ? (
+              {pendingEmployees.length === 0 ? (
                 <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
                   <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
                   <Typography variant="h4" noWrap color="black">
@@ -239,14 +245,14 @@ console.log('emp list====', employeeList)
                           order={order}
                           orderBy={orderBy}
                           headLabel={TABLE_HEAD}
-                          rowCount={activeEmployees.length}
+                          rowCount={employeeList.length}
                           numSelected={selected.length}
                           onRequestSort={handleRequestSort}
                           onSelectAllClick={handleSelectAllClick}
                         />
 
                         <TableBody>
-                          {activeEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                          {pendingEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                             const {
                               id,
                               employeeId,
@@ -329,7 +335,7 @@ console.log('emp list====', employeeList)
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={activeEmployees.length}
+                    count={pendingEmployees.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

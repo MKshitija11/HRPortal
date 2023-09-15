@@ -22,6 +22,12 @@ import NewEmployee from './pages/NewEmployee';
 import Loader from './components/Loader/Loader';
 
 import Reports from './pages/Reports';
+import PendingEmployeeListTL from './pages/PendingEmployeeListTL';
+import PendingEmployeeListSM from './pages/PendingEmployeeListSM';
+import PendingEmployeeListITS from './pages/PendingEmployeeListITS';
+import PendingEmployeeListBP from './pages/PendingEmployeeListBP';
+import RejectedEmployeeListBP from './pages/RejectedEmployeeListBP';
+import ResignedEmployeeListBP from './pages/ResignedEmployeeListBP';
 
 // ----------------------------------------------------------------------
 
@@ -35,14 +41,21 @@ export default function Router() {
         { path: 'Dashboard', element: <DashboardAppPage /> },
         { path: 'Reports', element: <Reports /> },
         { path: 'EmployeesBP', element: <EmployeeListBP /> },
+        { path: 'PendingEmployeesBP', element: <PendingEmployeeListBP /> },
+        { path: 'RejectedEmployeesBP', element: <RejectedEmployeeListBP /> },
+        { path: 'ResignedEmployeesBP', element: <ResignedEmployeeListBP /> },
         { path: 'EmployeesTL', element: <EmployeeListTL /> },
+        { path: 'EmployeesListTL', element: <PendingEmployeeListTL /> },
         { path: 'EmployeesSM', element: <EmployeeListSM /> },
+        { path: 'EmployeesListSM', element: <PendingEmployeeListSM /> },
         { path: 'EmployeesITS', element: <EmployeeListITS /> },
+        { path: 'PendingEmployeesITS', element: <PendingEmployeeListITS /> },
         { path: 'NewEmployee', element: <NewEmployee /> },
         { path: 'ViewEmployeeBP', element: <ViewEmployeeBP /> },
         { path: 'ViewEmployeeTL', element: <ViewEmployeeTL /> },
         { path: 'ViewEmployeeSM', element: <ViewEmployeeSM /> },
         { path: 'ViewEmployeeITS', element: <ViewEmployeeITS /> },
+        
         { path: 'Loader', element: <Loader /> },
       ],
     },
@@ -59,16 +72,40 @@ export default function Router() {
       element: <EmployeeListBP />,
     },
     {
+      path: 'PendingEmployeesBP',
+      element: <PendingEmployeeListBP />,
+    },
+    {
+      path: 'RejectedEmployeesBP',
+      element: <RejectedEmployeeListBP />,
+    },
+    {
+      path: 'ResigedEmployeesBP',
+      element: <ResignedEmployeeListBP />,
+    },
+    {
       path: 'EmployeesTL',
       element: <EmployeeListTL />,
+    },
+    {
+      path: 'EmployeesListTL',
+      element: <PendingEmployeeListTL />,
     },
     {
       path: 'EmployeesSM',
       element: <EmployeeListSM />,
     },
     {
+      path: 'EmployeesListSM',
+      element: <PendingEmployeeListSM />,
+    },
+    {
       path: 'EmployeesITS',
       element: <EmployeeListITS />,
+    },
+    {
+      path: 'PendingEmployeesITS',
+      element: <PendingEmployeeListITS />,
     },
     { path: 'ViewEmployeeBP', element: <ViewEmployeeBP /> },
     { path: 'ViewEmployeeTL', element: <ViewEmployeeTL /> },

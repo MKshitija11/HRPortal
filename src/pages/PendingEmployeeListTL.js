@@ -27,7 +27,6 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import Configuration from '../utils/Configuration';
 
-
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -69,7 +68,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function EmployeeListBP() {
+export default function PendingEmployeeListTL() {
   const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
@@ -94,17 +93,17 @@ export default function EmployeeListBP() {
       console.log('USERDETAILS', USERDETAILS);
       console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
-      const empListVendorReq = {
-        partnerName: USERDETAILS.partnerName,
-        // itSpocId: USERDETAILS.spocEmailId,
-        itSpocId: 'NA',
+      const getEmpListTLReq = {
+        teamLeadId: USERDETAILS.spocEmailId,
       };
-
       setIsLoading(true);
-      Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
-        console.log('empListVendorRes', empListVendorRes);
-        setEmployeeList(empListVendorRes.data);
-        setIsLoading(false);
+      Configuration.getEmpListTeamLead(getEmpListTLReq).then((empListTLRes) => {
+        console.log('empListVendorRes', empListTLRes);
+        setEmployeeList(empListTLRes.data);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+
         console.log('employeeList', employeeList);
       });
     } else {
@@ -117,14 +116,14 @@ export default function EmployeeListBP() {
     navigate('/NewEmployee');
   };
 
-  const ViewEmployee = (rowId) => {
-    console.log('rowId', rowId);
-    navigate('/ViewEmployeeBP', {
-      state: {
-        id: rowId,
-      },
-    });
-  };
+  // const ViewEmployee = (row) => {
+  //   console.log("ROW ...........", row);
+  //   navigate("/ViewEmployeeTL", {
+  //     state: {
+  //       row,
+  //     },
+  //   });
+  // };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -174,43 +173,40 @@ export default function EmployeeListBP() {
   };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
-console.log('emp list====', employeeList)
+
   const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
-  
-  const activeEmployees  = filteredUsers.filter((employees) => employees.employeeStatus === "Active");
-  console.log('FILTER USERS', filteredUsers);
+
+  const pendingEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For TL Review');
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>
       <Helmet>
-        <title> HR Portal | Employees(Partner)</title>
+        <title> HR Portal | Employees(Team Lead)</title>
       </Helmet>
 
       {/* <Container disableGutters> */}
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-          {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="material-symbols:person-add-outline" />}
-            onClick={NewEmployee}
-            color="primary"
-            // color="#0072BC"
-            size="medium"
-          >
-            New Employee
-          </Button>
+      {isLoading ? (
+        <Stack justifyContent="center" alignItems="center">
+          <Loader />
         </Stack>
-        {isLoading ? (
-          <Stack justifyContent="center" alignItems="center">
-            <Loader />
-          </Stack>
-        ) : (
-          <>
+      ) : (
+        <>
+          <Container>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
+              {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
+              <Button
+                variant="contained"
+                startIcon={<Iconify icon="eva:plus-fill" />}
+                onClick={() => NewEmployee()}
+                sx={{ display: 'none' }}
+              >
+                New Employee
+              </Button>
+            </Stack>
+
             <Card
-              container
               sx={{
                 border: '1px solid lightgray',
                 borderRadius: '8px',
@@ -220,10 +216,9 @@ console.log('emp list====', employeeList)
                 numSelected={selected.length}
                 filterName={filterName}
                 onFilterName={handleFilterByName}
-                employeeList={activeEmployees}
+                employeeList={pendingEmployees}
               />
-
-              {activeEmployees.length === 0 ? (
+              {pendingEmployees.length === 0 ? (
                 <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
                   <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
                   <Typography variant="h4" noWrap color="black">
@@ -239,14 +234,13 @@ console.log('emp list====', employeeList)
                           order={order}
                           orderBy={orderBy}
                           headLabel={TABLE_HEAD}
-                          rowCount={activeEmployees.length}
+                          rowCount={pendingEmployees.length}
                           numSelected={selected.length}
                           onRequestSort={handleRequestSort}
                           onSelectAllClick={handleSelectAllClick}
                         />
-
                         <TableBody>
-                          {activeEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                          {pendingEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                             const {
                               id,
                               employeeId,
@@ -264,25 +258,34 @@ console.log('emp list====', employeeList)
                                 tabIndex={-1}
                                 role="checkbox"
                                 selected={selectedUser}
-                                onClick={() => ViewEmployee(row.id)}
+                                onClick={() => {
+                                  console.log('EMPLOYEE DETAILS.....', row);
+                                  navigate('/ViewEmployeeTL', { state: { row } });
+                                }}
                                 sx={{ cursor: 'pointer' }}
                               >
                                 <TableCell align="left">{employeeId}</TableCell>
 
-                                <TableCell component="th" scope="row">
+                                <TableCell component="th" scope="row" padding="none">
+                                  {/* <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            > */}
+                                  {/* <Avatar alt={empoyeeFullName} src={avatarUrl} /> */}
                                   <Typography noWrap>{employeeFullName}</Typography>
+                                  {/* </Stack> */}
                                 </TableCell>
 
                                 <TableCell align="left">{partnerName}</TableCell>
 
                                 <TableCell align="left">{supportDevelopment}</TableCell>
+
                                 <TableCell align="left">
                                   <Label
                                     color={
+                                      (employeeStatus === 'Pending For TL Review' && 'warning') ||
                                       (employeeStatus === 'Active' && 'success') ||
-                                      (employeeStatus === 'Rejected by TL' && 'error') ||
-                                      (employeeStatus === 'Rejected by SM' && 'error') ||
-                                      (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
                                       'warning'
                                     }
                                   >
@@ -329,7 +332,7 @@ console.log('emp list====', employeeList)
                   <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={activeEmployees.length}
+                    count={pendingEmployees.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -338,9 +341,9 @@ console.log('emp list====', employeeList)
                 </>
               )}
             </Card>
-          </>
-        )}
-      </Container>
+          </Container>
+        </>
+      )}
     </>
   );
 }

@@ -68,7 +68,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function EmployeeListSM() {
+export default function PendingEmployeeListSM() {
   const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
@@ -176,14 +176,13 @@ export default function EmployeeListSM() {
 
   const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
 
-
-
-  const activeEmployees  = filteredUsers.filter((employees) => employees.employeeStatus === "Active");
+  const pendingEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For SM Review');
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>
+    {console.log("LENGTH===", employeeList.length)}
       <Helmet>
         <title> Employees | HR Portal </title>
       </Helmet>
@@ -218,9 +217,9 @@ export default function EmployeeListSM() {
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
-                    employeeList={activeEmployees}
+                    employeeList={pendingEmployees}
                   />
-                  {activeEmployees.length === 0 ? (
+                  {pendingEmployees.length === 0 ? (
                     <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
                       <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
                       <Typography variant="h4" noWrap color="black">
@@ -242,7 +241,7 @@ export default function EmployeeListSM() {
                               onSelectAllClick={handleSelectAllClick}
                             />
                             <TableBody>
-                              {activeEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                              {pendingEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                 const {
                                   id,
                                   employeeId,
@@ -341,7 +340,7 @@ export default function EmployeeListSM() {
                       <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={activeEmployees.length}
+                        count={pendingEmployees.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}

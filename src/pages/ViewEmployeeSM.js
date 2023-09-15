@@ -62,9 +62,59 @@ export default function ViewEmployee() {
     projectsList: [],
     invoiceList: [],
   });
-  const [opneApprovalModal, setApprovalModal] = useState(false);
+  const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
-  console.log('SUB', state.verticalSub);
+  const [openUpdateModal, setOpenUpdateModal] = useState(false);
+
+  const evaluationPeriodList = [
+    {
+      value: '15 Days',
+      label: '15 Days',
+    },
+    {
+      value: '30 Days',
+      label: '30 Days',
+    },
+    {
+      value: '45 Days',
+      label: '45 Days',
+    },
+    {
+      value: '60 Days',
+      label: '60 Days',
+    },
+  ];
+  const newReplacementList = [
+    {
+      value: 'New',
+      label: 'New',
+    },
+    {
+      value: 'Replacement',
+      label: 'Replacement',
+    },
+  ];
+
+  const supportDevelopmentList = [
+    {
+      value: 'Support',
+      label: 'Support',
+    },
+    {
+      value: 'NRCR',
+      label: 'NRCR',
+    },
+  ];
+  const maximusOpusList = [
+    {
+      value: 'Maximus',
+      label: 'Maximus',
+    },
+    {
+      value: 'Opus',
+      label: 'Opus',
+    },
+  ];
 
   const handleChangeWaSwitch = (evt) => {
     console.log();
@@ -244,6 +294,15 @@ export default function ViewEmployee() {
     }, 1000);
   };
 
+  const handleOpenUpdateModal = () => {
+    setOpenUpdateModal(true);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setOpenUpdateModal(false);
+    updateEmployeeData();
+  };
+
   const failFocus = (autoFocusObj) => {
     autoFocusObj.focus();
     return false;
@@ -347,7 +406,7 @@ export default function ViewEmployee() {
     if (param && typeof param === 'boolean') {
       console.log('inside if');
       document.getElementById('employeeStatus').value = 'Rejected by SM';
-      setFieldValue('employeeStatus', 'Rejected by SM');
+      // setFieldValue('employeeStatus', 'Rejected by SM');
       setState({
         ...state,
         employeeStatus: 'Rejected by SM',
@@ -355,7 +414,7 @@ export default function ViewEmployee() {
     } else {
       console.log('inside else');
       document.getElementById('employeeStatus').value = 'Pending For IT Spoc Review';
-      setFieldValue('employeeStatus', 'Pending For IT Spoc Review');
+      // setFieldValue('employeeStatus', 'Pending For IT Spoc Review');
       setState({
         ...state,
         employeeStatus: 'Pending For IT Spoc Review',
@@ -363,20 +422,27 @@ export default function ViewEmployee() {
     }
     // event.preventDefault();
     // document.getElementById('employeeStatus').value = 'Pending For IT Spoc Review';
-    // if (validForm()) {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
-    console.log('employeeFormData::', employeeFormData);
-    console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
+    if (param === false) {
+      if (validForm()) {
+        console.log('employeeFormData::', employeeFormData);
+        console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
 
-    Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
-      console.log('employeeFormRes::', employeeFormRes.data);
-      navigate('/employeesSM');
-    });
-    // }
+        Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
+          console.log('employeeFormRes::', employeeFormRes.data);
+          navigate('/employeesSM');
+        });
+      }
+    } else {
+      Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
+        console.log('employeeFormRes::', employeeFormRes.data);
+        navigate('/EmployeesSM');
+      });
+    }
   };
 
   const [partnerName, setPartnerName] = useState();
@@ -437,171 +503,105 @@ export default function ViewEmployee() {
       const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
       setEmpData(EMP_DETAILS);
 
-      state.newReplacement = EMP_DETAILS.newReplacement;
-      state.id = EMP_DETAILS.id;
-      state.employeeId = EMP_DETAILS.employeeId;
-      state.employeeStatus = EMP_DETAILS.employeeStatus;
-      state.supportDevelopment = EMP_DETAILS.supportDevelopment;
-      state.evaluationPeriod = EMP_DETAILS.evaluationPeriod;
-      state.projectType = EMP_DETAILS.projectType;
-      state.maximusOpus = EMP_DETAILS.maximusOpus;
-      state.billingSlab = EMP_DETAILS.billingSlab;
-      state.invoiceType = EMP_DETAILS.invoiceType;
-      state.reportingTeamLead = EMP_DETAILS.reportingTeamLead;
-      state.reportingManager = EMP_DETAILS.reportingManager;
-      state.functionDesc = EMP_DETAILS.functionDesc;
-      state.employeeFirstName = EMP_DETAILS.employeeFirstName;
-      state.employeeLastName = EMP_DETAILS.employeeLastName;
-      state.officialEmail = EMP_DETAILS.officialEmail;
-      state.personalEmail = EMP_DETAILS.personalEmail;
-      state.mobileNumber = EMP_DETAILS.mobileNumber;
-      state.whatsappNumber = EMP_DETAILS.whatsappNumber;
-      state.joiningDate = EMP_DETAILS.joiningDate;
-      state.reportingItSpoc = EMP_DETAILS.reportingItSpoc;
-
-      state.verticalMain = EMP_DETAILS.verticalMain;
-      state.verticalSub = EMP_DETAILS.verticalSub;
-      state.departmentDesc = EMP_DETAILS.departmentDesc;
-      state.functionDesc = EMP_DETAILS.functionDesc;
+      setState({
+        ...state,
+        newReplacement: EMP_DETAILS.newReplacement,
+        id: EMP_DETAILS.id,
+        employeeId: EMP_DETAILS.employeeId,
+        employeeStatus: EMP_DETAILS.employeeStatus,
+        supportDevelopment: EMP_DETAILS.supportDevelopment,
+        evaluationPeriod: EMP_DETAILS.evaluationPeriod,
+        projectType: EMP_DETAILS.projectType,
+        maximusOpus: EMP_DETAILS.maximusOpus,
+        billingSlab: EMP_DETAILS.billingSlab,
+        invoiceType: EMP_DETAILS.invoiceType,
+        reportingTeamLead: EMP_DETAILS.reportingTeamLead,
+        reportingManager: EMP_DETAILS.reportingManager,
+        functionDesc: EMP_DETAILS.functionDesc,
+        employeeFirstName: EMP_DETAILS.employeeFirstName,
+        employeeLastName: EMP_DETAILS.employeeLastName,
+        officialEmail: EMP_DETAILS.officialEmail,
+        personalEmail: EMP_DETAILS.personalEmail,
+        mobileNumber: EMP_DETAILS.mobileNumber,
+        whatsappNumber: EMP_DETAILS.whatsappNumber,
+        joiningDate: EMP_DETAILS.joiningDate,
+        replacementEcode: EMP_DETAILS.replacementEcode,
+        verticalMain: EMP_DETAILS.verticalMain,
+        verticalSub: EMP_DETAILS.verticalSub,
+        departmentDesc: EMP_DETAILS.departmentDesc,
+      });
+      setPartnerName(EMP_DETAILS.partnerName);
 
       if (state.employeeStatus === 'Pending For IT Spoc Review') {
         setButtonDisable(true);
       }
-
-      const getSubVerticalsReq = {
-        key: 'SUB_VERTICAL',
-        value: state.verticalMain,
-      };
-
-      Configuration.getSubVerticals(getSubVerticalsReq).then((getSubVerticalsRes) => {
-        state.subVerticalList = getSubVerticalsRes.data;
-        console.log('subVerticalList', state.subVerticalList);
-        setVerticalSubList(state.subVerticalList);
-        console.log('verticalSubList', verticalSubList);
-      });
-
-      const getDepartmentReq = {
-        key: 'DEPARTMENTS',
-        value: state.verticalSub,
-      };
-
-      Configuration.getDepartments(getDepartmentReq).then((getDepartmentRes) => {
-        state.departmentList = getDepartmentRes.data;
-        console.log('departmentList', state.departmentList);
-        setDepartmentList(state.departmentList);
-        console.log('departmentList', departmentList);
-      });
-
-      const getFunctionReq = {
-        key: 'FUNCTIONS',
-        value: state.departmentDesc,
-      };
-
-      Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
-        state.functionsList = getFunctionsRes.data;
-        console.log('functionList', state.functionsList);
-        setFunctionsList(state.functionsList);
-        console.log('functionsList', functionsList);
-      });
-
-      const getProjectsReq = {
-        key: 'PROJECTS',
-        value: state.functionDesc,
-      };
-
-      Configuration.getProjects(getProjectsReq).then((getProjectsRes) => {
-        state.projectsList = getProjectsRes.data;
-        console.log('functionList', state.projectsList);
-        setProjectsList(state.projectsList);
-        console.log('projectsList', projectsList);
-      });
-
-      const getInvoiceReq = {
-        key: 'INVOICE_TYPE',
-        value: state.projectType,
-      };
-
-      Configuration.getInvoice(getInvoiceReq).then((getInvoiceRes) => {
-        state.invoiceList = getInvoiceRes.data;
-        console.log('functionList', state.invoiceList);
-        setInvoiceList(state.invoiceList);
-        console.log('invoiceList', invoiceList);
-      });
     });
-    // eslint-disable-next-line
   }, []);
 
-  console.log('LOCATION =====>', location.state.row);
-
   const initialValues = {
-    employeeFirstName: location.state.row.employeeFirstName,
-    employeeLastName: location.state.row.employeeLastName,
-    employeeFullName: location.state.row.employeeFullName,
-    mobileNumber: location.state.row.mobileNumber,
-    whatsappNumber: location.state.row.whatsappNumber,
-    personalEmail: location.state.row.personalEmail,
-    officialEmail: location.state.row.officialEmail,
-    partnerName: location.state.row.partnerName,
-    employeeId: location.state.row.employeeId,
-    joiningDate: location.state.row.joiningDate,
-    newReplacement: location.state.row.newReplacement,
-    replacementEcode: location.state.row.replacementEcode,
-    supportDevelopment: location.state.row.supportDevelopment,
-    evaluationPeriod: location.state.row.evaluationPeriod,
-    employeeStatus: location.state.row.employeeStatus,
-    reportingTeamLead: location.state.row.reportingTeamLead,
-    reportingManager: location.state.row.reportingManager,
-    verticalMain: location.state.row.verticalMain,
-    // verticalSub: location.state.row.verticalSub,
-    verticalSub: state.verticalSub,
-    departmentDesc: location.state.row.departmentDesc,
-    functionDesc: location.state.row.functionDesc,
-    // remarks: state.remarks,
-    billingSlab: location.state.row.billingSlab,
-    projectType: location.state.row.projectType,
-    invoiceType: location.state.row.invoiceType,
-    maximusOpus: location.state.row.maximusOpus,
+    employeeFirstName: state.employeeFirstName,
+    employeeLastName: state.employeeLastName || '',
+    employeeFullName: state.employeeFullName || '',
+    mobileNumber: state.mobileNumber || '',
+    whatsappNumber: state.whatsappNumber || '',
+    personalEmail: state.personalEmail || '',
+    officialEmail: state.officialEmail || '',
+    partnerName: partnerName || '',
+    employeeId: state.employeeId || '',
+    joiningDate: state.joiningDate || '',
+    newReplacement: state.newReplacement || '',
+    replacementEcode: state.replacementEcode || '',
+    supportDevelopment: state.supportDevelopment || '',
+    evaluationPeriod: state.evaluationPeriod || '',
+    employeeStatus: state.employeeStatus || '',
+    reportingTeamLead: state.reportingTeamLead || '',
+    reportingManager: state.reportingManager || '',
+    verticalMain: state.verticalMain || '',
+    verticalSub: state.verticalSub || '',
+    departmentDesc: state.departmentDesc || '',
+    functionDesc: state.functionDesc || '',
+    projectType: state.projectType || '',
+    invoiceType: state.invoiceType || '',
+    maximusOpus: state.maximusOpus || '',
+    billingSlab: state.billingSlab || '',
   };
 
   const validationSchema = Yup.object({
-    // employeeFirstName: Yup.string()
-    //   .required('First name is required')
-    //   .matches(/^[a-zA-Z]+$/, '* This field cannot contain white space and special character'),
-    // employeeLastName: Yup.string()
-    //   .required('Last name is required')
-    //   .matches(/^[a-zA-Z]+$/, '* This field cannot contain white space and special character'),
-    // mobileNumber: Yup.string()
-    //   .matches(/^[6-9]\d{9}$/, {
-    //     message: 'Please enter valid number.',
-    //     excludeEmptyString: false,
-    //   })
-    //   .required('Contact Number is required'),
+    employeeFirstName: Yup.string()
+      .required('First name is required')
+      .matches(/^[a-zA-Z]+$/, '* This field cannot contain white space and special character'),
+    employeeLastName: Yup.string()
+      .required('Last name is required')
+      .matches(/^[a-zA-Z]+$/, '* This field cannot contain white space and special character'),
+    mobileNumber: Yup.string()
+      .matches(/^[6-9]\d{9}$/, {
+        message: 'Please enter valid number.',
+        excludeEmptyString: false,
+      })
+      .required('Contact Number is required'),
+    whatsappNumber: Yup.string()
+      .matches(/^[6-9]\d{9}$/, {
+        message: 'Please enter valid number.',
+        excludeEmptyString: false,
+      })
+      .required('Whatsapp Number is required'),
+    personalEmail: Yup.string().email('Invalid personal email').required('Personal email is required'),
+    officialEmail: Yup.string()
+      .email('Invalid official email')
+      .required('Official email is required')
+      .notOneOf([Yup.ref('personalEmail'), null], 'Official email must be different from personal email'),
+    employeeId: Yup.string().required('Employee code is required'),
+    joiningDate: Yup.string().required('Required'),
 
-    // whatsappNumber: Yup.string()
-    //   .matches(/^[6-9]\d{9}$/, {
-    //     message: 'Please enter valid number.',
-    //     excludeEmptyString: false,
-    //   })
-    //   .required('Whatsapp Number is required'),
-
-    // personalEmail: Yup.string().email('Invalid personal email').required('Personal email is required'),
-    // officialEmail: Yup.string()
-    //   .email('Invalid official email')
-    //   .required('Official email is required')
-    //   .notOneOf([Yup.ref('personalEmail'), null], 'Official email must be different from personal email'),
-    // employeeId: Yup.string().required('Employee code is required'),
-    // joiningDate: Yup.string().required('Required'),
-
-    // newReplacement: Yup.string().oneOf(['New', 'Replacement']).required('Select an option'),
-    // // replacementEcode: Yup.string().required('Required'),
-    // supportDevelopment: Yup.string().oneOf(['Support', 'Development'], 'Invalid option').required('Select an option'),
+    newReplacement: Yup.string().oneOf(['New', 'Replacement']).required('Select an option'),
+    // replacementEcode: Yup.string().required('Required'),
+    supportDevelopment: Yup.string().oneOf(['Support', 'Development'], 'Invalid option').required('Select an option'),
     evaluationPeriod: Yup.string()
       .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
       .required('Select an option'),
-    // reportingTeamLead: Yup.string().required('Please Select'),
-    // reportingManager: Yup.string().required('Please Select'),
-    // remarks: Yup.string().required('Remarks Required'),
-    billingSlab: Yup.string().required('Billing Slab is required'),
+    reportingTeamLead: Yup.string().required('Please Select'),
+    reportingManager: Yup.string().required('Please Select'),
+
     verticalMain: Yup.string().required('Please Select'),
     verticalSub: Yup.string().required('Please Select'),
     departmentDesc: Yup.string().required('Please Select'),
@@ -646,16 +646,16 @@ export default function ViewEmployee() {
                 errors,
                 touched,
                 handleBlur,
-                setFieldTouched,
+
                 isValid,
-                dirty,
+
                 setFieldValue,
               } = formik;
               return (
                 <>
                   <Stack alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
                     <Modal
-                      open={opneApprovalModal || openRejectionModal}
+                      open={openApprovalModal || openRejectionModal || openUpdateModal}
                       aria-labelledby="modal-modal-title"
                       aria-describedby="modal-modal-description"
                     >
@@ -674,15 +674,19 @@ export default function ViewEmployee() {
                         }}
                         component="form"
                       >
-                        {opneApprovalModal ? (
+                        {openApprovalModal ? (
                           <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
                             Are you sure you want to Approve the Employee?
                           </Typography>
-                        ) : (
+                        ) : openRejectionModal ? (
                           <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
                             Are you sure you want to Reject the Employee?
                           </Typography>
-                        )}
+                        ) : openUpdateModal ? (
+                          <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
+                            Are you sure you want to Update employee details?
+                          </Typography>
+                        ) : null}
 
                         <Grid
                           container
@@ -691,66 +695,55 @@ export default function ViewEmployee() {
                           justifyContent={'center'}
                           style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
                         >
-                          {opneApprovalModal ? (
-                            <>
-                              <Stack justifyContent="center">
-                                <Button
-                                  size="medium"
-                                  variant="contained"
-                                  type="button"
-                                  color="primary"
-                                  onClick={() => handleApprovalModal(false, setFieldValue)}
-                                  sx={{ mt: 2 }}
-                                >
-                                  Yes
-                                </Button>
-                              </Stack>
-                              <Stack direction="row" justifyContent="center">
-                                <Button
-                                  size="medium"
-                                  variant="contained"
-                                  type="button"
-                                  color="primary"
-                                  onClick={() => setApprovalModal(false)}
-                                  sx={{ mt: 2 }}
-                                >
-                                  No
-                                </Button>
-                              </Stack>
-                            </>
-                          ) : (
-                            <>
-                              <Stack justifyContent="center">
-                                <Button
-                                  size="medium"
-                                  variant="contained"
-                                  type="button"
-                                  color="primary"
-                                  onClick={() => handleRejectionModal(true, setFieldValue)}
-                                  sx={{ mt: 2 }}
-                                >
-                                  Yes
-                                </Button>
-                              </Stack>
-                              <Stack direction="row" justifyContent="center">
-                                <Button
-                                  size="medium"
-                                  variant="contained"
-                                  type="button"
-                                  color="primary"
-                                  onClick={() => setRejectionModal(false)}
-                                  sx={{ mt: 2 }}
-                                >
-                                  No
-                                </Button>
-                              </Stack>
-                            </>
-                          )}
+                          <>
+                            <Stack justifyContent="center">
+                              <Button
+                                size="medium"
+                                variant="contained"
+                                type="button"
+                                color="primary"
+                                // onClick={() => handleApprovalModal(false, setFieldValue)}
+                                onClick={() =>
+                                  openApprovalModal
+                                    ? handleApprovalModal(false, setFieldValue)
+                                    : openRejectionModal
+                                    ? handleRejectionModal(true, setFieldValue)
+                                    : openUpdateModal
+                                    ? handleCloseUpdateModal()
+                                    : null
+                                }
+                                sx={{ mt: 2 }}
+                              >
+                                Yes
+                              </Button>
+                            </Stack>
+                            <Stack direction="row" justifyContent="center">
+                              <Button
+                                size="medium"
+                                variant="contained"
+                                type="button"
+                                color="primary"
+                                // onClick={() => setApprovalModal(false)}
+                                onClick={() =>
+                                  openApprovalModal
+                                    ? setApprovalModal(false)
+                                    : openRejectionModal
+                                    ? setRejectionModal(false)
+                                    : openUpdateModal
+                                    ? setOpenUpdateModal(false)
+                                    : null
+                                }
+                                sx={{ mt: 2 }}
+                              >
+                                No
+                              </Button>
+                            </Stack>
+                          </>
                         </Grid>
                       </Box>
                     </Modal>
                   </Stack>
-                  <form spacing={2} method="POST" id="employeeForm" name="employeeForm">
+                  <form onSubmit={handleSubmit} spacing={2} method="POST" id="employeeForm" name="employeeForm">
                     <Typography variant="subtitle1" paddingBottom={'15px'}>
                       Personal Information
                     </Typography>
@@ -766,9 +759,17 @@ export default function ViewEmployee() {
                           id="employeeFirstName"
                           label="First Name"
                           value={values.employeeFirstName}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.employeeFirstName ? errors.employeeFirstName : ''}
+                          helperText={touched.employeeFirstName ? formik.errors.employeeFirstName : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
 
@@ -783,9 +784,17 @@ export default function ViewEmployee() {
                           id="employeeLastName"
                           label="Last Name"
                           value={values.employeeLastName}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.employeeLastName ? errors.employeeLastName : ''}
+                          helperText={touched.employeeLastName ? formik.errors.employeeLastName : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={4}>
@@ -798,10 +807,18 @@ export default function ViewEmployee() {
                           fullWidth
                           id="employeeFullName"
                           label="Full Name"
-                          value={values.employeeFullName}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          value={`${values.employeeFirstName} ${values.employeeLastName}`}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.employeeFullName ? errors.employeeFullName : ''}
+                          helperText={touched.employeeFullName ? formik.errors.employeeFullName : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
 
@@ -817,9 +834,18 @@ export default function ViewEmployee() {
                           autoComplete="off"
                           type="number"
                           value={values.mobileNumber}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          // error={Boolean(formik.errors.mobileNumber)}
+                          error={touched.mobileNumber ? errors.mobileNumber : ''}
+                          helperText={touched.mobileNumber ? formik.errors.mobileNumber : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={4} textAlign="center">
@@ -827,10 +853,29 @@ export default function ViewEmployee() {
                         <Typography variant="body1" display={'inline'}>
                           No
                         </Typography>
+
                         {state.mobileNumber === state.whatsappNumber ? (
-                          <Switch color="success" onChange={handleChangeWaSwitch} defaultChecked disabled />
+                          <Switch
+                            color="success"
+                            onChange={handleChangeWaSwitch}
+                            defaultChecked={state.whatsappNumber !== '' ? false : null}
+                            disabled={
+                              state.employeeStatus === 'Pending For TL Review' ||
+                              state.employeeStatus === 'Pending For SM Review' ||
+                              state.employeeStatus === 'Pending For IT Spoc Review'
+                            }
+                          />
                         ) : (
-                          <Switch color="success" onChange={handleChangeWaSwitch} disabled />
+                          <Switch
+                            color="success"
+                            onChange={handleChangeWaSwitch}
+                            defaultChecked={false}
+                            disabled={
+                              state.employeeStatus === 'Pending For TL Review' ||
+                              state.employeeStatus === 'Pending For SM Review' ||
+                              state.employeeStatus === 'Pending For IT Spoc Review'
+                            }
+                          />
                         )}
                         <Typography variant="body1" display={'inline'}>
                           Yes
@@ -838,19 +883,28 @@ export default function ViewEmployee() {
                       </Grid>
                       <Grid item xs={4}>
                         <TextField
-                          InputLabelProps={{ shrink: true }}
                           variant="outlined"
+                          autoComplete="off"
+                          name="whatsappNumber"
                           required
                           fullWidth
-                          name="whatsappNumber"
-                          label="WhatApp Number"
                           id="whatsappNumber"
-                          autoComplete="off"
-                          type="number"
+                          label="Whatsapp Number"
                           value={values.whatsappNumber}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          onBlur={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          error={touched.whatsappNumber ? errors.whatsappNumber : ''}
+                          helperText={touched.whatsappNumber ? formik.errors.whatsappNumber : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
 
@@ -866,9 +920,17 @@ export default function ViewEmployee() {
                           autoComplete="off"
                           type="email"
                           value={values.personalEmail}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.personalEmail ? errors.personalEmail : ''}
+                          helperText={touched.personalEmail ? formik.errors.personalEmail : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -883,9 +945,17 @@ export default function ViewEmployee() {
                           autoComplete="off"
                           type="email"
                           value={values.officialEmail}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.officialEmail ? errors.officialEmail : ''}
+                          helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
                     </Grid>
@@ -905,10 +975,19 @@ export default function ViewEmployee() {
                           fullWidth
                           id="partnerName"
                           label="Partner Name"
-                          value={values.partnerName}
-                          onBlur={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          value={partnerName}
+                          // onBlur={handleChange}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.partnerName ? errors.partnerName : ''}
+                          helperText={touched.partnerName ? formik.errors.partnerName : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
 
@@ -924,9 +1003,17 @@ export default function ViewEmployee() {
                           id="employeeId"
                           label="Employee Code"
                           value={values.employeeId}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.employeeId ? errors.employeeId : ''}
+                          helperText={touched.employeeId ? formik.errors.employeeId : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={4}>
@@ -941,50 +1028,53 @@ export default function ViewEmployee() {
                           label="Date of Joining"
                           type="date"
                           value={values.joiningDate}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.joiningDate ? errors.joiningDate : ''}
+                          helperText={touched.joiningDate ? formik.errors.joiningDate : ''}
+                          inputProps={{
+                            min: new Date().toISOString().split('T')[0],
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
 
                       <Grid item xs={12} sm={4}>
-                        {/* <FormControl fullWidth>
-                        <InputLabel id="demo-select-small">New / Replacement</InputLabel>
-
-                        <Select
-                          InputLabelProps={{ shrink: true }}
+                        <TextField
                           labelId="demo-select-small"
                           id="newReplacement"
                           name="newReplacement"
+                          select
                           label="New / Replacement"
                           fullWidth
-                          value={values.newReplacement}
-                          onChange={handleChangeDropDown}
-                          inputProps={{ readOnly: true }}
-                        >
-                          <MenuItem value="New">New</MenuItem>
-                          <MenuItem value="Replacement">Replacement</MenuItem>
-                        </Select>
-                      </FormControl> */}
-                        <TextField
-                          InputLabelProps={{ shrink: true }}
-                          autoComplete="off"
-                          name="newReplacement"
-                          variant="outlined"
                           required
-                          fullWidth
-                          id="newReplacement"
-                          label="New / Replacement"
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeDropDown(evt);
+                          }}
                           value={values.newReplacement}
-                          onChange={handleChangeDropDown}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
-                        />
+                          onBlur={handleBlur}
+                          error={touched.newReplacement ? errors.newReplacement : ''}
+                          helperText={touched.newReplacement ? formik.errors.newReplacement : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
+                        >
+                          {newReplacementList.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
 
                       <Grid item xs={12} sm={4}>
                         <TextField
-                          InputLabelProps={{ shrink: true }}
                           autoComplete="off"
                           name="replacementEcode"
                           variant="outlined"
@@ -992,46 +1082,52 @@ export default function ViewEmployee() {
                           fullWidth
                           id="replacementEcode"
                           label="Replacement Employee Code"
+                          // defaultValue={state.replacementEcode}
                           value={values.replacementEcode}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
+                          onChange={(evt) => {
+                            handleChangeEvent(evt);
+                            handleChange(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.replacementEcode ? errors.replacementEcode : ''}
+                          helperText={touched.replacementEcode ? formik.errors.replacementEcode : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
                         />
                       </Grid>
 
                       <Grid item xs={12} sm={4}>
-                        {/* <FormControl fullWidth>
-                        <InputLabel id="demo-select-small">Support / Development</InputLabel>
-
-                        <Select
-                          InputLabelProps={{ shrink: true }}
-                          labelId="demo-select-small"
-                          id="supportDevelopment"
-                          name="supportDevelopment"
-                          label="Support / Development"
-                          fullWidth
-                          onChange={handleChange}
-                          value={values.supportDevelopment}
-                          inputProps={{ readOnly: true }}
-                        >
-                          <MenuItem value="Support">Support</MenuItem>
-                          <MenuItem value="Development">Development</MenuItem>
-                        </Select>
-                      </FormControl> */}
                         <TextField
                           InputLabelProps={{ shrink: true }}
                           autoComplete="off"
                           name="supportDevelopment"
                           variant="outlined"
+                          select
                           required
                           fullWidth
                           id="supportDevelopment"
                           label="Support / Development"
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
                           value={values.supportDevelopment}
-                          onChange={handleChange}
-                          inputProps={{ readOnly: true, style: { color: 'grey' } }}
-                          focused={false}
-                        />
+                          onBlur={handleBlur}
+                          error={touched.supportDevelopment ? errors.supportDevelopment : ''}
+                          helperText={touched.supportDevelopment ? formik.errors.supportDevelopment : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
+                        >
+                          {supportDevelopmentList.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
 
                       <Grid item xs={12} sm={4}>
@@ -1061,39 +1157,52 @@ export default function ViewEmployee() {
                             label="Employee Status"
                             value={values.employeeStatus}
                             onChange={handleChange}
-                            inputProps={{ readOnly: true, style: { color: 'grey' } }}
+                            inputProps={{
+                              readOnly:
+                                state.employeeStatus === 'Pending For SM Review' || state.employeeStatus === 'Active',
+                              style: {
+                                color:
+                                  state.employeeStatus === 'Pending For SM Review' || state.employeeStatus === 'Active'
+                                    ? 'grey'
+                                    : 'black',
+                              },
+                            }}
                             focused={false}
+                            onBlur={handleChange}
+                            error={Boolean(errors.employeeStatus)}
+                            helperText={errors.employeeStatus}
                           />
                         </FormControl>
                       </Grid>
 
                       <Grid item xs={12} sm={4}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Evaluation Period</InputLabel>
-
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="evaluationPeriod"
-                            name="evaluationPeriod"
-                            label="Evaluation Period"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeEvent(evt);
-                            }}
-                            onBlur={handleBlur}
-                            error={formik.touched.evaluationPeriod && Boolean(formik.errors.evaluationPeriod)}
-                            helperText={formik.touched.evaluationPeriod && formik.errors.evaluationPeriod}
-                            value={values.evaluationPeriod}
-                            autoComplete="off"
-                          >
-                            <MenuItem value="15 Days">15 Days</MenuItem>
-                            <MenuItem value="30 Days">30 Days</MenuItem>
-                            <MenuItem value="45 Days">45 Days</MenuItem>
-                            <MenuItem value="60 Days">60 Days</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="evaluationPeriod"
+                          name="evaluationPeriod"
+                          select
+                          label="Evaluation Period"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          value={values.evaluationPeriod}
+                          onBlur={handleBlur}
+                          error={touched.evaluationPeriod ? errors.evaluationPeriod : ''}
+                          helperText={touched.evaluationPeriod ? formik.errors.evaluationPeriod : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
+                        >
+                          {evaluationPeriodList.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
                     </Grid>
                     <br />
@@ -1104,90 +1213,66 @@ export default function ViewEmployee() {
 
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Reporting Authority (TL)</InputLabel>
-
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="reportingTeamLead"
-                            name="reportingTeamLead"
-                            label="Reporting Authority  (TL)"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeTeamlead(evt);
-                            }}
-                            value={values.reportingTeamLead || ''}
-                            autoComplete="off"
-                          >
-                            {reportingList.map((RAs) => (
-                              <MenuItem key={RAs.teamLeadEmail} value={RAs.teamLeadEmail}>
-                                {RAs.teamLeadName}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="reportingTeamLead"
+                          name="reportingTeamLead"
+                          select
+                          label="Reporting Authority (TL)"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeTeamlead(evt);
+                          }}
+                          value={values.reportingTeamLead}
+                          onBlur={handleBlur}
+                          error={touched.reportingTeamLead ? errors.reportingTeamLead : ''}
+                          helperText={touched.reportingTeamLead ? formik.errors.reportingTeamLead : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
+                        >
+                          {reportingList.map((RAs) => (
+                            <MenuItem key={RAs.teamLeadEmail} value={RAs.teamLeadEmail}>
+                              {RAs.teamLeadName}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
 
                       <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Reporting Authority (SM)</InputLabel>
-
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="reportingManager"
-                            name="reportingManager"
-                            label="Reporting Authority (SM)"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeEvent(evt);
-                            }}
-                            autoComplete="off"
-                            value={values.reportingManager}
-                            onBlur={handleBlur}
-                            // error={formik.touched.reportingManager && Boolean(formik.errors.reportingManager)}
-                            // helperText={formik.touched.reportingManager && formik.errors.reportingManager}
-                          >
-                            {reportingList.map((RAs) =>
-                              RAs.teamLeadEmail === state.reportingTeamLead ? (
-                                <MenuItem key={RAs.managerEmail} value={RAs.managerEmail}>
-                                  {RAs.managerName}
-                                </MenuItem>
-                              ) : null
-                            )}
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="reportingManager"
+                          name="reportingManager"
+                          select
+                          label="Reporting Authority (SM)"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          value={values.reportingManager}
+                          onBlur={handleBlur}
+                          error={touched.reportingManager ? errors.reportingManager : ''}
+                          helperText={touched.reportingManager ? formik.errors.reportingManager : ''}
+                          inputProps={{
+                            readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                          }}
+                        >
+                          {reportingList.map((RAs) =>
+                            RAs.teamLeadEmail === state.reportingTeamLead ? (
+                              <MenuItem key={RAs.managerEmail} value={RAs.managerEmail}>
+                                {RAs.managerName}
+                              </MenuItem>
+                            ) : null
+                          )}
+                        </TextField>
                       </Grid>
-                      {/* <Grid item xs={12} sm={6}>
-                <TextField
-                  InputLabelProps={{ shrink: true }}
-                  autoComplete="off"
-                  name="reportingAvpVpSvp"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="reportingAvpVpSvp"
-                  label="AVP / VP / SVP"
-                  onChange={handleChange}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  InputLabelProps={{ shrink: true }}
-                  autoComplete="off"
-                  name="verticalHeadHod"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="verticalHeadHod"
-                  label="Vertical Head / HOD"
-                  onChange={handleChange}
-                />
-              </Grid> */}
                     </Grid>
                     <br />
                     <Typography variant="subtitle1" paddingBottom={'15px'}>
@@ -1196,206 +1281,221 @@ export default function ViewEmployee() {
 
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Main Vertical</InputLabel>
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="verticalMain"
-                            name="verticalMain"
-                            label="Main Vertical"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeMv(evt);
-                            }}
-                            value={values.verticalMain}
-                            onBlur={handleBlur}
-                            error={formik.touched.verticalMain && Boolean(formik.errors.verticalMain)}
-                            helperText={formik.touched.verticalMain && formik.errors.verticalMain}
-                          >
-                            {state.mainVerticalList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.main_vertical_id} value={KeyVal.main_vertical_desc}>
-                                {KeyVal.main_vertical_desc}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="verticalMain"
+                          name="verticalMain"
+                          // select={state.mainVerticalList.length !== 0}
+                          select={values.verticalMain === ''}
+                          label="Main Vertical"
+                          fullWidth
+                          required
+                          value={values.verticalMain}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeMv(evt, setFieldValue);
+                          }}
+                          // value={values.verticalMain}
+                          onBlur={handleBlur}
+                          error={touched.verticalMain ? errors.verticalMain : ''}
+                          helperText={touched.verticalMain ? formik.errors.verticalMain : ''}
+                        >
+                          {state.mainVerticalList.map((KeyVal) => (
+                            <MenuItem key={KeyVal.main_vertical_id} value={KeyVal.main_vertical_desc}>
+                              {KeyVal.main_vertical_desc}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Sub Vertical</InputLabel>
-
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="verticalSub"
-                            name="verticalSub"
-                            label="Sub Vertical"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeSv(evt);
-                            }}
-                            value={values.verticalSub || location.state.row.verticalSub}
-                            autoComplete="off"
-                            onBlur={handleBlur}
-                            error={formik.touched.verticalSub && Boolean(formik.errors.verticalSub)}
-                            helperText={formik.touched.verticalSub && formik.errors.verticalSub}
-                          >
-                            {verticalSubList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.sub_vertical_id} value={KeyVal.sub_vertical_desc}>
-                                {KeyVal.sub_vertical_desc}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Department (IT)</InputLabel>
-
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="departmentDesc"
-                            name="departmentDesc"
-                            label="Department (IT)"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeDpt(evt);
-                            }}
-                            value={values.departmentDesc}
-                            autoComplete="off"
-                            onBlur={handleBlur}
-                            error={formik.touched.departmentDesc && Boolean(formik.errors.departmentDesc)}
-                            helperText={formik.touched.departmentDesc && formik.errors.departmentDesc}
-                          >
-                            {departmentList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.department_id} value={KeyVal.department_desc}>
-                                {KeyVal.department_desc}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="verticalSub"
+                          name="verticalSub"
+                          // select={verticalSubList.length !== 0}
+                          select={values.verticalSub === ''}
+                          label="Sub Vertical"
+                          fullWidth
+                          required
+                          value={values.verticalSub}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeSv(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.verticalSub ? errors.verticalSub : ''}
+                          helperText={touched.verticalSub ? formik.errors.verticalSub : ''}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
+                        >
+                          {verticalSubList.map((KeyVal) => (
+                            <MenuItem key={KeyVal.sub_vertical_id} value={KeyVal.sub_vertical_desc}>
+                              {KeyVal.sub_vertical_desc}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
 
                       <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Function</InputLabel>
-
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="functionDesc"
-                            name="functionDesc"
-                            label="Function (IT)"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeFun(evt);
-                            }}
-                            value={values.functionDesc}
-                            autoComplete="off"
-                            onBlur={handleBlur}
-                            error={formik.touched.functionDesc && Boolean(formik.errors.functionDesc)}
-                            helperText={formik.touched.functionDesc && formik.errors.functionDesc}
-                          >
-                            {functionsList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.function_id} value={KeyVal.function_desc}>
-                                {KeyVal.function_desc}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="departmentDesc"
+                          name="departmentDesc"
+                          // select={departmentList.length !== 0}
+                          select={values.departmentDesc === ''}
+                          label="Department (IT)"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeDpt(evt);
+                          }}
+                          value={values.departmentDesc}
+                          onBlur={handleBlur}
+                          error={touched.departmentDesc ? errors.departmentDesc : ''}
+                          helperText={touched.departmentDesc ? formik.errors.departmentDesc : ''}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
+                        >
+                          {departmentList.map((KeyVal) => (
+                            <MenuItem key={KeyVal.department_id} value={KeyVal.department_desc}>
+                              {KeyVal.department_desc}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
 
                       <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Project Type</InputLabel>
-
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="projectType"
-                            name="projectType"
-                            label="Project Type"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeProject(evt);
-                            }}
-                            value={values.projectType}
-                            autoComplete="off"
-                            onBlur={handleBlur}
-                            error={formik.touched.projectType && Boolean(formik.errors.projectType)}
-                            helperText={formik.touched.projectType && formik.errors.projectType}
-                          >
-                            {projectsList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.project_id} value={KeyVal.initcap}>
-                                {KeyVal.initcap}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="functionDesc"
+                          name="functionDesc"
+                          // select={functionsList.length !== 0}
+                          select={values.functionDesc === ''}
+                          label="Function (IT)"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeFun(evt);
+                          }}
+                          value={values.functionDesc}
+                          onBlur={handleBlur}
+                          error={touched.functionDesc ? errors.functionDesc : ''}
+                          helperText={touched.functionDesc ? formik.errors.functionDesc : ''}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
+                        >
+                          {functionsList.map((KeyVal) => (
+                            <MenuItem key={KeyVal.function_id} value={KeyVal.function_desc}>
+                              {KeyVal.function_desc}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
 
                       <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Invoice Type</InputLabel>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="projectType"
+                          name="projectType"
+                          // select={projectsList.length !== 0}
+                          select={values.projectType === ''}
+                          label="Project Type"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeProject(evt);
+                          }}
+                          value={values.projectType}
+                          onBlur={handleBlur}
+                          error={touched.projectType ? errors.projectType : ''}
+                          helperText={touched.projectType ? formik.errors.projectType : ''}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
+                        >
+                          {projectsList.map((KeyVal) => (
+                            <MenuItem key={KeyVal.project_id} value={KeyVal.initcap}>
+                              {KeyVal.initcap}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
 
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="invoiceType"
-                            name="invoiceType"
-                            label="Invoice Type"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeEvent(evt);
-                            }}
-                            value={values.invoiceType}
-                            autoComplete="off"
-                            onBlur={handleBlur}
-                            error={formik.touched.invoiceType && Boolean(formik.errors.invoiceType)}
-                            helperText={formik.touched.invoiceType && formik.errors.invoiceType}
-                          >
-                            {invoiceList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.invoice_type_id} value={KeyVal.invoice_type_desc}>
-                                {KeyVal.invoice_type_desc}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="invoiceType"
+                          name="invoiceType"
+                          // select={invoiceList.length !== 0}
+                          select={values.invoiceType === ''}
+                          label="Invoice Type"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          value={values.invoiceType}
+                          onBlur={handleBlur}
+                          error={touched.invoiceType ? errors.invoiceType : ''}
+                          helperText={touched.invoiceType ? formik.errors.invoiceType : ''}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
+                        >
+                          {invoiceList.map((KeyVal) => (
+                            <MenuItem key={KeyVal.invoice_type_id} value={KeyVal.invoice_type_desc}>
+                              {KeyVal.invoice_type_desc}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                          <InputLabel id="demo-select-small">Maximus / Opus</InputLabel>
-
-                          <Select
-                            InputLabelProps={{ shrink: true }}
-                            labelId="demo-select-small"
-                            id="maximusOpus"
-                            name="maximusOpus"
-                            label="Maximus / Opus"
-                            fullWidth
-                            onChange={(evt) => {
-                              handleChange(evt);
-                              handleChangeEvent(evt);
-                            }}
-                            value={values.maximusOpus}
-                            autoComplete="off"
-                            onBlur={handleBlur}
-                            error={formik.touched.maximusOpus && Boolean(formik.errors.maximusOpus)}
-                            helperText={formik.touched.maximusOpus && formik.errors.maximusOpus}
-                          >
-                            <MenuItem value="Maximus">Maximus</MenuItem>
-                            <MenuItem value="Opus">Opus</MenuItem>
-                          </Select>
-                        </FormControl>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="maximusOpus"
+                          name="maximusOpus"
+                          // select={maximusOpusList.length !== 0}
+                          select
+                          label="Maximus / Opus"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          value={values.maximusOpus}
+                          onBlur={handleBlur}
+                          error={touched.maximusOpus ? errors.maximusOpus : ''}
+                          helperText={touched.maximusOpus ? formik.errors.maximusOpus : ''}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
+                        >
+                          {maximusOpusList.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
                       {/* <Grid item xs={12} sm={6}>
                         <FormControl fullWidth>
@@ -1425,7 +1525,7 @@ export default function ViewEmployee() {
                         </FormControl>
                       </Grid> */}
                       <Grid item xs={12} sm={6}>
-                        <TextField
+                        {/* <TextField
                           autoComplete="off"
                           name="billingSlab"
                           variant="outlined"
@@ -1443,6 +1543,24 @@ export default function ViewEmployee() {
                           helperText={formik.touched.billingSlab && formik.errors.billingSlab}
                           inputProps={{ readOnly: true, style: { color: 'grey' } }}
                           focused={false}
+                        /> */}
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="billingSlab"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="billingSlab"
+                          label="Billing Slab"
+                          value={values.billingSlab}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.billingSlab ? errors.billingSlab : ''}
+                          helperText={touched.billingSlab ? formik.errors.billingSlab : ''}
                         />
                       </Grid>
                     </Grid>
@@ -1450,17 +1568,30 @@ export default function ViewEmployee() {
 
                     <Grid container item xs={12} justifyContent={'center'}>
                       <Stack spacing={2} direction="row" justifyContent="center">
-                        {state.employeeStatus === 'Active' ? null : (
+                        {state.employeeStatus === 'Active' ? (
+                          <Button
+                            size="medium"
+                            variant="contained"
+                            type="button"
+                            color="primary"
+                            // onClick={() => updateEmployeeData(false, setFieldValue)}
+                            onClick={() => handleOpenUpdateModal()}
+                            className={!isValid ? 'disabled-btn' : ''}
+                            // disabled={!isValid}
+                          >
+                            Update
+                          </Button>
+                        ) : (
                           <>
                             <Button
                               size="medium"
                               variant="contained"
                               type="button"
                               color="primary"
-                              // onClick={() => updateEmployeeData(false, setFieldValue)}
                               onClick={() => handleOpenApprovalModal()}
-                              className={!isValid ? 'disabled-btn' : ''}
-                              disabled={!isValid}
+                              // className={!isValid ? 'disabled-btn' : ''}
+
+                              // disabled={!formik.dirty}
                             >
                               Approve
                             </Button>

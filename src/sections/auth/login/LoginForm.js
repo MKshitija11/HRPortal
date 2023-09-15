@@ -166,16 +166,7 @@ export default function LoginForm() {
           Domain Login
         </LoadingButton>
 
-        {/* <LoadingButton
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-          onClick={handleClick}
-          sx={{ backgroundColor: "purple" }}
-        >
-          Domain Login
-        </LoadingButton> */}
+      
       </Stack>
     </>
   );

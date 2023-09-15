@@ -34,8 +34,49 @@ export default function NavSection() {
 
     const dataUser = [
       {
-        title: 'Employees',
+        title: 'Active',
         path: `${redirectUrl}`,
+        icon: icon('ic_user'),
+        // navigate(`/topic/${props.id}`,{state:{id:props.id}});
+      },
+      {
+        title: 'Pending',
+        path: '/PendingEmployeesBP',
+        icon: icon('ic_user'),
+      },
+      {
+        title: 'Rejected',
+        path: '/RejectedEmployeesBP',
+        icon: icon('ic_user'),
+      },
+      {
+        title: 'Resigned',
+        path: '/ResignedEmployeesBP',
+        icon: icon('ic_user'),
+      },
+    ];
+
+    const dataTeamLead = [
+      {
+        title: 'Active',
+        path: '/EmployeesTL',
+        icon: icon('ic_user'),
+      },
+      {
+        title: 'Pending',
+        path: `/EmployeesListTL`,
+        icon: icon('ic_user'),
+      },
+    ];
+    const dataSeniorManager = [
+      {
+        title: 'Active',
+        path: '/EmployeesSM',
+        icon: icon('ic_user'),
+      },
+      {
+        title: 'Pending',
+        path: `/EmployeesListSM`,
         icon: icon('ic_user'),
       },
     ];
@@ -54,10 +95,20 @@ export default function NavSection() {
         icon: icon('ic_analytics'),
       },
       {
-        title: 'Employees',
+        title: 'Active',
         path: `${redirectUrl}`,
         icon: icon('ic_user'),
       },
+      {
+        title: 'Pending',
+        path: '/PendingEmployeesITS',
+        icon: icon('ic_user'),
+      },
+      // {
+      //   title: 'Pending',
+      //   path: '/PendingEmployeesITS',
+      //   icon: icon('ic_user'),
+      // },
       {
         title: 'Reports',
         path: '/Reports',
@@ -68,6 +119,10 @@ export default function NavSection() {
       setMenuList(dataAdmin);
     } else if (USERDETAILS?.userProfile === 'BAGIC_ITS') {
       setMenuList(dataSpoc);
+    } else if (USERDETAILS?.userProfile === 'BAGIC_TL') {
+      setMenuList(dataTeamLead);
+    } else if (USERDETAILS?.userProfile === 'BAGIC_SM') {
+      setMenuList(dataSeniorManager);
     } else {
       setMenuList(dataUser);
     }

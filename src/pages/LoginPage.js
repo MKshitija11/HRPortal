@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, Grid } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -90,6 +90,14 @@ export default function LoginPage() {
       }}
     >
       <img src={'/assets/images/covers/BackgroundImage.jpg'} alt="text" style={myStyle} />
+      {/* <Grid container>
+        <Grid item xs={12} sm={6} style={{ backgroundColor: 'blue' }}>
+          <Typography>Hi</Typography>
+        </Grid>
+        <Grid item xs={12} sm={6} style={{ backgroundColor: 'white' }}>
+          <Typography>Hi</Typography>
+        </Grid>
+      </Grid> */}
       <div style={textBlock}>
         <LoginForm />
       </div>

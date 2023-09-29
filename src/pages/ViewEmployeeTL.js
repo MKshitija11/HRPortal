@@ -273,44 +273,85 @@ export default function ViewEmployee() {
     };
 
     Configuration.getSubVerticals(getSubVerticalsReq).then((getSubVerticalsRes) => {
-      // console.log('verticalSubList', getSubVerticalsRes?.data?.[0]?.sub_vertical_desc);
       state.subVerticalList = getSubVerticalsRes.data;
-      // console.log('subVerticalList', state.subVerticalList);
       setVerticalSubList(state.subVerticalList);
+      if (getSubVerticalsRes?.data.length === 1) {
+        console.log('LENGTH');
+        handleChangeSv(evt, {
+          verticalMain: evt.target.value,
+          verticalSub: getSubVerticalsRes?.data?.[0]?.sub_vertical_desc,
+        });
+      }
     });
   };
 
-  const handleChangeSv = (evt) => {
-    console.log('evt.target.value SV', evt.target.value);
-    console.log('evt.target.name SV', evt.target.name);
+  const handleChangeSv = (evt, autoFill) => {
+    console.log('AUTOFILL ', autoFill);
+    console.log('AUTOFILL evt.target.value SV', evt.target.value);
+    console.log(' AUTOFILL evt.target.name SV', evt.target.name);
+    console.log('AUTO state.verticalMain list', state.mainVerticalList, verticalSubList);
 
-    setState({
-      ...state,
-      [evt.target.name]: evt.target.value,
-      departmentDesc: '',
-      functionDesc: '',
-    });
+    if (autoFill) {
+      setState({
+        ...state,
+        [evt.target.name]: evt.target.value,
+        verticalSub: autoFill ? autoFill.verticalSub : evt.target.value,
+        departmentDesc: '',
+        functionDesc: '',
+      });
+    } else {
+      setState({
+        ...state,
+        [evt.target.name]: evt.target.value,
+        departmentDesc: '',
+        functionDesc: '',
+      });
+    }
 
     const getDepartmentReq = {
       key: 'DEPARTMENTS',
-      value: evt.target.value,
+      value: autoFill ? autoFill.verticalSub : evt.target.value,
     };
+
+    console.log('Before api ', getDepartmentReq);
     Configuration.getDepartments(getDepartmentReq).then((getDepartmentRes) => {
+      console.log('after api ', getDepartmentRes.data);
       state.departmentList = getDepartmentRes.data;
-      // console.log('departmentList', state.departmentList);
+
       setDepartmentList(state.departmentList);
-      // console.log('departmentList', departmentList);
+      if (getDepartmentRes?.data.length === 1) {
+        handleChangeDpt(evt, {
+          verticalMain: autoFill ? autoFill?.verticalMain : state.verticalMain,
+          verticalSub: autoFill ? autoFill?.verticalSub : evt.target.value,
+          departmentDesc: getDepartmentRes?.data?.[0]?.department_desc,
+        });
+      }
     });
   };
 
-  const handleChangeDpt = (evt) => {
-    console.log('evt.target.value', evt.target.value);
+  const handleChangeDpt = (evt, autoFill) => {
+    console.log('evt.target.value ', evt.target.value);
     console.log('evt.target.name', evt.target.name);
+    console.log('DEPT AUTOFILL', autoFill, state);
 
-    setState({
-      ...state,
-      [evt.target.name]: evt.target.value,
-    });
+    if (autoFill) {
+      setState({
+        ...state,
+        verticalMain: autoFill?.verticalMain,
+        verticalSub: autoFill?.verticalSub,
+        departmentDesc: autoFill ? autoFill.departmentDesc : evt.target.value,
+        // departmentDesc: '',
+        functionDesc: '',
+      });
+    } else {
+      setState({
+        ...state,
+        [evt.target.name]: evt.target.value,
+        verticalMain: state.verticalMain,
+        verticalSub: state.verticalSub,
+        functionDesc: '',
+      });
+    }
 
     const getFunctionReq = {
       key: 'FUNCTIONS',
@@ -319,21 +360,44 @@ export default function ViewEmployee() {
 
     Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
       state.functionsList = getFunctionsRes.data;
-      // console.log('functionList', state.functionsList);
       setFunctionsList(state.functionsList);
-      // console.log('functionsList', functionsList);
+      if (getFunctionsRes?.data.length === 1) {
+        handleChangeFun(evt, {
+          verticalMain: autoFill ? autoFill?.verticalMain : state.verticalMain,
+          verticalSub: autoFill ? autoFill?.verticalSub : state.verticalSub,
+          departmentDesc: autoFill ? autoFill.departmentDesc : evt.target.value,
+          functionDesc: getFunctionsRes?.data?.[0]?.function_desc,
+        });
+      }
     });
 
     // console.log('verticla sub ----', state.verticalSub);
   };
 
-  const handleChangeFun = (evt) => {
+  const handleChangeFun = (evt, autoFill) => {
     console.log('evt.target.value', evt.target.value);
     console.log('evt.target.name', evt.target.name);
-    setState({
-      ...state,
-      [evt.target.name]: evt.target.value,
-    });
+    console.log('FUN AUTOFILL', autoFill);
+
+    if (autoFill) {
+      setState({
+        ...state,
+        verticalMain: autoFill?.verticalMain,
+        verticalSub: autoFill?.verticalSub,
+        departmentDesc: autoFill ? autoFill.departmentDesc : state.departmentDesc,
+
+        functionDesc: autoFill?.functionDesc,
+      });
+    } else {
+      setState({
+        ...state,
+        verticalMain: state.verticalMain,
+        verticalSub: state.verticalSub,
+        departmentDesc: state.departmentDesc,
+        [evt.target.name]: evt.target.value,
+      });
+    }
+
     const getProjectsReq = {
       key: 'PROJECTS',
       value: evt.target.value,
@@ -341,10 +405,7 @@ export default function ViewEmployee() {
 
     Configuration.getProjects(getProjectsReq).then((getProjectsRes) => {
       state.projectsList = getProjectsRes.data;
-      // console.log('projectsList', state.projectsList);
       setProjectsList(state.projectsList);
-      //   setState("projectsList", state.projectsList);
-      // console.log('projectsList', projectsList);
     });
 
     const getInvoiceReq = {
@@ -354,9 +415,7 @@ export default function ViewEmployee() {
 
     Configuration.getInvoice(getInvoiceReq).then((getInvoiceRes) => {
       state.invoiceList = getInvoiceRes.data;
-      // console.log('functionList', state.invoiceList);
       setInvoiceList(state.invoiceList);
-      // console.log('invoiceList', invoiceList);
     });
   };
 
@@ -819,7 +878,6 @@ export default function ViewEmployee() {
   return (
     <>
       <Helmet>
-        {console.log('values on render', state.reportingTeamLead)}
         <title> HR Portal | Employee Details (Team Lead)</title>
       </Helmet>
       <Container>
@@ -863,6 +921,8 @@ export default function ViewEmployee() {
               } = formik;
               return (
                 <>
+                  {' '}
+                  {console.log('values on render', state.reportingTeamLead, verticalSubList, state.subVerticalList)}
                   <Stack alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
                     <Modal
                       open={

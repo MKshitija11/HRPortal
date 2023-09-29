@@ -116,15 +116,6 @@ export default function PendingEmployeeListTL() {
     navigate('/NewEmployee');
   };
 
-  // const ViewEmployee = (row) => {
-  //   console.log("ROW ...........", row);
-  //   navigate("/ViewEmployeeTL", {
-  //     state: {
-  //       row,
-  //     },
-  //   });
-  // };
-
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -139,24 +130,6 @@ export default function PendingEmployeeListTL() {
     }
     setSelected([]);
   };
-
-  // const handleClick = (event, name) => {
-  //   const selectedIndex = selected.indexOf(name);
-  //   let newSelected = [];
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, name);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1)
-  //     );
-  //   }
-  //   setSelected(newSelected);
-  // };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -195,7 +168,6 @@ export default function PendingEmployeeListTL() {
         <>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-              {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
               <Button
                 variant="contained"
                 startIcon={<Iconify icon="eva:plus-fill" />}
@@ -267,14 +239,7 @@ export default function PendingEmployeeListTL() {
                                 <TableCell align="left">{employeeId}</TableCell>
 
                                 <TableCell component="th" scope="row" padding="none">
-                                  {/* <Stack
-                              direction="row"
-                              alignItems="center"
-                              spacing={2}
-                            > */}
-                                  {/* <Avatar alt={empoyeeFullName} src={avatarUrl} /> */}
                                   <Typography noWrap>{employeeFullName}</Typography>
-                                  {/* </Stack> */}
                                 </TableCell>
 
                                 <TableCell align="left">{partnerName}</TableCell>

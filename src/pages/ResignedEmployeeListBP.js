@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
 // @mui
 import {
   Card,
@@ -86,6 +87,81 @@ export default function ResignedEmployeeListBP() {
   const [employeeList = [], setEmployeeList] = useState();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [csvData = [], setCsvData] = useState();
+
+  const Heading = [
+    [
+      'Partner Name',
+      'Employee ID',
+      'First Name',
+      'Last Name',
+      'Full Name',
+      'Status',
+      'Official Email',
+      'Personal Email',
+      'Mobile Number',
+      'Whatsapp Number',
+      'Joining Date',
+      'ReportingTeamLead',
+      'ReportingManager',
+      'ReportingItSpoc',
+      'BillingSlab',
+      'EvaluationPeriod',
+      'NewReplacement',
+      'ReplacementEcode',
+      'SupportDevelopment',
+      'Function',
+      'Department',
+      'Vertical(Main)',
+      'Vertical(Sub)',
+      'LOB',
+      'Maximus/Opus',
+      'Invoice Type',
+    ],
+  ];
+  const selectedCols = csvData.map((n) => [
+    n.partnerName,
+    n.employeeId,
+    n.employeeFirstName,
+    n.employeeLastName,
+    n.employeeFullName,
+    n.employeeStatus,
+    n.officialEmail,
+    n.personalEmail,
+    n.mobileNumber,
+    n.whatsappNumber,
+    n.joiningDate,
+    n.reportingTeamLead,
+    n.reportingManager,
+    n.reportingItSpoc,
+    n.billingSlab,
+    n.evaluationPeriod,
+    n.newReplacement,
+    n.replacementEcode,
+    n.supportDevelopment,
+    n.functionDesc,
+    n.departmentDesc,
+    n.verticalMain,
+    n.verticalSub,
+    n.lob,
+    n.maximusOpus,
+    n.invoiceType,
+  ]);
+
+  const exportToCSV = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(ws, Heading);
+
+    XLSX.utils.sheet_add_json(ws, selectedCols, {
+      origin: 'A2',
+      skipHeader: true,
+    });
+
+    XLSX.utils.book_append_sheet(wb, ws, 'DATA');
+
+    XLSX.writeFile(wb, 'EmployeeData.xlsx');
+  };
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -103,6 +179,10 @@ export default function ResignedEmployeeListBP() {
       Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
         console.log('empListVendorRes', empListVendorRes);
         setEmployeeList(empListVendorRes.data);
+        const downloadResignedEmp = empListVendorRes.data.filter(
+          (employees) => employees.employeeStatus === 'Resigned'
+        );
+        setCsvData(downloadResignedEmp);
         setIsLoading(false);
         console.log('employeeList', employeeList);
       });
@@ -121,6 +201,7 @@ export default function ResignedEmployeeListBP() {
     navigate('/ViewEmployeeBP', {
       state: {
         id: rowId,
+        resignedEmployee: 'Resigned',
       },
     });
   };
@@ -201,6 +282,15 @@ export default function ResignedEmployeeListBP() {
           >
             New Employee
           </Button>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="ri:file-excel-2-line" />}
+            onClick={() => exportToCSV()}
+            color="primary"
+            size="medium"
+          >
+            Download Excel
+          </Button>
         </Stack>
         {isLoading ? (
           <Stack justifyContent="center" alignItems="center">
@@ -264,6 +354,7 @@ export default function ResignedEmployeeListBP() {
                                 role="checkbox"
                                 selected={selectedUser}
                                 onClick={() => ViewEmployee(row.id)}
+                              
                                 sx={{ cursor: 'pointer' }}
                               >
                                 <TableCell align="left">{employeeId}</TableCell>
@@ -278,10 +369,11 @@ export default function ResignedEmployeeListBP() {
                                 <TableCell align="left">
                                   <Label
                                     color={
-                                      (employeeStatus === 'Active' && 'success') ||
-                                      (employeeStatus === 'Rejected by TL' && 'error') ||
-                                      (employeeStatus === 'Rejected by SM' && 'error') ||
-                                      (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
+                                      // (employeeStatus === 'Active' && 'success') ||
+                                      // (employeeStatus === 'Rejected by TL' && 'error') ||
+                                      // (employeeStatus === 'Rejected by SM' && 'error') ||
+                                      // (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
+                                      (employeeStatus === 'Resigned' && 'error') || 
                                       'warning'
                                     }
                                   >

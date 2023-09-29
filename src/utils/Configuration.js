@@ -138,4 +138,10 @@ export default {
 
     return axios.post(`${this.BASE_URL}dashBoard`, RequestInvoice);
   },
+  getTLBySM(RequestTeamLead) {
+    console.log("function->", "getTLBySM");
+    console.log("url->", `${this.BASE_URL}getTLBySM`);
+    console.log("data->", RequestTeamLead);
+    return axios.post(`${this.BASE_URL}getTLBySM`, RequestTeamLead);
+  },
 };

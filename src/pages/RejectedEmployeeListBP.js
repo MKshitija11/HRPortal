@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
 // @mui
 import {
   Card,
@@ -86,6 +87,81 @@ export default function RejectedEmployeeListBP() {
   const [employeeList = [], setEmployeeList] = useState();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [csvData = [], setCsvData] = useState();
+
+  const Heading = [
+    [
+      'Partner Name',
+      'Employee ID',
+      'First Name',
+      'Last Name',
+      'Full Name',
+      'Status',
+      'Official Email',
+      'Personal Email',
+      'Mobile Number',
+      'Whatsapp Number',
+      'Joining Date',
+      'ReportingTeamLead',
+      'ReportingManager',
+      'ReportingItSpoc',
+      'BillingSlab',
+      'EvaluationPeriod',
+      'NewReplacement',
+      'ReplacementEcode',
+      'SupportDevelopment',
+      'Function',
+      'Department',
+      'Vertical(Main)',
+      'Vertical(Sub)',
+      'LOB',
+      'Maximus/Opus',
+      'Invoice Type',
+    ],
+  ];
+  const selectedCols = csvData.map((n) => [
+    n.partnerName,
+    n.employeeId,
+    n.employeeFirstName,
+    n.employeeLastName,
+    n.employeeFullName,
+    n.employeeStatus,
+    n.officialEmail,
+    n.personalEmail,
+    n.mobileNumber,
+    n.whatsappNumber,
+    n.joiningDate,
+    n.reportingTeamLead,
+    n.reportingManager,
+    n.reportingItSpoc,
+    n.billingSlab,
+    n.evaluationPeriod,
+    n.newReplacement,
+    n.replacementEcode,
+    n.supportDevelopment,
+    n.functionDesc,
+    n.departmentDesc,
+    n.verticalMain,
+    n.verticalSub,
+    n.lob,
+    n.maximusOpus,
+    n.invoiceType,
+  ]);
+
+  const exportToCSV = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(ws, Heading);
+
+    XLSX.utils.sheet_add_json(ws, selectedCols, {
+      origin: 'A2',
+      skipHeader: true,
+    });
+
+    XLSX.utils.book_append_sheet(wb, ws, 'DATA');
+
+    XLSX.writeFile(wb, 'EmployeeData.xlsx');
+  };
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -103,6 +179,10 @@ export default function RejectedEmployeeListBP() {
       Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
         console.log('empListVendorRes', empListVendorRes);
         setEmployeeList(empListVendorRes.data);
+        const downloadRejectedEmp = empListVendorRes.data.filter((employees) =>   employees.employeeStatus === 'Rejected by TL' ||
+        employees.employeeStatus === 'Rejected by SM' ||
+        employees.employeeStatus === 'Rejected by IT Spoc');
+        setCsvData(downloadRejectedEmp);
         setIsLoading(false);
         console.log('employeeList', employeeList);
       });
@@ -140,23 +220,7 @@ export default function RejectedEmployeeListBP() {
     setSelected([]);
   };
 
-  // const handleClick = (event, name) => {
-  //   const selectedIndex = selected.indexOf(name);
-  //   let newSelected = [];
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, name);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1)
-  //     );
-  //   }
-  //   setSelected(newSelected);
-  // };
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -195,7 +259,7 @@ export default function RejectedEmployeeListBP() {
       {/* <Container disableGutters> */}
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-          {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
+       
           <Button
             variant="contained"
             startIcon={<Iconify icon="material-symbols:person-add-outline" />}
@@ -205,6 +269,15 @@ export default function RejectedEmployeeListBP() {
             size="medium"
           >
             New Employee
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="ri:file-excel-2-line" />}
+            onClick={() => exportToCSV()}
+            color="primary"
+            size="medium"
+          >
+            Download Excel
           </Button>
         </Stack>
         {isLoading ? (

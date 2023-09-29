@@ -17,6 +17,8 @@ import {
 } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import addMonths from 'date-fns/addMonths';
+import format from 'date-fns/format';
 // components
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
@@ -57,6 +59,13 @@ export default function ViewEmployee() {
     functionsList: [],
     projectsList: [],
     invoiceList: [],
+    gender: '',
+    dateOfBirth: '',
+    experience: '',
+    totalExperience: '',
+    skillSet: '',
+    lob: '',
+    tlList: [],
   });
 
   const [userProfile, setUserProfile] = useState();
@@ -64,6 +73,10 @@ export default function ViewEmployee() {
   const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [openRejectedconfirmationModal, setRejectedConfirmationModal] = useState(false);
+
   const evaluationPeriodList = [
     {
       value: '15 Days',
@@ -99,8 +112,31 @@ export default function ViewEmployee() {
       label: 'Support',
     },
     {
-      value: 'NRCR',
-      label: 'NRCR',
+      value: 'Development',
+      label: 'Development',
+    },
+    {
+      value: 'Testing',
+      label: 'Testing',
+    },
+    {
+      value: 'MIS',
+      label: 'MIS',
+    },
+    {
+      value: 'Project',
+      label: 'Project',
+    },
+  ];
+
+  const invoiceTypeList = [
+    {
+      value: 'CapEx',
+      label: 'CapEx',
+    },
+    {
+      value: 'OpEx',
+      label: 'OpEx',
     },
   ];
 
@@ -114,6 +150,89 @@ export default function ViewEmployee() {
       label: 'Opus',
     },
   ];
+
+  const genderList = [
+    {
+      value: 'Male',
+      label: 'Male',
+    },
+    {
+      value: 'Female',
+      label: 'Female',
+    },
+  ];
+
+  const experienceSlab = [
+    {
+      value: '0 - 2 years',
+      label: '0 - 2 years',
+    },
+    {
+      value: '2 - 4 years',
+      label: '2 - 4 years',
+    },
+    {
+      value: '4 - 6 years',
+      label: '4 - 6 years',
+    },
+    {
+      value: '6 - 8 years',
+      label: '6 - 8 years',
+    },
+    {
+      value: '8 - 10 years',
+      label: '8 - 10 years',
+    },
+    {
+      value: '10 years and above',
+      label: '10 years and above',
+    },
+  ];
+
+  const LOBList = [
+    {
+      value: 'Health',
+      label: 'Health',
+    },
+    {
+      value: 'Motor',
+      label: 'Motor',
+    },
+    {
+      value: 'Non-motor',
+      label: 'Non-motor',
+    },
+    {
+      value: 'Travel',
+      label: 'Travel',
+    },
+    {
+      value: 'PG',
+      label: 'PG',
+    },
+    {
+      value: 'DBA',
+      label: 'DBA',
+    },
+    {
+      value: 'Testing',
+      label: 'Testing',
+    },
+
+    {
+      value: 'MIS',
+      label: 'MIS',
+    },
+    {
+      value: 'Accounting',
+      label: 'Accounting',
+    },
+    {
+      value: 'Customer Support',
+      label: 'Customer Support',
+    },
+  ];
+
   const handleChangeWaSwitch = (evt) => {
     if (evt.target.checked) {
       document.getElementById('whatsappNumber').value = state.mobileNumber;
@@ -125,6 +244,7 @@ export default function ViewEmployee() {
     console.log('state.mobileNumber', state.mobileNumber);
     console.log('state.whatsappNumber', state.whatsappNumber);
   };
+
   const handleChangeEvent = (evt) => {
     console.log('evt.target.value', evt.target.value);
     console.log('evt.target.name', evt.target.name);
@@ -141,6 +261,9 @@ export default function ViewEmployee() {
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
+      verticalSub: '',
+      departmentDesc: '',
+      functionDesc: '',
     });
 
     console.log('state.empProfileSvList', state.empProfileSvList);
@@ -150,54 +273,23 @@ export default function ViewEmployee() {
     };
 
     Configuration.getSubVerticals(getSubVerticalsReq).then((getSubVerticalsRes) => {
-      console.log('verticalSubList', getSubVerticalsRes?.data?.[0]?.sub_vertical_desc);
+      // console.log('verticalSubList', getSubVerticalsRes?.data?.[0]?.sub_vertical_desc);
       state.subVerticalList = getSubVerticalsRes.data;
-      console.log('subVerticalList', state.subVerticalList);
+      // console.log('subVerticalList', state.subVerticalList);
       setVerticalSubList(state.subVerticalList);
-      // if (getSubVerticalsRes.data.length === 1) {
-      //   console.log('INSIDE IF');
-      //   const subVerticalData = getSubVerticalsRes?.data?.[0]?.sub_vertical_desc;
-      //   handleChangeSv(evt, {
-      //     verticalSub: subVerticalData,
-      //     verticalMain: evt.target.value,
-      //   });
-      // } else {
-      //   console.log('INSIDE ELSE');
-      //   state.subVerticalList = getSubVerticalsRes.data;
-      //   console.log('subVerticalList', state.subVerticalList);
-      //   setVerticalSubList(state.subVerticalList);
-      // }
     });
   };
 
   const handleChangeSv = (evt) => {
     console.log('evt.target.value SV', evt.target.value);
     console.log('evt.target.name SV', evt.target.name);
-    // console.log('AUTO FILL', autoFill);
-    // console.log('AUTO FILL EVENT ', evt.target);
+
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
+      departmentDesc: '',
+      functionDesc: '',
     });
-
-    // if (autoFill) {
-
-    //   console.log('INSIDE AUTO FILL OF SV ', evt.target.name, autoFill, {
-    //     verticalSub: autoFill ? autoFill.verticalSub : evt.target.value,
-    //     [evt.target.name]: autoFill.verticalMain,
-    //   });
-    //   setState({
-    //     ...state,
-    //     [evt.target.name]: autoFill ? autoFill.verticalSub : evt.target.value,
-    //     verticalMain: autoFill.verticalMain,
-    //   });
-    // } else {
-    //   console.log('OUTSIDE AUTO FILL', evt.target.value);
-    //   setState({
-    //     verticalMain: state.verticalMain,
-    //     [evt.target.name]: evt.target.value,
-    //   });
-    // }
 
     const getDepartmentReq = {
       key: 'DEPARTMENTS',
@@ -205,9 +297,9 @@ export default function ViewEmployee() {
     };
     Configuration.getDepartments(getDepartmentReq).then((getDepartmentRes) => {
       state.departmentList = getDepartmentRes.data;
-      console.log('departmentList', state.departmentList);
+      // console.log('departmentList', state.departmentList);
       setDepartmentList(state.departmentList);
-      console.log('departmentList', departmentList);
+      // console.log('departmentList', departmentList);
     });
   };
 
@@ -227,10 +319,12 @@ export default function ViewEmployee() {
 
     Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
       state.functionsList = getFunctionsRes.data;
-      console.log('functionList', state.functionsList);
+      // console.log('functionList', state.functionsList);
       setFunctionsList(state.functionsList);
-      console.log('functionsList', functionsList);
+      // console.log('functionsList', functionsList);
     });
+
+    // console.log('verticla sub ----', state.verticalSub);
   };
 
   const handleChangeFun = (evt) => {
@@ -247,10 +341,22 @@ export default function ViewEmployee() {
 
     Configuration.getProjects(getProjectsReq).then((getProjectsRes) => {
       state.projectsList = getProjectsRes.data;
-      console.log('projectsList', state.projectsList);
+      // console.log('projectsList', state.projectsList);
       setProjectsList(state.projectsList);
       //   setState("projectsList", state.projectsList);
-      console.log('projectsList', projectsList);
+      // console.log('projectsList', projectsList);
+    });
+
+    const getInvoiceReq = {
+      key: 'INVOICE_TYPE',
+      value: evt.target.value,
+    };
+
+    Configuration.getInvoice(getInvoiceReq).then((getInvoiceRes) => {
+      state.invoiceList = getInvoiceRes.data;
+      // console.log('functionList', state.invoiceList);
+      setInvoiceList(state.invoiceList);
+      // console.log('invoiceList', invoiceList);
     });
   };
 
@@ -269,9 +375,9 @@ export default function ViewEmployee() {
 
     Configuration.getInvoice(getInvoiceReq).then((getInvoiceRes) => {
       state.invoiceList = getInvoiceRes.data;
-      console.log('functionList', state.invoiceList);
+      // console.log('functionList', state.invoiceList);
       setInvoiceList(state.invoiceList);
-      console.log('invoiceList', invoiceList);
+      // console.log('invoiceList', invoiceList);
     });
   };
 
@@ -282,6 +388,26 @@ export default function ViewEmployee() {
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
+    });
+  };
+
+  const handleChangeSM = (evt) => {
+    console.log('evt.target.value', evt.target.value);
+    console.log('evt.target.name', evt.target.name);
+
+    setState({
+      ...state,
+      [evt.target.name]: evt.target.value,
+    });
+
+    const getTLBySMListReq = {
+      managerEmail: evt.target.value,
+    };
+
+    Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
+      // console.log('departmentList', getTLBySMListRes.data);
+      state.tlList = getTLBySMListRes?.data;
+      setTeamLeadBySMList(state.tlList);
     });
   };
 
@@ -361,6 +487,9 @@ export default function ViewEmployee() {
     if (document.employeeForm.officialEmail.value === '') {
       return failFocus(document.employeeForm.officialEmail);
     }
+    if (document.employeeForm.skillSet.value === '') {
+      return failFocus(document.employeeForm.skillSet);
+    }
 
     if (document.employeeForm.partnerName.value === '') {
       return failFocus(document.employeeForm.partnerName);
@@ -409,8 +538,11 @@ export default function ViewEmployee() {
     if (document.employeeForm.verticalSub.value === '') {
       return failFocus(document.employeeForm.verticalSub);
     }
-    if (document.employeeForm.projectType.value === '') {
-      return failFocus(document.employeeForm.projectType);
+    // if (document.employeeForm.projectType.value === '') {
+    //   return failFocus(document.employeeForm.projectType);
+    // }
+    if (document.employeeForm.lob.value === '') {
+      return failFocus(document.employeeForm.lob);
     }
 
     if (document.employeeForm.maximusOpus.value === '') {
@@ -419,6 +551,20 @@ export default function ViewEmployee() {
     if (document.employeeForm.invoiceType.value === '') {
       return failFocus(document.employeeForm.invoiceType);
     }
+
+    if (document.employeeForm.gender.value === '') {
+      return failFocus(document.employeeForm.gender);
+    }
+    if (document.employeeForm.dateOfBirth.value === '') {
+      return failFocus(document.employeeForm.dateOfBirth);
+    }
+    if (document.employeeForm.experience.value === '') {
+      return failFocus(document.employeeForm.experience);
+    }
+    if (document.employeeForm.totalExperience.value === '') {
+      return failFocus(document.employeeForm.totalExperience);
+    }
+
     return true;
   };
 
@@ -430,33 +576,39 @@ export default function ViewEmployee() {
         ...state,
         employeeStatus: 'Rejected by TL',
       });
+      // setRejectedConfirmationModal(true)
     } else {
       document.getElementById('employeeStatus').value = 'Pending For SM Review';
-      // setFieldValue('employeeStatus', 'Pending For SM Review');
+
       setState({
         ...state,
         employeeStatus: 'Pending For SM Review',
       });
     }
-    // document.getElementById('employeeStatus').value = 'Pending For SM Review';
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
+    employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
+    console.log('JSON:employeeFormData::', employeeFormData);
     if (param === false) {
+      console.log('INSIDE IF');
       if (validForm()) {
         console.log('JSON:employeeFormData::', employeeFormData);
-
         Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
-          console.log('employeeFormRes::', employeeFormRes.data);
-          navigate('/EmployeesTL');
+          if (employeeFormRes) {
+            setOpenSuccessModal(true);
+          }
         });
       }
     } else {
+      console.log('INSIDE ELSE');
+      console.log('JSON:employeeFormData::', employeeFormData);
       Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
-        console.log('employeeFormRes::', employeeFormRes.data);
-        navigate('/EmployeesTL');
+        if (employeeFormRes) {
+          setRejectedConfirmationModal(true);
+        }
       });
     }
   };
@@ -466,6 +618,7 @@ export default function ViewEmployee() {
   const [empData = {}, setEmpData] = useState();
 
   const [reportingList = [], setReportingList] = useState();
+  // console.log('REPORTING LIST', reportingList);
 
   const [verticalMainList = [], setVerticalMainList] = useState();
   const [verticalSubList = [], setVerticalSubList] = useState();
@@ -516,12 +669,11 @@ export default function ViewEmployee() {
     };
 
     Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
-      console.log('employeeFormRes::', viewEmployeeRes.data);
       const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
       const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
       setEmpData(EMP_DETAILS);
 
-      setState({
+      const tempData = {
         ...state,
         newReplacement: EMP_DETAILS.newReplacement,
         id: EMP_DETAILS.id,
@@ -547,12 +699,35 @@ export default function ViewEmployee() {
         verticalMain: EMP_DETAILS.verticalMain,
         verticalSub: EMP_DETAILS.verticalSub,
         departmentDesc: EMP_DETAILS.departmentDesc,
-      });
+        skillSet: EMP_DETAILS.skillSet,
+        lob: EMP_DETAILS.lob,
+        experience: EMP_DETAILS.experience,
+        totalExperience: EMP_DETAILS.totalExperience,
+        gender: EMP_DETAILS.gender,
+        dateOfBirth: EMP_DETAILS.dateOfBirth,
+      };
       setPartnerName(EMP_DETAILS.partnerName);
 
       if (state.employeeStatus === 'Pending For SM Review') {
         setButtonDisable(true);
       }
+
+      const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
+
+      const getTLBySMListReq = {
+        managerEmail: EMP_DETAILS.reportingManager,
+      };
+
+      Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
+        const TLObj = getTLBySMListRes?.data.find(
+          (o) => o.managerEmail === EMP_DETAILS.reportingManager && o.teamLeadEmail === EMP_DETAILS.reportingTeamLead
+        );
+
+        state.tlList = getTLBySMListRes?.data;
+        setTeamLeadBySMList(state.tlList);
+        tempData.reportingTeamLead = TLObj;
+        setState(tempData);
+      });
     });
   }, []);
 
@@ -572,7 +747,7 @@ export default function ViewEmployee() {
     supportDevelopment: state.supportDevelopment || '',
     evaluationPeriod: state.evaluationPeriod || '',
     employeeStatus: state.employeeStatus || '',
-    reportingTeamLead: state.reportingTeamLead || '',
+    reportingTeamLead: state.reportingTeamLead || {},
     reportingManager: state.reportingManager || '',
     verticalMain: state.verticalMain || '',
     verticalSub: state.verticalSub || '',
@@ -582,8 +757,13 @@ export default function ViewEmployee() {
     invoiceType: state.invoiceType || '',
     maximusOpus: state.maximusOpus || '',
     billingSlab: state.billingSlab || '',
+    gender: state.gender || '',
+    dateOfBirth: state.dateOfBirth || '',
+    experience: state.experience || '',
+    totalExperience: state.totalExperience || '',
+    skillSet: state.skillSet || '',
+    lob: state.lob || '',
   };
-  // console.log('FUNCTION ====', location.state.row.maximusOpus);
 
   const validationSchema = Yup.object({
     employeeFirstName: Yup.string()
@@ -618,7 +798,7 @@ export default function ViewEmployee() {
     evaluationPeriod: Yup.string()
       .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
       .required('Select an option'),
-    reportingTeamLead: Yup.string().required('Please Select'),
+    reportingTeamLead: Yup.object().required('Please Select'),
     reportingManager: Yup.string().required('Please Select'),
 
     verticalMain: Yup.string().required('Please Select'),
@@ -628,18 +808,29 @@ export default function ViewEmployee() {
     projectType: Yup.string().required('Please Select'),
     invoiceType: Yup.string().required('Please Select'),
     maximusOpus: Yup.string().required('Please Select'),
+    gender: Yup.string().required('Please Select'),
+    experience: Yup.string().required('Please Select'),
+    dateOfBirth: Yup.string().required('Date of Birth Required'),
+    totalExperience: Yup.string().required('Total Experience required'),
+    skillSet: Yup.string().required('Skill set are required'),
+    lob: Yup.string().required('Please Select'),
   });
 
   return (
     <>
       <Helmet>
+        {console.log('values on render', state.reportingTeamLead)}
         <title> HR Portal | Employee Details (Team Lead)</title>
       </Helmet>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
           <Typography variant="h4">Employee Details </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:list-fill" />} onClick={EmployeeList}>
-            Employee List
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="material-symbols:home-outline-rounded" />}
+            onClick={EmployeeList}
+          >
+            Home
           </Button>
         </Stack>
 
@@ -655,7 +846,6 @@ export default function ViewEmployee() {
             enableReinitialize
             initialValues={initialValues}
             validationSchema={validationSchema}
-            validateOnChange={false}
             onSubmit={(values) => console.log('in on submit .............', values)}
           >
             {(formik) => {
@@ -675,7 +865,13 @@ export default function ViewEmployee() {
                 <>
                   <Stack alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
                     <Modal
-                      open={openApprovalModal || openRejectionModal || openUpdateModal}
+                      open={
+                        openApprovalModal ||
+                        openRejectionModal ||
+                        openUpdateModal ||
+                        openSuccessModal ||
+                        openRejectedconfirmationModal
+                      }
                       aria-labelledby="modal-modal-title"
                       aria-describedby="modal-modal-description"
                     >
@@ -706,6 +902,16 @@ export default function ViewEmployee() {
                           <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
                             Are you sure you want to Update employee details?
                           </Typography>
+                        ) : openSuccessModal ? (
+                          <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
+                            Employee details with Reference id <b>{empData.id}</b> have been saved successfully and
+                            approval is pending with <b>{state.reportingManager}</b>
+                          </Typography>
+                        ) : openRejectedconfirmationModal ? (
+                          <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
+                            Employee with Reference id <b>{empData.id}</b> has been rejected by{' '}
+                            <b>{state.reportingTeamLead}</b>
+                          </Typography>
                         ) : null}
 
                         <Grid
@@ -715,51 +921,67 @@ export default function ViewEmployee() {
                           justifyContent={'center'}
                           style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
                         >
-                          {/* {opneApprovalModal ? ( */}
-                          <>
-                            <Stack justifyContent="center">
-                              <Button
-                                size="medium"
-                                variant="contained"
-                                type="button"
-                                color="primary"
-                                // onClick={() => handleApprovalModal(false, setFieldValue)}
-                                onClick={() =>
-                                  openApprovalModal
-                                    ? handleApprovalModal(false, setFieldValue)
-                                    : openRejectionModal
-                                    ? handleRejectionModal(true, setFieldValue)
-                                    : openUpdateModal
-                                    ? handleCloseUpdateModal()
-                                    : null
-                                }
-                                sx={{ mt: 2 }}
-                              >
-                                Yes
-                              </Button>
-                            </Stack>
+                          {openSuccessModal || openRejectedconfirmationModal ? (
                             <Stack direction="row" justifyContent="center">
                               <Button
                                 size="medium"
                                 variant="contained"
                                 type="button"
                                 color="primary"
-                                // onClick={() => setApprovalModal(false)}
-                                onClick={() =>
-                                  openApprovalModal
-                                    ? setApprovalModal(false)
-                                    : openRejectionModal
-                                    ? setRejectionModal(false)
-                                    : openUpdateModal
-                                    ? setOpenUpdateModal(false)
-                                    : null
-                                }
+                                onClick={() => {
+                                  setOpenSuccessModal(false);
+                                  setRejectedConfirmationModal(false);
+                                  navigate('/EmployeesTL');
+                                }}
                                 sx={{ mt: 2 }}
                               >
-                                No
+                                OK
                               </Button>
                             </Stack>
-                          </>
+                          ) : (
+                            <>
+                              <Stack justifyContent="center">
+                                <Button
+                                  size="medium"
+                                  variant="contained"
+                                  type="button"
+                                  color="primary"
+                                  onClick={() =>
+                                    openApprovalModal
+                                      ? handleApprovalModal(false, setFieldValue)
+                                      : openRejectionModal
+                                      ? handleRejectionModal(true, setFieldValue)
+                                      : openUpdateModal
+                                      ? handleCloseUpdateModal()
+                                      : null
+                                  }
+                                  sx={{ mt: 2 }}
+                                >
+                                  Yes
+                                </Button>
+                              </Stack>
+                              <Stack direction="row" justifyContent="center">
+                                <Button
+                                  size="medium"
+                                  variant="contained"
+                                  type="button"
+                                  color="primary"
+                                  onClick={() =>
+                                    openApprovalModal
+                                      ? setApprovalModal(false)
+                                      : openRejectionModal
+                                      ? setRejectionModal(false)
+                                      : openUpdateModal
+                                      ? setOpenUpdateModal(false)
+                                      : null
+                                  }
+                                  sx={{ mt: 2 }}
+                                >
+                                  No
+                                </Button>
+                              </Stack>
+                            </>
+                          )}
                         </Grid>
                       </Box>
                     </Modal>
@@ -787,10 +1009,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.employeeFirstName ? errors.employeeFirstName : ''}
                           helperText={touched.employeeFirstName ? formik.errors.employeeFirstName : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
 
@@ -812,10 +1034,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.employeeLastName ? errors.employeeLastName : ''}
                           helperText={touched.employeeLastName ? formik.errors.employeeLastName : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={4}>
@@ -836,10 +1058,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.employeeFullName ? errors.employeeFullName : ''}
                           helperText={touched.employeeFullName ? formik.errors.employeeFullName : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
 
@@ -863,14 +1085,14 @@ export default function ViewEmployee() {
                           // error={Boolean(formik.errors.mobileNumber)}
                           error={touched.mobileNumber ? errors.mobileNumber : ''}
                           helperText={touched.mobileNumber ? formik.errors.mobileNumber : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
                       <Grid item xs={4} textAlign="center">
-                        <Typography variant="body1">WhatsApp is available on same number?</Typography>
+                        <Typography variant="body1">Is same number available on Whatsapp ?</Typography>
                         <Typography variant="body1" display={'inline'}>
                           No
                         </Typography>
@@ -922,10 +1144,10 @@ export default function ViewEmployee() {
                           }}
                           error={touched.whatsappNumber ? errors.whatsappNumber : ''}
                           helperText={touched.whatsappNumber ? formik.errors.whatsappNumber : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
 
@@ -936,6 +1158,7 @@ export default function ViewEmployee() {
                           required
                           fullWidth
                           id="personalEmail"
+                          placeholder="abc@gmail.com"
                           label="Personal Email"
                           name="personalEmail"
                           autoComplete="off"
@@ -948,10 +1171,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.personalEmail ? errors.personalEmail : ''}
                           helperText={touched.personalEmail ? formik.errors.personalEmail : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
                       <Grid item xs={6}>
@@ -973,10 +1196,67 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.officialEmail ? errors.officialEmail : ''}
                           helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="gender"
+                          name="gender"
+                          select
+                          label="Gender"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
                           }}
+                          value={state.gender}
+                          onBlur={handleBlur}
+                          error={touched.gender ? errors.gender : ''}
+                          helperText={touched.gender ? formik.errors.gender : ''}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
+                        >
+                          {genderList.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          InputLabelProps={{ shrink: true }}
+                          autoComplete="off"
+                          name="dateOfBirth"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          type="date"
+                          id="dateOfBirth"
+                          label="Date of Birth"
+                          value={values.dateOfBirth}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
+                          helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
                     </Grid>
@@ -1005,11 +1285,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.partnerName ? errors.partnerName : ''}
                           helperText={touched.partnerName ? formik.errors.partnerName : ''}
-                         
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
 
@@ -1033,10 +1312,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.employeeId ? errors.employeeId : ''}
                           helperText={touched.employeeId ? formik.errors.employeeId : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={4}>
@@ -1060,8 +1339,9 @@ export default function ViewEmployee() {
                           helperText={touched.joiningDate ? formik.errors.joiningDate : ''}
                           inputProps={{
                             min: new Date().toISOString().split('T')[0],
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                            max: format(addMonths(new Date(), 3), 'yyyy-MM-dd'),
+                            // readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                            // style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                           }}
                         />
                       </Grid>
@@ -1083,10 +1363,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.newReplacement ? errors.newReplacement : ''}
                           helperText={touched.newReplacement ? formik.errors.newReplacement : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         >
                           {newReplacementList.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
@@ -1114,10 +1394,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.replacementEcode ? errors.replacementEcode : ''}
                           helperText={touched.replacementEcode ? formik.errors.replacementEcode : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         />
                       </Grid>
 
@@ -1140,10 +1420,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.supportDevelopment ? errors.supportDevelopment : ''}
                           helperText={touched.supportDevelopment ? formik.errors.supportDevelopment : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         >
                           {supportDevelopmentList.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
@@ -1179,16 +1459,16 @@ export default function ViewEmployee() {
                           label="Employee Status"
                           value={values.employeeStatus}
                           onChange={handleChange}
-                          inputProps={{
-                            readOnly:
-                              state.employeeStatus === 'Pending For TL Review' || state.employeeStatus === 'Active',
-                            style: {
-                              color:
-                                state.employeeStatus === 'Pending For TL Review' || state.employeeStatus === 'Active'
-                                  ? 'grey'
-                                  : 'black',
-                            },
-                          }}
+                          // inputProps={{
+                          //   readOnly:
+                          //     state.employeeStatus === 'Pending For TL Review' || state.employeeStatus === 'Active',
+                          //   style: {
+                          //     color:
+                          //       state.employeeStatus === 'Pending For TL Review' || state.employeeStatus === 'Active'
+                          //         ? 'grey'
+                          //         : 'black',
+                          //   },
+                          // }}
                           focused={false}
                           onBlur={handleChange}
                           error={Boolean(errors.employeeStatus)}
@@ -1213,10 +1493,10 @@ export default function ViewEmployee() {
                           onBlur={handleBlur}
                           error={touched.evaluationPeriod ? errors.evaluationPeriod : ''}
                           helperText={touched.evaluationPeriod ? formik.errors.evaluationPeriod : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
                         >
                           {evaluationPeriodList.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
@@ -1225,6 +1505,83 @@ export default function ViewEmployee() {
                           ))}
                         </TextField>
                       </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="experience"
+                          name="experience"
+                          select
+                          label="Experience"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          value={state.experience}
+                          onBlur={handleBlur}
+                          error={touched.experience ? errors.experience : ''}
+                          helperText={touched.experience ? formik.errors.experience : ''}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
+                        >
+                          {experienceSlab.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          autoComplete="off"
+                          name="totalExperience"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="totalExperience"
+                          label="Total Experience"
+                          value={values.totalExperience}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.totalExperience && Boolean(errors.totalExperience)}
+                          helperText={touched.totalExperience && errors.totalExperience}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={4}>
+                        <TextField
+                          autoComplete="off"
+                          name="skillSet"
+                          variant="outlined"
+                          required
+                          fullWidth
+                          id="skillSet"
+                          label="Skill Set"
+                          value={values.skillSet}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={formik.touched.skillSet && Boolean(formik.errors.skillSet)}
+                          helperText={formik.touched.skillSet && formik.errors.skillSet}
+                          // inputProps={{
+                          //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                          //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                          // }}
+                        />
+                      </Grid>
                     </Grid>
 
                     <br />
@@ -1232,8 +1589,38 @@ export default function ViewEmployee() {
                     <Typography variant="subtitle1" paddingBottom={'15px'}>
                       Reporting Authorities
                     </Typography>
-
                     <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          labelId="demo-select-small"
+                          id="reportingManager"
+                          name="reportingManager"
+                          select
+                          label="Reporting Authority (SM)"
+                          required
+                          fullWidth
+                          value={values.reportingManager}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeSM(evt);
+                          }}
+                          onBlur={handleBlur}
+                          error={touched.reportingManager ? errors.reportingManager : ''}
+                          helperText={touched.reportingManager ? formik.errors.reportingManager : ''}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
+                        >
+                          {reportingList.map((RAs) => (
+                            <MenuItem key={RAs.managerEmail} value={RAs.managerEmail}>
+                              {RAs.managerName}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+
                       <Grid item xs={12} sm={6}>
                         <TextField
                           labelId="demo-select-small"
@@ -1245,55 +1632,50 @@ export default function ViewEmployee() {
                           required
                           onChange={(evt) => {
                             handleChange(evt);
-                            handleChangeTeamlead(evt);
+                            // handleChangeEvent(evt);
+                            setState({
+                              ...state,
+                              reportingTeamLead: teamLeadBySMList.find((o) => o.teamLeadName === evt.target.value),
+                            });
                           }}
-                          value={values.reportingTeamLead}
+                          value={values.reportingTeamLead.teamLeadName ? values.reportingTeamLead.teamLeadName : ''}
                           onBlur={handleBlur}
                           error={touched.reportingTeamLead ? errors.reportingTeamLead : ''}
                           helperText={touched.reportingTeamLead ? formik.errors.reportingTeamLead : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
                         >
-                          {reportingList.map((RAs) => (
-                            <MenuItem key={RAs.teamLeadEmail} value={RAs.teamLeadEmail}>
+                          {teamLeadBySMList.map((RAs) => (
+                            <MenuItem key={RAs.teamLeadEmail} value={RAs.teamLeadName}>
                               {RAs.teamLeadName}
                             </MenuItem>
                           ))}
                         </TextField>
                       </Grid>
 
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={6} sx={{ display: 'none' }}>
                         <TextField
-                          labelId="demo-select-small"
-                          id="reportingManager"
-                          name="reportingManager"
-                          select
-                          label="Reporting Authority (SM)"
-                          fullWidth
+                          autoComplete="off"
+                          name="billingSlab"
+                          variant="outlined"
                           required
+                          fullWidth
+                          id="billingSlab"
+                          type="number"
+                          label="Monthly Billing Rate"
+                          value={values.billingSlab}
                           onChange={(evt) => {
                             handleChange(evt);
                             handleChangeEvent(evt);
                           }}
-                          value={values.reportingManager}
+                          inputProps={{ min: 40000, max: 500000 }}
                           onBlur={handleBlur}
-                          error={touched.reportingManager ? errors.reportingManager : ''}
-                          helperText={touched.reportingManager ? formik.errors.reportingManager : ''}
-                          inputProps={{
-                            readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
-                            style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
-                          }}
-                        >
-                          {reportingList.map((RAs) =>
-                            RAs.teamLeadEmail === state.reportingTeamLead ? (
-                              <MenuItem key={RAs.managerEmail} value={RAs.managerEmail}>
-                                {RAs.managerName}
-                              </MenuItem>
-                            ) : null
-                          )}
-                        </TextField>
+                          error={formik.touched.billingSlab && Boolean(formik.errors.billingSlab)}
+                          helperText={formik.touched.billingSlab && formik.errors.billingSlab}
+                        />
                       </Grid>
                     </Grid>
                     <br />
@@ -1307,21 +1689,23 @@ export default function ViewEmployee() {
                           labelId="demo-select-small"
                           id="verticalMain"
                           name="verticalMain"
+                          // select
                           // select={state.mainVerticalList.length !== 0}
                           select={values.verticalMain === ''}
                           label="Main Vertical"
                           fullWidth
-                          required
+                          requireds
                           value={values.verticalMain}
                           onChange={(evt) => {
                             handleChange(evt);
                             handleChangeMv(evt, setFieldValue);
+                            // handleValuesForSV();
                           }}
                           // value={values.verticalMain}
+                          // onClick={() => handleRest()}
                           onBlur={handleBlur}
                           error={touched.verticalMain ? errors.verticalMain : ''}
                           helperText={touched.verticalMain ? formik.errors.verticalMain : ''}
-                         
                         >
                           {state.mainVerticalList.map((KeyVal) => (
                             <MenuItem key={KeyVal.main_vertical_id} value={KeyVal.main_vertical_desc}>
@@ -1338,6 +1722,7 @@ export default function ViewEmployee() {
                           name="verticalSub"
                           // select={verticalSubList.length !== 0}
                           select={values.verticalSub === ''}
+                          // select
                           label="Sub Vertical"
                           fullWidth
                           required
@@ -1370,12 +1755,14 @@ export default function ViewEmployee() {
                           name="departmentDesc"
                           // select={departmentList.length !== 0}
                           select={values.departmentDesc === ''}
+                          // select
                           label="Department (IT)"
                           fullWidth
                           required
                           onChange={(evt) => {
                             handleChange(evt);
                             handleChangeDpt(evt);
+                            // handleValuesForFun();
                           }}
                           value={values.departmentDesc}
                           onBlur={handleBlur}
@@ -1402,6 +1789,7 @@ export default function ViewEmployee() {
                           name="functionDesc"
                           // select={functionsList.length !== 0}
                           select={values.functionDesc === ''}
+                          // select
                           label="Function (IT)"
                           fullWidth
                           required
@@ -1427,13 +1815,14 @@ export default function ViewEmployee() {
                         </TextField>
                       </Grid>
 
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={6} sx={{ display: 'none' }}>
                         <TextField
                           labelId="demo-select-small"
                           id="projectType"
                           name="projectType"
                           // select={projectsList.length !== 0}
-                          select={values.projectType === ''}
+                          // select={values.projectType === ''}
+                          select
                           label="Project Type"
                           fullWidth
                           required
@@ -1462,10 +1851,44 @@ export default function ViewEmployee() {
                       <Grid item xs={12} sm={6}>
                         <TextField
                           labelId="demo-select-small"
+                          id="lob"
+                          name="lob"
+                          // select={projectsList.length !== 0}
+                          // select={values.lob === ''}
+                          select
+                          label="LOB"
+                          fullWidth
+                          required
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeProject(evt);
+                          }}
+                          value={values.lob}
+                          onBlur={handleBlur}
+                          error={touched.lob ? errors.lob : ''}
+                          helperText={touched.lob ? formik.errors.lob : ''}
+                          // disabled={
+                          //   state.employeeStatus === 'Pending For TL Review' ||
+                          //   state.employeeStatus === 'Pending For SM Review' ||
+                          //   state.employeeStatus === 'Pending For IT Spoc Review'
+                          // }
+                        >
+                          {LOBList.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          labelId="demo-select-small"
                           id="invoiceType"
                           name="invoiceType"
                           // select={invoiceList.length !== 0}
-                          select={values.invoiceType === ''}
+                          // select={values.invoiceType === ''}
+                          select
                           label="Invoice Type"
                           fullWidth
                           required
@@ -1483,9 +1906,9 @@ export default function ViewEmployee() {
                           //   state.employeeStatus === 'Pending For IT Spoc Review'
                           // }
                         >
-                          {invoiceList.map((KeyVal) => (
-                            <MenuItem key={KeyVal.invoice_type_id} value={KeyVal.invoice_type_desc}>
-                              {KeyVal.invoice_type_desc}
+                          {invoiceTypeList.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
                             </MenuItem>
                           ))}
                         </TextField>
@@ -1496,6 +1919,7 @@ export default function ViewEmployee() {
                           id="maximusOpus"
                           name="maximusOpus"
                           // select={maximusOpusList.length !== 0}
+                          // select
                           select
                           label="Maximus / Opus"
                           fullWidth

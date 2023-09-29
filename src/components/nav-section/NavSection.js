@@ -12,10 +12,12 @@ const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ 
 let redirectUrl = '';
 export default function NavSection() {
   const [menuList = [], setMenuList] = useState();
+  const [employeeList = [], setEmployeeList] = useState();
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-    // console.log('USERDETAILS.NAV.userProfile', USERDETAILS.userProfile);
+    console.log('USERDETAILS.NAV.userProfile', USERDETAILS);
+
     if (!USERDETAILS) {
       console.log('inside first if');
       redirectUrl = '/login';
@@ -37,7 +39,7 @@ export default function NavSection() {
         title: 'Active',
         path: `${redirectUrl}`,
         icon: icon('ic_user'),
-        // navigate(`/topic/${props.id}`,{state:{id:props.id}});
+        employeeCount: '',
       },
       {
         title: 'Pending',

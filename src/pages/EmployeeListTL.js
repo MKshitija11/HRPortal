@@ -86,6 +86,7 @@ export default function EmployeeListTL() {
   const [employeeList = [], setEmployeeList] = useState();
 
   const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState(null)
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -96,6 +97,7 @@ export default function EmployeeListTL() {
       const getEmpListTLReq = {
         teamLeadId: USERDETAILS.spocEmailId,
       };
+
       setIsLoading(true);
       Configuration.getEmpListTeamLead(getEmpListTLReq).then((empListTLRes) => {
         console.log('empListVendorRes', empListTLRes);
@@ -115,15 +117,6 @@ export default function EmployeeListTL() {
   const NewEmployee = () => {
     navigate('/NewEmployee');
   };
-
-  // const ViewEmployee = (row) => {
-  //   console.log("ROW ...........", row);
-  //   navigate("/ViewEmployeeTL", {
-  //     state: {
-  //       row,
-  //     },
-  //   });
-  // };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -176,7 +169,7 @@ export default function EmployeeListTL() {
 
   const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
 
-  const activeEmployees  = filteredUsers.filter((employees) => employees.employeeStatus === "Active");
+  const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -195,7 +188,6 @@ export default function EmployeeListTL() {
         <>
           <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-              {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
               <Button
                 variant="contained"
                 startIcon={<Iconify icon="eva:plus-fill" />}
@@ -205,145 +197,135 @@ export default function EmployeeListTL() {
                 New Employee
               </Button>
             </Stack>
-        
-              <Card
-                sx={{
-                  border: '1px solid lightgray',
-                  borderRadius: '8px',
-                }}
-              >
-                <UserListToolbar
-                  numSelected={selected.length}
-                  filterName={filterName}
-                  onFilterName={handleFilterByName}
-                  employeeList={activeEmployees}
-                />
-                {activeEmployees.length === 0 ? (
-                  <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
-                    <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
-                    <Typography variant="h4" noWrap color="black">
-                      No Records Found!!
-                    </Typography>
-                  </Stack>
-                ) : (
-                  <>
-                    <Scrollbar>
-                      <TableContainer sx={{ minWidth: 800 }}>
-                        <Table>
-                          <UserListHead
-                            order={order}
-                            orderBy={orderBy}
-                            headLabel={TABLE_HEAD}
-                            rowCount={employeeList.length}
-                            numSelected={selected.length}
-                            onRequestSort={handleRequestSort}
-                            onSelectAllClick={handleSelectAllClick}
-                          />
-                          <TableBody>
-                            {activeEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                              const {
-                                id,
-                                employeeId,
-                                employeeFullName,
-                                employeeStatus,
-                                partnerName,
-                                supportDevelopment,
-                              } = row;
-                              const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
-                              return (
-                                <TableRow
-                                  hover
-                                  key={id}
-                                  tabIndex={-1}
-                                  role="checkbox"
-                                  selected={selectedUser}
-                        
-                                  onClick={() => {
-                                    console.log('EMPLOYEE DETAILS.....', row);
-                                    navigate('/ViewEmployeeTL', { state: { row } });
-                                  }}
-                                  sx={{ cursor: 'pointer' }}
-                                >
-                                  <TableCell align="left">{employeeId}</TableCell>
+            <Card
+              sx={{
+                border: '1px solid lightgray',
+                borderRadius: '8px',
+              }}
+            >
+              <UserListToolbar
+                numSelected={selected.length}
+                filterName={filterName}
+                onFilterName={handleFilterByName}
+                employeeList={activeEmployees}
+              />
+              {activeEmployees.length === 0 ? (
+                <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
+                  <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
+                  <Typography variant="h4" noWrap color="black">
+                    No Records Found!!
+                  </Typography>
+                </Stack>
+              ) : (
+                <>
+                  <Scrollbar>
+                    <TableContainer sx={{ minWidth: 800 }}>
+                      <Table>
+                        <UserListHead
+                          order={order}
+                          orderBy={orderBy}
+                          headLabel={TABLE_HEAD}
+                          rowCount={employeeList.length}
+                          numSelected={selected.length}
+                          onRequestSort={handleRequestSort}
+                          onSelectAllClick={handleSelectAllClick}
+                        />
+                        <TableBody>
+                          {activeEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                            const {
+                              id,
+                              employeeId,
+                              employeeFullName,
+                              employeeStatus,
+                              partnerName,
+                              supportDevelopment,
+                            } = row;
+                            const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
-                                  <TableCell component="th" scope="row" padding="none">
-                                    {/* <Stack
-                              direction="row"
-                              alignItems="center"
-                              spacing={2}
-                            > */}
-                                    {/* <Avatar alt={empoyeeFullName} src={avatarUrl} /> */}
-                                    <Typography noWrap>{employeeFullName}</Typography>
-                                    {/* </Stack> */}
-                                  </TableCell>
+                            return (
+                              <TableRow
+                                hover
+                                key={id}
+                                tabIndex={-1}
+                                role="checkbox"
+                                selected={selectedUser}
+                                onClick={() => {
+                                  console.log('EMPLOYEE DETAILS.....', row);
+                                  navigate('/ViewEmployeeTL', { state: { row } });
+                                }}
+                                sx={{ cursor: 'pointer' }}
+                              >
+                                <TableCell align="left">{employeeId}</TableCell>
 
-                                  <TableCell align="left">{partnerName}</TableCell>
+                                <TableCell component="th" scope="row" padding="none">
+                                  <Typography noWrap>{employeeFullName}</Typography>
+                                </TableCell>
 
-                                  <TableCell align="left">{supportDevelopment}</TableCell>
+                                <TableCell align="left">{partnerName}</TableCell>
 
-                                  <TableCell align="left">
-                                
-                                    <Label
-                                      color={
-                                        (employeeStatus === 'Pending For TL Review' && 'warning') ||
-                                        (employeeStatus === 'Active' && 'success') ||
-                                        'warning'
-                                      }
-                                    >
-                                      {employeeStatus}
-                                    </Label>
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            })}
-                            {emptyRows > 0 && (
-                              <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={6} />
-                              </TableRow>
-                            )}
-                          </TableBody>
+                                <TableCell align="left">{supportDevelopment}</TableCell>
 
-                          {isNotFound && (
-                            <TableBody>
-                              <TableRow>
-                                <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                  <Paper
-                                    sx={{
-                                      textAlign: 'center',
-                                    }}
+                                <TableCell align="left">
+                                  <Label
+                                    color={
+                                      (employeeStatus === 'Pending For TL Review' && 'warning') ||
+                                      (employeeStatus === 'Active' && 'success') ||
+                                      'warning'
+                                    }
                                   >
-                                    <Typography variant="h6" paragraph>
-                                      Not found
-                                    </Typography>
-
-                                    <Typography variant="body2">
-                                      No results found for &nbsp;
-                                      <strong>&quot;{filterName}&quot;</strong>.
-                                      <br /> Try checking for typos or using complete words.
-                                    </Typography>
-                                  </Paper>
+                                    {employeeStatus}
+                                  </Label>
                                 </TableCell>
                               </TableRow>
-                            </TableBody>
+                            );
+                          })}
+                          {emptyRows > 0 && (
+                            <TableRow style={{ height: 53 * emptyRows }}>
+                              <TableCell colSpan={6} />
+                            </TableRow>
                           )}
-                        </Table>
-                      </TableContainer>
-                    </Scrollbar>
+                        </TableBody>
 
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
-                      component="div"
-                      count={activeEmployees.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                  </>
-                )}
-              </Card>
-       
+                        {isNotFound && (
+                          <TableBody>
+                            <TableRow>
+                              <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                                <Paper
+                                  sx={{
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  <Typography variant="h6" paragraph>
+                                    Not found
+                                  </Typography>
+
+                                  <Typography variant="body2">
+                                    No results found for &nbsp;
+                                    <strong>&quot;{filterName}&quot;</strong>.
+                                    <br /> Try checking for typos or using complete words.
+                                  </Typography>
+                                </Paper>
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        )}
+                      </Table>
+                    </TableContainer>
+                  </Scrollbar>
+
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={activeEmployees.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                </>
+              )}
+            </Card>
           </Container>
         </>
       )}

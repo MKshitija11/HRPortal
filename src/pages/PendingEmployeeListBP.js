@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
 // @mui
 import {
   Card,
@@ -63,16 +64,14 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.employeeFullName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.employeeFullName?.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function PendingEmployeeListBP(){
-  
+export default function PendingEmployeeListBP() {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log('LOCATION', location);
 
   const [page, setPage] = useState(0);
 
@@ -89,6 +88,81 @@ export default function PendingEmployeeListBP(){
   const [employeeList = [], setEmployeeList] = useState();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [csvData = [], setCsvData] = useState();
+
+  const Heading = [
+    [
+      'Partner Name',
+      'Employee ID',
+      'First Name',
+      'Last Name',
+      'Full Name',
+      'Status',
+      'Official Email',
+      'Personal Email',
+      'Mobile Number',
+      'Whatsapp Number',
+      'Joining Date',
+      'ReportingTeamLead',
+      'ReportingManager',
+      'ReportingItSpoc',
+      'BillingSlab',
+      'EvaluationPeriod',
+      'NewReplacement',
+      'ReplacementEcode',
+      'SupportDevelopment',
+      'Function',
+      'Department',
+      'Vertical(Main)',
+      'Vertical(Sub)',
+      'LOB',
+      'Maximus/Opus',
+      'Invoice Type',
+    ],
+  ];
+  const selectedCols = csvData.map((n) => [
+    n.partnerName,
+    n.employeeId,
+    n.employeeFirstName,
+    n.employeeLastName,
+    n.employeeFullName,
+    n.employeeStatus,
+    n.officialEmail,
+    n.personalEmail,
+    n.mobileNumber,
+    n.whatsappNumber,
+    n.joiningDate,
+    n.reportingTeamLead,
+    n.reportingManager,
+    n.reportingItSpoc,
+    n.billingSlab,
+    n.evaluationPeriod,
+    n.newReplacement,
+    n.replacementEcode,
+    n.supportDevelopment,
+    n.functionDesc,
+    n.departmentDesc,
+    n.verticalMain,
+    n.verticalSub,
+    n.lob,
+    n.maximusOpus,
+    n.invoiceType,
+  ]);
+
+  const exportToCSV = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet([]);
+    XLSX.utils.sheet_add_aoa(ws, Heading);
+
+    XLSX.utils.sheet_add_json(ws, selectedCols, {
+      origin: 'A2',
+      skipHeader: true,
+    });
+
+    XLSX.utils.book_append_sheet(wb, ws, 'DATA');
+
+    XLSX.writeFile(wb, 'EmployeeData.xlsx');
+  };
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -106,6 +180,13 @@ export default function PendingEmployeeListBP(){
       Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
         console.log('empListVendorRes', empListVendorRes);
         setEmployeeList(empListVendorRes.data);
+        const downloadPendingEmp = empListVendorRes.data.filter(
+          (employees) =>
+            employees.employeeStatus === 'Pending For TL Review' ||
+            employees.employeeStatus === 'Pending For SM Review' ||
+            employees.employeeStatus === 'Pending For IT Spoc Review'
+        );
+        setCsvData(downloadPendingEmp);
         setIsLoading(false);
         console.log('employeeList', employeeList);
       });
@@ -143,24 +224,6 @@ export default function PendingEmployeeListBP(){
     setSelected([]);
   };
 
-  // const handleClick = (event, name) => {
-  //   const selectedIndex = selected.indexOf(name);
-  //   let newSelected = [];
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, name);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1)
-  //     );
-  //   }
-  //   setSelected(newSelected);
-  // };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -184,7 +247,6 @@ export default function PendingEmployeeListBP(){
       employees.employeeStatus === 'Pending For SM Review' ||
       employees.employeeStatus === 'Pending For IT Spoc Review'
   );
-  console.log('FILTER USERS', filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -197,7 +259,6 @@ export default function PendingEmployeeListBP(){
       {/* <Container disableGutters> */}
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-          {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
           <Button
             variant="contained"
             startIcon={<Iconify icon="material-symbols:person-add-outline" />}
@@ -207,6 +268,15 @@ export default function PendingEmployeeListBP(){
             size="medium"
           >
             New Employee
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon="ri:file-excel-2-line" />}
+            onClick={() => exportToCSV()}
+            color="primary"
+            size="medium"
+          >
+            Download Excel
           </Button>
         </Stack>
         {isLoading ? (
@@ -245,7 +315,7 @@ export default function PendingEmployeeListBP(){
                           order={order}
                           orderBy={orderBy}
                           headLabel={TABLE_HEAD}
-                          rowCount={employeeList.length}
+                          rowCount={pendingEmployees.length}
                           numSelected={selected.length}
                           onRequestSort={handleRequestSort}
                           onSelectAllClick={handleSelectAllClick}

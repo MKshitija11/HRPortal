@@ -49,7 +49,7 @@ export default function ViewEmployee() {
     departmentDesc: '',
     verticalMain: '',
     verticalSub: '',
-    projectType: '',
+    // projectType: '',
     maximusOpus: '',
     billingSlab: '',
     invoiceType: '',

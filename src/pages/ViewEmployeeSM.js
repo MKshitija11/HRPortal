@@ -49,7 +49,7 @@ export default function ViewEmployee() {
     departmentDesc: '',
     verticalMain: '',
     verticalSub: '',
-    projectType: '',
+    // projectType: '',
     maximusOpus: '',
     billingSlab: '',
     invoiceType: '',
@@ -271,24 +271,48 @@ export default function ViewEmployee() {
     Configuration.getSubVerticals(getSubVerticalsReq).then((getSubVerticalsRes) => {
       state.subVerticalList = getSubVerticalsRes.data;
       console.log('subVerticalList', state.subVerticalList);
-
       setVerticalSubList(state.subVerticalList);
       console.log('verticalSubList', verticalSubList);
+      if (getSubVerticalsRes?.data.length === 1) {
+        console.log('LENGTH');
+        handleChangeSv(evt, {
+          verticalMain: evt.target.value,
+          verticalSub: getSubVerticalsRes?.data?.[0]?.sub_vertical_desc,
+        });
+      }
     });
   };
 
-  const handleChangeSv = (evt) => {
+  const handleChangeSv = (evt, autoFill) => {
     console.log('evt.target.value', evt.target.value);
     console.log('evt.target.name', evt.target.name);
-    setState({
-      ...state,
-      [evt.target.name]: evt.target.value,
-      departmentDesc: '',
-      functionDesc: '',
-    });
+    // setState({
+    //   ...state,
+    //   [evt.target.name]: evt.target.value,
+    //   departmentDesc: '',
+    //   functionDesc: '',
+    // });
+
+
+    if (autoFill) {
+      setState({
+        ...state,
+        [evt.target.name]: evt.target.value,
+        verticalSub: autoFill ? autoFill.verticalSub : evt.target.value,
+        departmentDesc: '',
+        functionDesc: '',
+      });
+    } else {
+      setState({
+        ...state,
+        [evt.target.name]: evt.target.value,
+        departmentDesc: '',
+        functionDesc: '',
+      });
+    }
     const getDepartmentReq = {
       key: 'DEPARTMENTS',
-      value: evt.target.value,
+      value: autoFill ? autoFill.verticalSub : evt.target.value,
     };
 
     Configuration.getDepartments(getDepartmentReq).then((getDepartmentRes) => {
@@ -296,36 +320,91 @@ export default function ViewEmployee() {
       console.log('departmentList', state.departmentList);
       setDepartmentList(state.departmentList);
       console.log('departmentList', departmentList);
+      if (getDepartmentRes?.data.length === 1) {
+        handleChangeDpt(evt, {
+          verticalMain: autoFill ? autoFill?.verticalMain : state.verticalMain,
+          verticalSub: autoFill ? autoFill?.verticalSub : evt.target.value,
+          departmentDesc: getDepartmentRes?.data?.[0]?.department_desc,
+        });
+      }
     });
   };
 
-  const handleChangeDpt = (evt) => {
+  const handleChangeDpt = (evt, autoFill) => {
     console.log('evt.target.value', evt.target.value);
     console.log('evt.target.name', evt.target.name);
-    setState({
-      ...state,
-      [evt.target.name]: evt.target.value,
-    });
+    // setState({
+    //   ...state,
+    //   [evt.target.name]: evt.target.value,
+    // });
+
+    if (autoFill) {
+      setState({
+        ...state,
+        verticalMain: autoFill?.verticalMain,
+        verticalSub: autoFill?.verticalSub,
+        departmentDesc: autoFill ? autoFill.departmentDesc : evt.target.value,
+        // departmentDesc: '',
+        functionDesc: '',
+      });
+    } else {
+      setState({
+        ...state,
+        [evt.target.name]: evt.target.value,
+        verticalMain: state.verticalMain,
+        verticalSub: state.verticalSub,
+        functionDesc: '',
+      });
+    }
     const getFunctionReq = {
       key: 'FUNCTIONS',
-      value: evt.target.value,
+      value: autoFill ? autoFill.departmentDesc : evt.target.value,
     };
+
+    console.log("getFunctionReq", getFunctionReq);
 
     Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
       state.functionsList = getFunctionsRes.data;
       console.log('functionList', state.functionsList);
       setFunctionsList(state.functionsList);
-      console.log('functionsList', functionsList);
+      console.log('functionsList', getFunctionsRes);
+      if (getFunctionsRes?.data.length === 1) {
+        handleChangeFun(evt, {
+          verticalMain: autoFill ? autoFill?.verticalMain : state.verticalMain,
+          verticalSub: autoFill ? autoFill?.verticalSub : state.verticalSub,
+          departmentDesc: autoFill ? autoFill.departmentDesc : evt.target.value,
+          functionDesc: getFunctionsRes?.data?.[0]?.function_desc,
+        });
+      }
     });
   };
 
-  const handleChangeFun = (evt) => {
+  const handleChangeFun = (evt, autoFill) => {
     console.log('evt.target.value', evt.target.value);
     console.log('evt.target.name', evt.target.name);
-    setState({
-      ...state,
-      [evt.target.name]: evt.target.value,
-    });
+    // setState({
+    //   ...state,
+    //   [evt.target.name]: evt.target.value,
+    // });
+
+    if (autoFill) {
+      setState({
+        ...state,
+        verticalMain: autoFill?.verticalMain,
+        verticalSub: autoFill?.verticalSub,
+        departmentDesc: autoFill ? autoFill.departmentDesc : state.departmentDesc,
+
+        functionDesc: autoFill?.functionDesc,
+      });
+    } else {
+      setState({
+        ...state,
+        verticalMain: state.verticalMain,
+        verticalSub: state.verticalSub,
+        departmentDesc: state.departmentDesc,
+        [evt.target.name]: evt.target.value,
+      });
+    }
     const getProjectsReq = {
       key: 'PROJECTS',
       value: evt.target.value,
@@ -587,7 +666,7 @@ export default function ViewEmployee() {
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
     console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
-    if (param === false) {
+    if (!param) {
       if (validForm()) {
         console.log('FROM VALID FORM --- is valid');
         console.log('employeeFormData::', employeeFormData);
@@ -679,7 +758,7 @@ export default function ViewEmployee() {
         employeeStatus: EMP_DETAILS.employeeStatus,
         supportDevelopment: EMP_DETAILS.supportDevelopment,
         evaluationPeriod: EMP_DETAILS.evaluationPeriod,
-        projectType: EMP_DETAILS.projectType,
+        // projectType: EMP_DETAILS.projectType,
         maximusOpus: EMP_DETAILS.maximusOpus,
         billingSlab: EMP_DETAILS.billingSlab,
         invoiceType: EMP_DETAILS.invoiceType,
@@ -767,7 +846,7 @@ export default function ViewEmployee() {
     verticalSub: state.verticalSub || '',
     departmentDesc: state.departmentDesc || '',
     functionDesc: state.functionDesc || '',
-    projectType: state.projectType || '',
+    // projectType: state.projectType || '',
     invoiceType: state.invoiceType || '',
     maximusOpus: state.maximusOpus || '',
     billingSlab: state.billingSlab || '',
@@ -819,7 +898,7 @@ export default function ViewEmployee() {
     verticalSub: Yup.string().required('Please Select'),
     departmentDesc: Yup.string().required('Please Select'),
     functionDesc: Yup.string().required('Please Select'),
-    projectType: Yup.string().required('Please Select'),
+    // projectType: Yup.string().required('Please Select'),
     invoiceType: Yup.string().required('Please Select'),
     maximusOpus: Yup.string().required('Please Select'),
     gender: Yup.string().required('Please Select'),
@@ -1799,37 +1878,7 @@ export default function ViewEmployee() {
                         </TextField>
                       </Grid>
 
-                      <Grid item xs={12} sm={6} sx={{ display: 'none' }}>
-                        <TextField
-                          labelId="demo-select-small"
-                          id="projectType"
-                          name="projectType"
-                          // select={projectsList.length !== 0}
-                          select={values.projectType === ''}
-                          label="Project Type"
-                          fullWidth
-                          required
-                          onChange={(evt) => {
-                            handleChange(evt);
-                            handleChangeProject(evt);
-                          }}
-                          value={values.projectType}
-                          onBlur={handleBlur}
-                          error={touched.projectType ? errors.projectType : ''}
-                          helperText={touched.projectType ? formik.errors.projectType : ''}
-                          // disabled={
-                          //   state.employeeStatus === 'Pending For TL Review' ||
-                          //   state.employeeStatus === 'Pending For SM Review' ||
-                          //   state.employeeStatus === 'Pending For IT Spoc Review'
-                          // }
-                        >
-                          {projectsList.map((KeyVal) => (
-                            <MenuItem key={KeyVal.project_id} value={KeyVal.initcap}>
-                              {KeyVal.initcap}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </Grid>
+                  
 
                       <Grid item xs={12} sm={6}>
                         <TextField

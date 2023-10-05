@@ -46,7 +46,7 @@ export default function ViewEmployee() {
     departmentDesc: '',
     verticalMain: '',
     verticalSub: '',
-    projectType: '',
+    // projectType: '',
     maximusOpus: '',
     // billingSlab: '',
     invoiceType: '',
@@ -76,6 +76,7 @@ export default function ViewEmployee() {
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [openRejectedconfirmationModal, setRejectedConfirmationModal] = useState(false);
+
 
   const evaluationPeriodList = [
     {
@@ -355,7 +356,7 @@ export default function ViewEmployee() {
 
     const getFunctionReq = {
       key: 'FUNCTIONS',
-      value: evt.target.value,
+      value: autoFill ? autoFill.departmentDesc : evt.target.value,
     };
 
     Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
@@ -651,7 +652,10 @@ export default function ViewEmployee() {
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
     console.log('JSON:employeeFormData::', employeeFormData);
-    if (param === false) {
+    console.log('condition', param === false, param);
+
+    if (!param) {
+      console.log('condition inside', param === false, param);
       console.log('INSIDE IF');
       if (validForm()) {
         console.log('JSON:employeeFormData::', employeeFormData);
@@ -740,7 +744,7 @@ export default function ViewEmployee() {
         employeeStatus: EMP_DETAILS.employeeStatus,
         supportDevelopment: EMP_DETAILS.supportDevelopment,
         evaluationPeriod: EMP_DETAILS.evaluationPeriod,
-        projectType: EMP_DETAILS.projectType,
+        // projectType: EMP_DETAILS.projectType,
         maximusOpus: EMP_DETAILS.maximusOpus,
         billingSlab: EMP_DETAILS.billingSlab,
         invoiceType: EMP_DETAILS.invoiceType,
@@ -812,7 +816,7 @@ export default function ViewEmployee() {
     verticalSub: state.verticalSub || '',
     departmentDesc: state.departmentDesc || '',
     functionDesc: state.functionDesc || '',
-    projectType: state.projectType || '',
+    // projectType: state.projectType || '',
     invoiceType: state.invoiceType || '',
     maximusOpus: state.maximusOpus || '',
     billingSlab: state.billingSlab || '',
@@ -864,7 +868,7 @@ export default function ViewEmployee() {
     verticalSub: Yup.string().required('Please Select'),
     departmentDesc: Yup.string().required('Please Select'),
     functionDesc: Yup.string().required('Please Select'),
-    projectType: Yup.string().required('Please Select'),
+    // projectType: Yup.string().required('Please Select'),
     invoiceType: Yup.string().required('Please Select'),
     maximusOpus: Yup.string().required('Please Select'),
     gender: Yup.string().required('Please Select'),
@@ -1663,6 +1667,7 @@ export default function ViewEmployee() {
                           onChange={(evt) => {
                             handleChange(evt);
                             handleChangeSM(evt);
+                            
                           }}
                           onBlur={handleBlur}
                           error={touched.reportingManager ? errors.reportingManager : ''}
@@ -1697,6 +1702,7 @@ export default function ViewEmployee() {
                               ...state,
                               reportingTeamLead: teamLeadBySMList.find((o) => o.teamLeadName === evt.target.value),
                             });
+                         
                           }}
                           value={values.reportingTeamLead.teamLeadName ? values.reportingTeamLead.teamLeadName : ''}
                           onBlur={handleBlur}
@@ -1870,39 +1876,6 @@ export default function ViewEmployee() {
                           {functionsList.map((KeyVal) => (
                             <MenuItem key={KeyVal.function_id} value={KeyVal.function_desc}>
                               {KeyVal.function_desc}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} sx={{ display: 'none' }}>
-                        <TextField
-                          labelId="demo-select-small"
-                          id="projectType"
-                          name="projectType"
-                          // select={projectsList.length !== 0}
-                          // select={values.projectType === ''}
-                          select
-                          label="Project Type"
-                          fullWidth
-                          required
-                          onChange={(evt) => {
-                            handleChange(evt);
-                            handleChangeProject(evt);
-                          }}
-                          value={values.projectType}
-                          onBlur={handleBlur}
-                          error={touched.projectType ? errors.projectType : ''}
-                          helperText={touched.projectType ? formik.errors.projectType : ''}
-                          // disabled={
-                          //   state.employeeStatus === 'Pending For TL Review' ||
-                          //   state.employeeStatus === 'Pending For SM Review' ||
-                          //   state.employeeStatus === 'Pending For IT Spoc Review'
-                          // }
-                        >
-                          {projectsList.map((KeyVal) => (
-                            <MenuItem key={KeyVal.project_id} value={KeyVal.initcap}>
-                              {KeyVal.initcap}
                             </MenuItem>
                           ))}
                         </TextField>

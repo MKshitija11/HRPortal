@@ -23,6 +23,7 @@ import * as Yup from 'yup';
 import addMonths from 'date-fns/addMonths';
 import format from 'date-fns/format';
 // components
+import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
 
@@ -77,6 +78,7 @@ export default function ViewEmployee() {
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [openRejectedconfirmationModal, setRejectedConfirmationModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const evaluationPeriodList = [
     {
       value: '15 Days',
@@ -293,7 +295,6 @@ export default function ViewEmployee() {
     //   functionDesc: '',
     // });
 
-
     if (autoFill) {
       setState({
         ...state,
@@ -361,7 +362,7 @@ export default function ViewEmployee() {
       value: autoFill ? autoFill.departmentDesc : evt.target.value,
     };
 
-    console.log("getFunctionReq", getFunctionReq);
+    console.log('getFunctionReq', getFunctionReq);
 
     Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
       state.functionsList = getFunctionsRes.data;
@@ -671,21 +672,28 @@ export default function ViewEmployee() {
         console.log('FROM VALID FORM --- is valid');
         console.log('employeeFormData::', employeeFormData);
         console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
-
+        setIsLoading(true);
         Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
           console.log('employeeFormRes::', employeeFormRes.data);
           if (employeeFormRes) {
-            setOpenSuccessModal(true);
+            setTimeout(() => {
+              setIsLoading(false);
+              setOpenSuccessModal(true);
+            }, 500);
           }
           // navigate('/employeesSM');
         });
       }
     } else {
       console.log('FROM VALID FORM --- is valid else block');
+      setIsLoading(true);
       Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
         console.log('employeeFormRes::', employeeFormRes.data);
         if (employeeFormRes) {
-          setRejectedConfirmationModal(true);
+          setTimeout(() => {
+            setIsLoading(false);
+            setRejectedConfirmationModal(true);
+          }, 500);
         }
         // navigate('/EmployeesSM');
       });
@@ -743,7 +751,7 @@ export default function ViewEmployee() {
     const viewEmployeeReq = {
       id: location.state.row.id,
     };
-
+    setIsLoading(true);
     Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
       console.log('employeeFormRes::', viewEmployeeRes.data);
       const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
@@ -783,12 +791,17 @@ export default function ViewEmployee() {
         gender: EMP_DETAILS.gender,
         dateOfBirth: EMP_DETAILS.dateOfBirth,
         reportingItSpoc: EMP_DETAILS.reportingItSpoc,
+        employeeFullName: EMP_DETAILS.employeeFullName,
       };
       setPartnerName(EMP_DETAILS.partnerName);
 
       if (state.employeeStatus === 'Pending For IT Spoc Review') {
         setButtonDisable(true);
       }
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+
 
       const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
       console.log(
@@ -938,6 +951,11 @@ export default function ViewEmployee() {
             borderRadius: '8px',
           }}
         >
+              {isLoading ? (
+            <Stack justifyContent="center" alignItems="center" mb={20}>
+              <Loader />
+            </Stack>
+          ) : (
           <Formik
             enableReinitialize
             initialValues={initialValues}
@@ -1000,12 +1018,12 @@ export default function ViewEmployee() {
                           </Typography>
                         ) : openSuccessModal ? (
                           <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                            Employee details with Reference id <b>{empData.id}</b> have been saved successfully and
-                            approval is pending with <b>{empData.reportingItSpoc}</b>
+                            Details of <b>{empData.employeeFullName}</b> has been saved successfully and approval is
+                            pending with <b>{empData.reportingItSpoc}</b>
                           </Typography>
                         ) : openRejectedconfirmationModal ? (
                           <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                            Employee with reference id <b>{empData.id}</b> have been rejected by{' '}
+                            Details of <b>{empData.employeeFullName}</b> has been rejected by{' '}
                             <b>{empData.reportingManager}</b>
                           </Typography>
                         ) : null}
@@ -1878,8 +1896,6 @@ export default function ViewEmployee() {
                         </TextField>
                       </Grid>
 
-                  
-
                       <Grid item xs={12} sm={6}>
                         <TextField
                           labelId="demo-select-small"
@@ -2072,6 +2088,7 @@ export default function ViewEmployee() {
               );
             }}
           </Formik>
+          )}
         </Card>
       </Container>
     </>

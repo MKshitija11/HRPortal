@@ -1,32 +1,32 @@
-import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-import ReactApexChart from "react-apexcharts";
+import ReactApexChart from 'react-apexcharts';
 // @mui
-import { Card, CardHeader } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Card, CardHeader } from '@mui/material';
+import { styled } from '@mui/material/styles';
 // utils
-import { fNumber } from "../../../utils/formatNumber";
+import { fNumber } from '../../../utils/formatNumber';
 // components
-import { useChart } from "../../../components/chart";
+import { useChart } from '../../../components/chart';
 
 // ----------------------------------------------------------------------
 
 const CHART_HEIGHT = 372;
 const LEGEND_HEIGHT = 77;
 
-const StyledChartWrapper = styled("div")(({ theme }) => ({
+const StyledChartWrapper = styled('div')(({ theme }) => ({
   height: CHART_HEIGHT,
   marginTop: theme.spacing(1),
-  "& .apexcharts-canvas svg": { height: CHART_HEIGHT },
-  "& .apexcharts-canvas svg,.apexcharts-canvas foreignObject": {
-    overflow: "visible",
+  '& .apexcharts-canvas svg': { height: CHART_HEIGHT },
+  '& .apexcharts-canvas svg,.apexcharts-canvas foreignObject': {
+    overflow: 'visible',
   },
-  "& .apexcharts-legend": {
+  '& .apexcharts-legend': {
     height: LEGEND_HEIGHT,
-    display: "none",
-    alignContent: "center",
-    position: "relative !important",
+    display: 'none',
+    alignContent: 'center',
+    position: 'relative !important',
     borderTop: `solid 1px ${theme.palette.divider}`,
     top: `calc(${CHART_HEIGHT - LEGEND_HEIGHT}px) !important`,
   },
@@ -38,17 +38,12 @@ AppConversionRates.propTypes = {
   chartData: PropTypes.array.isRequired,
 };
 
-export default function AppConversionRates({
-  title,
-  subheader,
-  chartData,
-  ...other
-}) {
+export default function AppConversionRates({ title, subheader, chartData, ...other }) {
   const navigate = useNavigate();
-  console.log('OTHER', other)
+  console.log('OTHER', other);
 
   const handleClickChart = (prtnerName) => {
-    navigate("/Reports", {
+    navigate('/Reports', {
       state: {
         partnerNameChart: prtnerName,
       },
@@ -57,21 +52,29 @@ export default function AppConversionRates({
   };
   // console.log('APP CONVERSION RATES.... ', chartData)
   const chartLabels = chartData.map((i) => i.chartLabel);
-  console.log('CHART LABLES', chartLabels)
+  console.log('CHART LABLES', chartLabels);
 
   const chartSeries = chartData.map((i) => i.chartValue);
-  console.log('CHART SERIES', chartSeries)
+  console.log('CHART SERIES', chartSeries);
 
   const chartColors = chartData.map((i) => i.chartColor);
-  console.log('CHART COLOS', chartColors)
+  console.log('CHART COLOS', chartColors);
 
-  const chartOptions =({
-    series: [{
-   
-      data: chartSeries
-     
-    }],
-    
+
+  // const series = [
+  //   {
+  //     name: "Height in feet",
+  //     data: [2722, 2080, 2063, 1972, 1516],
+  //   },
+  // ];
+
+  const chartOptions = {
+    series: [
+      {
+        data: chartSeries,
+      },
+    ],
+
     options: {
       // chart: {
       //   animations: {
@@ -81,34 +84,35 @@ export default function AppConversionRates({
       //       speed: 400,
       //     },
       //   },
-        events: {
-          click: (event, chartContext, config) => {
-            handleClickChart(chartLabels[config.dataPointIndex]);
-          },
+      events: {
+        click: (event, chartContext, config) => {
+          handleClickChart(chartLabels[config.dataPointIndex]);
         },
+      },
       // },
       chart: {
         type: 'bar',
-        height: 120
+        height: 120,
       },
       plotOptions: {
         bar: {
           borderRadius: 4,
           horizontal: true,
-        }
+        },
       },
       dataLabels: {
-        enabled: false,
+        // enabled: false,
         markers: {
-          colors: ['#F44336', '#E91E63', '#9C27B0']
-        }
+          colors: ['#F44336', '#E91E63', '#9C27B0'],
+        },
       },
       // color
       xaxis: {
-        categories: chartLabels
-      }
-    }
-  })
+        categories: chartLabels,
+        // categories1: chartLabels
+      },
+    },
+  };
 
   // const chartOptions = useChart({
   //   chart: {
@@ -207,11 +211,16 @@ export default function AppConversionRates({
           height={372}
           type="bar"
         />
-      </StyledChartWrapper> */} 
-       <CardHeader title={title} subheader={subheader} /> 
-      <ReactApexChart options={chartOptions.options} series={chartOptions.series} type="bar" height={350} colors={chartColors}/>
-
-    
+      </StyledChartWrapper> */}
+      <CardHeader title={title} subheader={subheader} />
+      <ReactApexChart
+        options={chartOptions.options}
+        series={chartOptions.series}
+        // series={series}
+        type="bar"
+        height={350}
+        colors={chartColors}
+      />
     </Card>
   );
 }

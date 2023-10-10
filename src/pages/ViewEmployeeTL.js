@@ -20,6 +20,7 @@ import * as Yup from 'yup';
 import addMonths from 'date-fns/addMonths';
 import format from 'date-fns/format';
 // components
+import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
 
@@ -76,7 +77,7 @@ export default function ViewEmployee() {
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [openRejectedconfirmationModal, setRejectedConfirmationModal] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
 
   const evaluationPeriodList = [
     {
@@ -659,18 +660,26 @@ export default function ViewEmployee() {
       console.log('INSIDE IF');
       if (validForm()) {
         console.log('JSON:employeeFormData::', employeeFormData);
+        setIsLoading(true);
         Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
           if (employeeFormRes) {
-            setOpenSuccessModal(true);
+            setTimeout(() => {
+              setIsLoading(false);
+              setOpenSuccessModal(true);
+            }, 500);
           }
         });
       }
     } else {
       console.log('INSIDE ELSE');
       console.log('JSON:employeeFormData::', employeeFormData);
+      setIsLoading(true);
       Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
         if (employeeFormRes) {
-          setRejectedConfirmationModal(true);
+          setTimeout(() => {
+            setIsLoading(false);
+            setRejectedConfirmationModal(true);
+          }, 500);
         }
       });
     }
@@ -730,7 +739,7 @@ export default function ViewEmployee() {
     const viewEmployeeReq = {
       id: location.state.row.id,
     };
-
+    setIsLoading(true);
     Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
       const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
       const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
@@ -768,12 +777,16 @@ export default function ViewEmployee() {
         totalExperience: EMP_DETAILS.totalExperience,
         gender: EMP_DETAILS.gender,
         dateOfBirth: EMP_DETAILS.dateOfBirth,
+        employeeFullName: EMP_DETAILS.employeeFullName
       };
       setPartnerName(EMP_DETAILS.partnerName);
 
       if (state.employeeStatus === 'Pending For SM Review') {
         setButtonDisable(true);
       }
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
 
       const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
 
@@ -904,6 +917,11 @@ export default function ViewEmployee() {
             borderRadius: '8px',
           }}
         >
+            {isLoading ? (
+            <Stack justifyContent="center" alignItems="center" mb={20}>
+              <Loader />
+            </Stack>
+          ) : (
           <Formik
             enableReinitialize
             initialValues={initialValues}
@@ -968,12 +986,12 @@ export default function ViewEmployee() {
                           </Typography>
                         ) : openSuccessModal ? (
                           <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                            Employee details with Reference id <b>{empData.id}</b> have been saved successfully and
+                            Details of <b>{empData.employeeFullName}</b> has been saved successfully and
                             approval is pending with <b>{state.reportingManager}</b>
                           </Typography>
                         ) : openRejectedconfirmationModal ? (
                           <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                            Employee with Reference id <b>{empData.id}</b> has been rejected by{' '}
+                            Details of <b>{empData.employeeFullName}</b> has been rejected by{' '}
                             <b>{state.reportingTeamLead}</b>
                           </Typography>
                         ) : null}
@@ -1667,7 +1685,6 @@ export default function ViewEmployee() {
                           onChange={(evt) => {
                             handleChange(evt);
                             handleChangeSM(evt);
-                            
                           }}
                           onBlur={handleBlur}
                           error={touched.reportingManager ? errors.reportingManager : ''}
@@ -1702,7 +1719,6 @@ export default function ViewEmployee() {
                               ...state,
                               reportingTeamLead: teamLeadBySMList.find((o) => o.teamLeadName === evt.target.value),
                             });
-                         
                           }}
                           value={values.reportingTeamLead.teamLeadName ? values.reportingTeamLead.teamLeadName : ''}
                           onBlur={handleBlur}
@@ -2029,6 +2045,7 @@ export default function ViewEmployee() {
               );
             }}
           </Formik>
+          )}
         </Card>
       </Container>
     </>

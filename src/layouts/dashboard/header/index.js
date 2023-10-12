@@ -9,6 +9,7 @@ import Iconify from '../../../components/iconify';
 //
 // import Searchbar from "./Searchbar";
 import AccountPopover from './AccountPopover';
+
 // import LanguagePopover from "./LanguagePopover";
 // import NotificationsPopover from "./NotificationsPopover";
 
@@ -27,7 +28,7 @@ const StyledRoot = styled(AppBar)(({ theme }) => ({
 
   [theme.breakpoints.up('xs')]: {
     width: `calc(100% - ${NAV_WIDTH + 1}px)`,
-    top:5,
+    top: 5,
   },
 }));
 
@@ -48,7 +49,7 @@ Header.propTypes = {
 
 export default function Header({ onOpenNav }) {
   return (
-    <StyledRoot>
+    <StyledRoot sx={{ mr: 0 }}>
       <StyledToolbar>
         <IconButton
           onClick={onOpenNav}
@@ -73,6 +74,7 @@ export default function Header({ onOpenNav }) {
             sm: 1,
           }}
         >
+          {/* <LanguagePopover /> */}
           {/* <LanguagePopover />
           <NotificationsPopover /> */}
           {/* <img

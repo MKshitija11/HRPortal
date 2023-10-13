@@ -25,17 +25,18 @@ const msalConfig = {
   auth: {
     clientId: 'd6398271-9fe8-4c3b-b928-1fb7dcb413bf',
     authority: 'https://login.microsoftonline.com/46e36785-1a8f-46f4-9641-40872ab8ee0f/',
-    // redirectUri: 'http://itsmqt.bagicuat.bajajallianz.com:8888/Login',
-    // redirectUri: 'https://api.bagicuat.bajajallianz.com/BagicHRSM/'
-    // http://itsmqt.bagicuat.bajajallianz.com:8888/Login
 
-    redirectUri: 'http://localhost:3000/',
+    // production redirect uri
+    redirectUri: 'https://ithrportal.bajajallianz.com',
+
+    // local redirect uri
+    // redirectUri: 'http://localhost:3000/',
   },
 };
 
 const msalInstance = new Msal.UserAgentApplication(msalConfig);
 
-// ----------------------------------------------------------------------
+// ----------------------------PRODUCTION------------------------------------------
 
 export default function LoginForm(props) {
   const navigate = useNavigate();
@@ -46,6 +47,11 @@ export default function LoginForm(props) {
   const [errorMessage, setErrorMessage] = useState('');
 
   const { instance } = useMsal();
+
+  useEffect(() => {
+    BagicSso();
+    console.log('inside useEffect >>');
+  }, []);
 
   const BagicSso = (e) => {
     const loginRequest = {
@@ -62,8 +68,16 @@ export default function LoginForm(props) {
           response.idToken.claims.email = response.idToken.claims.preferred_username;
           const userNameSso = response.idToken.claims.preferred_username.toLowerCase();
           console.log('userNameSso', userNameSso);
+
+          const newUsername = userNameSso.split("@")
+          console.log("Updated username", newUsername)
+          const splitedUsername = newUsername[0]
+          const appendedTxt = "@bajajallianz.co.in"
+          const updatedUsername = `${splitedUsername}${appendedTxt}`
+          console.log("Updated username ===", `${splitedUsername}${appendedTxt}`)
+
           const login = {
-            username: userNameSso,
+            username: updatedUsername,
           };
 
           localStorage.setItem('userName', userNameSso);
@@ -193,9 +207,9 @@ export default function LoginForm(props) {
           }}
         />
         <Collapse in={open}>
-          {/* <Alert severity="warning" variant="filled">
+          <Alert severity="warning" variant="filled">
             {errorMessage}
-          </Alert> */}
+          </Alert>
         </Collapse>
         {/* <TextField
           required
@@ -253,7 +267,7 @@ export default function LoginForm(props) {
   );
 }
 
-// ----------------------------------------------------------------------
+// -------------------------------UAT---------------------------------------
 
 // export default function LoginForm() {
 //   const navigate = useNavigate();
@@ -262,6 +276,7 @@ export default function LoginForm(props) {
 //   const [userName, setUsername] = useState('');
 //   const [passWord, setPassword] = useState('');
 //   const [errorMessage, setErrorMessage] = useState('');
+//   const [updatedUser, setUpdatedUser] = useState('');
 
 //   useEffect(() => {
 //     sessionStorage.clear();
@@ -277,8 +292,31 @@ export default function LoginForm(props) {
 //   };
 
 //   const handleClick = () => {
-//     const loginRequest = {
-//       username: userName,
+//     // const newUsername = userName.split("@")
+//     // console.log("Updated username", newUsername)
+//     // const splitedUsername = newUsername[0]
+//     // const appendedTxt = "@bajajallianz.co.in"
+//     // const updatedUsername = `${splitedUsername}${appendedTxt}`
+//     // console.log("Updated username ===", `${splitedUsername}${appendedTxt}`)
+//     // console.log("Updated ====> ", newstr);
+
+//     if (userName.includes('@bajajallianz')) {
+//       console.log("BLOCK If=====>", userName)
+//       const newUsername = userName.split('@');
+//       console.log('Updated username', newUsername);
+//       const splitedUsername = newUsername[0];
+//       const appendedTxt = '@bajajallianz.co.in';
+//       const updatedUsername = `${splitedUsername}${appendedTxt}`;
+//       setUpdatedUser(updatedUsername);
+//       console.log("UserName 3====", updatedUsername)
+
+//     } else {
+//       console.log('BLOCK ELSE=====>', userName);
+//       setUpdatedUser(userName);
+//     }
+
+//    const loginRequest = {
+//       username: updatedUser,
 //       password: passWord,
 //     };
 
@@ -327,7 +365,7 @@ export default function LoginForm(props) {
 //     }
 //     // navigate('/dashboard', { replace: true });
 //   };
-
+//   console.log("UN", updatedUser)
 //   return (
 //     <>
 //       <Stack spacing={2}>

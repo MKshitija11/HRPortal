@@ -78,10 +78,10 @@ export default function EmployeeList() {
   const [isChecked, setIsChecked] = useState(false);
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [referenceNumber, setReferenceNumber] = useState();
-  const [selectedTL, setSelectedTL] = useState()
-  const [selectedSM, setSelectedSM] = useState()
-  console.log("Selected TL", selectedTL)
-  console.log("Selected SM", selectedSM)
+  const [selectedTL, setSelectedTL] = useState();
+  const [selectedSM, setSelectedSM] = useState();
+  console.log('Selected TL', selectedTL);
+  console.log('Selected SM', selectedSM);
   const newReplacementList = [
     {
       value: 'New',
@@ -768,6 +768,10 @@ export default function EmployeeList() {
                         </Typography>
                       </div>
                       <input type="hidden" id="isChecked" name="isChecked" value={values.isChecked} />
+
+                      <input type="hidden" id="maximusOpus" name="maximusOpus" value="NA" />
+                      <input type="hidden" id="functionDesc" name="functionDesc" value="NA" />
+                      <input type="hidden" id="departmentDesc" name="departmentDesc" value="NA" />
                     </Grid>
 
                     <Grid item xs={12} sm={4}>

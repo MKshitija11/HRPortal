@@ -61,6 +61,9 @@ export default function ViewEmployee({ props }) {
     tlList: [],
     lwd: '',
     resignationDate: '',
+    maximusOpus: '',
+    functionDesc: "",
+    departmentDesc: ''
   });
   const [openModal, setOpenModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -461,12 +464,12 @@ export default function ViewEmployee({ props }) {
       console.log('JSON:employeeFormData ::', JSON.stringify(employeeFormData));
 
       console.log('Data', employeeFormData);
-      setIsLoading(true)
+      setIsLoading(true);
       Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
         console.log('employeeFormRes::', employeeFormRes.data);
         if (employeeFormRes) {
           setTimeout(() => {
-            setIsLoading(false)
+            setIsLoading(false);
             setOpenSuccessModal(true);
           }, 500);
           // setOpenSuccessModal(true);
@@ -538,7 +541,7 @@ export default function ViewEmployee({ props }) {
         experience: EMP_DETAILS.experience,
         lwd: EMP_DETAILS.lwd,
         resignationDate: EMP_DETAILS.resignationDate,
-        employeeFullName: EMP_DETAILS.employeeFullName
+        employeeFullName: EMP_DETAILS.employeeFullName,
       };
       setTimeout(() => {
         setIsLoading(false);
@@ -1435,6 +1438,10 @@ export default function ViewEmployee({ props }) {
                         <Grid item xs={12} sm={4}>
                           <input type="hidden" id="reportingItSpoc" name="reportingItSpoc" value="" />
                           <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
+
+                          <input type="hidden" id="maximusOpus" name="maximusOpus" value="NA"/>
+                          <input type="hidden" id="functionDesc" name="functionDesc" value="NA" />
+                          <input type="hidden" id="departmentDesc" name="departmentDesc" value="NA" />
                           {/* {location.state.resignedEmployee !== 'Resigned' ? ( */}
                           <TextField
                             labelId="demo-select-small"

@@ -63,6 +63,15 @@ export default function DashboardAppPage() {
         setState(partnerEmpList, dashBoardRes.data.partnerEmployees);
         setState(empStatusList, dashBoardRes.data.statusOnboarding);
       });
+
+      const seniormanagerReq = {
+        key: 'BAGIC_SM',
+        value: '',
+      };
+
+      Configuration.getDashBoardForSM(seniormanagerReq).then((seniormanagerRes) => {
+        console.log("seniormanagerRes", seniormanagerRes)
+      });
     }
     // eslint-disable-next-line
   }, []);

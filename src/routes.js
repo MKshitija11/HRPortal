@@ -20,6 +20,7 @@ import Page401 from './pages/Page401';
 import DashboardAppPage from './pages/DashboardAppPage';
 import NewEmployee from './pages/NewEmployee';
 import Loader from './components/Loader/Loader';
+import HandleApi from './components/CustomComponent/HandleApi';
 
 import Reports from './pages/Reports';
 import PendingEmployeeListTL from './pages/PendingEmployeeListTL';
@@ -57,6 +58,7 @@ export default function Router() {
         { path: 'ViewEmployeeITS', element: <ViewEmployeeITS /> },
         
         { path: 'Loader', element: <Loader /> },
+        { path: 'HandleApi', element: <HandleApi /> },
       ],
     },
     {

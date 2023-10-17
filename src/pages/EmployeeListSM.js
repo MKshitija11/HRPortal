@@ -17,6 +17,8 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+import HandleApi from '../components/CustomComponent/HandleApi';
+
 import Loader from '../components/Loader/Loader';
 // components
 import Label from '../components/label';
@@ -86,6 +88,7 @@ export default function EmployeeListSM() {
   const [employeeList = [], setEmployeeList] = useState();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -99,12 +102,19 @@ export default function EmployeeListSM() {
 
       setIsLoading(true);
       Configuration.getEmpListManager(empListManagerReq).then((empListManagerRes) => {
-        console.log('empListVendorRes', empListManagerReq);
-        setEmployeeList(empListManagerRes.data);
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-        console.log('employeeList', employeeList);
+        if (empListManagerRes.data.error) {
+          setErrorMessage(true);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        } else {
+          console.log('empListVendorRes', empListManagerReq);
+          setEmployeeList(empListManagerRes.data);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+          console.log('employeeList', employeeList);
+        }
       });
     } else {
       navigate('/login');
@@ -176,9 +186,7 @@ export default function EmployeeListSM() {
 
   const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
 
-
-
-  const activeEmployees  = filteredUsers.filter((employees) => employees.employeeStatus === "Active");
+  const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -195,18 +203,21 @@ export default function EmployeeListSM() {
         </Stack>
       ) : (
         <>
-          <Container>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-              <Button
-                variant="contained"
-                startIcon={<Iconify icon="eva:plus-fill" />}
-                onClick={NewEmployee}
-                sx={{ display: 'none' }}
-              >
-                New Employee
-              </Button>
-            </Stack>
-          
+          {errorMessage ? (
+            <HandleApi />
+          ) : (
+            <Container>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
+                <Button
+                  variant="contained"
+                  startIcon={<Iconify icon="eva:plus-fill" />}
+                  onClick={NewEmployee}
+                  sx={{ display: 'none' }}
+                >
+                  New Employee
+                </Button>
+              </Stack>
+
               <>
                 <Card
                   sx={{
@@ -242,68 +253,70 @@ export default function EmployeeListSM() {
                               onSelectAllClick={handleSelectAllClick}
                             />
                             <TableBody>
-                              {activeEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                const {
-                                  id,
-                                  employeeId,
-                                  employeeFullName,
-                                  employeeStatus,
-                                  partnerName,
-                                  supportDevelopment,
-                                } = row;
-                                const selectedUser = selected.indexOf(employeeFullName) !== -1;
+                              {activeEmployees
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row) => {
+                                  const {
+                                    id,
+                                    employeeId,
+                                    employeeFullName,
+                                    employeeStatus,
+                                    partnerName,
+                                    supportDevelopment,
+                                  } = row;
+                                  const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
-                                return (
-                                  <TableRow
-                                    hover
-                                    key={id}
-                                    tabIndex={-1}
-                                    role="checkbox"
-                                    selected={selectedUser}
-                                    // onClick={() => ViewEmployee(row.id)}
-                                    onClick={() => {
-                                      console.log('EMPLOYEE DETAILS.....', row);
-                                      navigate('/ViewEmployeeSM', { state: { row } });
-                                    }}
-                                    sx={{ cursor: 'pointer' }}
-                                  >
-                                    <TableCell align="left">{employeeId}</TableCell>
+                                  return (
+                                    <TableRow
+                                      hover
+                                      key={id}
+                                      tabIndex={-1}
+                                      role="checkbox"
+                                      selected={selectedUser}
+                                      // onClick={() => ViewEmployee(row.id)}
+                                      onClick={() => {
+                                        console.log('EMPLOYEE DETAILS.....', row);
+                                        navigate('/ViewEmployeeSM', { state: { row } });
+                                      }}
+                                      sx={{ cursor: 'pointer' }}
+                                    >
+                                      <TableCell align="left">{employeeId}</TableCell>
 
-                                    <TableCell component="th" scope="row" padding="none">
-                                      {/* <Stack
+                                      <TableCell component="th" scope="row" padding="none">
+                                        {/* <Stack
                               direction="row"
                               alignItems="center"
                               spacing={2}
                             > */}
-                                      {/* <Avatar alt={empoyeeFullName} src={avatarUrl} /> */}
-                                      <Typography noWrap>{employeeFullName}</Typography>
-                                      {/* </Stack> */}
-                                    </TableCell>
+                                        {/* <Avatar alt={empoyeeFullName} src={avatarUrl} /> */}
+                                        <Typography noWrap>{employeeFullName}</Typography>
+                                        {/* </Stack> */}
+                                      </TableCell>
 
-                                    <TableCell align="left">{partnerName}</TableCell>
+                                      <TableCell align="left">{partnerName}</TableCell>
 
-                                    <TableCell align="left">{supportDevelopment}</TableCell>
+                                      <TableCell align="left">{supportDevelopment}</TableCell>
 
-                                    <TableCell align="left">
-                                      {/* <Label
+                                      <TableCell align="left">
+                                        {/* <Label
                                     color={employeeStatus === 'Pending For SM Review' && 'warning'}
                                     // color={(employeeStatus === 'Active' && 'success') || 'error'}
                                   >
                                     {employeeStatus}
                                   </Label> */}
-                                      <Label
-                                        color={
-                                          (employeeStatus === 'Pending For SM Review' && 'warning') ||
-                                          (employeeStatus === 'Active' && 'success') ||
-                                          'warning'
-                                        }
-                                      >
-                                        {employeeStatus}
-                                      </Label>
-                                    </TableCell>
-                                  </TableRow>
-                                );
-                              })}
+                                        <Label
+                                          color={
+                                            (employeeStatus === 'Pending For SM Review' && 'warning') ||
+                                            (employeeStatus === 'Active' && 'success') ||
+                                            'warning'
+                                          }
+                                        >
+                                          {employeeStatus}
+                                        </Label>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
                               {emptyRows > 0 && (
                                 <TableRow style={{ height: 53 * emptyRows }}>
                                   <TableCell colSpan={6} />
@@ -351,8 +364,8 @@ export default function EmployeeListSM() {
                   )}
                 </Card>
               </>
-        
-          </Container>
+            </Container>
+          )}
         </>
       )}
     </>

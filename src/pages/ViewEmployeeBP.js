@@ -62,14 +62,15 @@ export default function ViewEmployee({ props }) {
     lwd: '',
     resignationDate: '',
     maximusOpus: '',
-    functionDesc: "",
-    departmentDesc: ''
+    functionDesc: '',
+    departmentDesc: '',
   });
   const [openModal, setOpenModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [failedModal, setFailedModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [teamLead, setTeamLead] = useState();
@@ -405,16 +406,6 @@ export default function ViewEmployee({ props }) {
     if (document.employeeForm.totalExperience.value === '') {
       return failFocus(document.employeeForm.totalExperience);
     }
-    // if (document.employeeForm.lob.value === '') {
-    //   return failFocus(document.employeeForm.lob);
-    // }
-
-    // if (document.employeeForm.lwd.value === '' || document.employeeForm.lwd.value === null) {
-    //   return failFocus(document.employeeForm.lwd);
-    // }
-    // if (document.employeeForm.resignationDate.value === '' || document.employeeForm.resignationDate.value === null) {
-    //   return failFocus(document.employeeForm.resignationDate);
-    // }
 
     return true;
   };
@@ -435,6 +426,8 @@ export default function ViewEmployee({ props }) {
         console.log('employeeFormRes::', employeeFormRes.data);
         navigate('/EmployeesBP');
       });
+    } else {
+      setFailedModal(true);
     }
   };
 
@@ -467,14 +460,15 @@ export default function ViewEmployee({ props }) {
       setIsLoading(true);
       Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
         console.log('employeeFormRes::', employeeFormRes.data);
-        if (employeeFormRes) {
+        if (employeeFormRes.data) {
           setTimeout(() => {
             setIsLoading(false);
             setOpenSuccessModal(true);
           }, 500);
-          // setOpenSuccessModal(true);
         }
       });
+    } else {
+      setFailedModal(true);
     }
   };
 
@@ -489,9 +483,7 @@ export default function ViewEmployee({ props }) {
     const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
     if (USERDETAILS != null) {
       console.log('USERDETAILS', USERDETAILS);
-
       setReportingList(REPORTINGDETAILS);
-
       setPartnerName(USERDETAILS.partnerName);
       state.partnerName = USERDETAILS.partnerName;
       state.createdBy = USERDETAILS.spocEmailId;
@@ -678,7 +670,7 @@ export default function ViewEmployee({ props }) {
 
         <Stack alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
           <Modal
-            open={openModal || openUpdateModal || openSuccessModal}
+            open={openModal || openUpdateModal || openSuccessModal || failedModal}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
@@ -709,6 +701,10 @@ export default function ViewEmployee({ props }) {
                 <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
                   Details of <b>{empData.employeeFullName}</b> has been Updated successfully
                 </Typography>
+              ) : failedModal ? (
+                <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
+                  Sorry! Failed to update <b>{empData.employeeFullName}</b> details
+                </Typography>
               ) : null}
 
               <Grid
@@ -725,10 +721,24 @@ export default function ViewEmployee({ props }) {
                       variant="contained"
                       type="button"
                       color="primary"
-                      // onClick={() => setApprovalModal(false)}
                       onClick={() => {
                         setOpenSuccessModal(false);
                         navigate('/EmployeesBP');
+                      }}
+                      sx={{ mt: 2 }}
+                    >
+                      OK
+                    </Button>
+                  </Stack>
+                ) : failedModal ? (
+                  <Stack direction="row" justifyContent="center">
+                    <Button
+                      size="medium"
+                      variant="contained"
+                      type="button"
+                      color="primary"
+                      onClick={() => {
+                        setFailedModal(false);
                       }}
                       sx={{ mt: 2 }}
                     >
@@ -1439,7 +1449,7 @@ export default function ViewEmployee({ props }) {
                           <input type="hidden" id="reportingItSpoc" name="reportingItSpoc" value="" />
                           <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
 
-                          <input type="hidden" id="maximusOpus" name="maximusOpus" value="NA"/>
+                          <input type="hidden" id="maximusOpus" name="maximusOpus" value="NA" />
                           <input type="hidden" id="functionDesc" name="functionDesc" value="NA" />
                           <input type="hidden" id="departmentDesc" name="departmentDesc" value="NA" />
                           {/* {location.state.resignedEmployee !== 'Resigned' ? ( */}

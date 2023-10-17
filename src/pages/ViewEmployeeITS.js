@@ -88,7 +88,6 @@ export default function ViewEmployee() {
   const [openRejectedconfirmationModal, setRejectedConfirmationModal] = useState(false);
   const [teamLeadSelected, setTeamLeadSelected] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [failedModal, setFailedModal] = useState(false);
 
   console.log('VM===', invoiceList);
 
@@ -691,8 +690,6 @@ export default function ViewEmployee() {
             }, 500);
           }
         });
-      } else {
-        setFailedModal(true);
       }
     } else {
       console.log('INSIDE ELSE');
@@ -861,7 +858,7 @@ export default function ViewEmployee() {
                           openRejectionModal ||
                           openUpdateModal ||
                           openSuccessModal ||
-                          openRejectedconfirmationModal || failedModal
+                          openRejectedconfirmationModal
                         }
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
@@ -902,13 +899,7 @@ export default function ViewEmployee() {
                               Details of <b>{empData.employeeFullName}</b> has been rejected by{' '}
                               <b>{empData.reportingItSpoc}</b>
                             </Typography>
-                          ) : failedModal ? (
-                            <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                              Sorry! Failed to update <b>{empData.employeeFullName}</b> details
-                            </Typography>
-                          )
-                          
-                          : null}
+                          ) : null}
 
                           <Grid
                             container
@@ -935,25 +926,7 @@ export default function ViewEmployee() {
                                   OK
                                 </Button>
                               </Stack>
-                            ) : failedModal ? (
-                              <Stack direction="row" justifyContent="center">
-                                <Button
-                                  size="medium"
-                                  variant="contained"
-                                  type="button"
-                                  color="primary"
-                                  onClick={() => {
-                                    setFailedModal(false);
-                                  }}
-                                  sx={{ mt: 2 }}
-                                >
-                                  OK
-                                </Button>
-                              </Stack>
-                            )
-                            
-                            
-                            : (
+                            ) : (
                               <>
                                 <Stack justifyContent="center">
                                   <Button

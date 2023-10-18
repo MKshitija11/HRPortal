@@ -90,7 +90,9 @@ export default function EmployeeListBP() {
 
   const [employeeList = [], setEmployeeList] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  // console.log('EMP  LENGTH', employeeList.length);
+  const [emptyRows, setEmptyRows] = useState();
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   const [csvData = [], setCsvData] = useState();
 
@@ -147,6 +149,16 @@ export default function EmployeeListBP() {
         setEmployeeList(empListItSpocRes.data);
         // console.log('employeeList', employeeList);
         setCsvData(empListItSpocRes.data);
+        const pendingAndActiveEmployees = empListItSpocRes.data.filter(
+          (employees) =>
+            employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
+        );
+        const users = applySortFilter(pendingAndActiveEmployees, getComparator(order, orderBy), filterName);
+        console.log('USERS', users);
+        setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0);
+
+        setIsNotFound(!users.length && !!filterName);
+        setFilteredUsers(users);
         setTimeout(() => {
           setIsLoading(false);
         }, 500);
@@ -172,8 +184,6 @@ export default function EmployeeListBP() {
     setSelected([]);
   };
 
-
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -188,14 +198,14 @@ export default function EmployeeListBP() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
+  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
 
-  const PendingAndActiveEmployees = employeeList.filter(
-    (employees) => employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
-  );
-  const filteredUsers = applySortFilter(PendingAndActiveEmployees, getComparator(order, orderBy), filterName);
+  // const PendingAndActiveEmployees = employeeList.filter(
+  //   (employees) => employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
+  // );
+  // const filteredUsers = applySortFilter(PendingAndActiveEmployees, getComparator(order, orderBy), filterName);
 
-  const isNotFound = !employeeList.length && !!filterName;
+  // const isNotFound = !employeeList.length && !!filterName;
 
   const Heading = [
     [

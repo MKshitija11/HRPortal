@@ -86,6 +86,9 @@ export default function PendingEmployeeListHR() {
   const [employeeList = [], setEmployeeList] = useState();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [emptyRows, setEmptyRows] = useState();
+  const [pendingEmployees, setPendingEmployees] = useState([]);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -100,6 +103,14 @@ export default function PendingEmployeeListHR() {
       Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
         console.log('empListVendorRes', empListItSpocRes);
         setEmployeeList(empListItSpocRes.data);
+
+        setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListItSpocRes.data.length) : 0);
+        const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
+        setPendingEmployees(
+          filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review')
+        );
+        setIsNotFound(!filteredUsers.length && !!filterName)
+
         setTimeout(() => {
           setIsLoading(false);
         }, 500);
@@ -143,16 +154,6 @@ export default function PendingEmployeeListHR() {
     setPage(0);
     setFilterName(event.target.value);
   };
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
-
-  const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
-
-  const pendingEmployees = filteredUsers.filter(
-    (employees) => employees.employeeStatus === 'Pending For IT Spoc Review'
-  );
-
-  const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>

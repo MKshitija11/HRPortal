@@ -91,7 +91,7 @@ export default function EmployeeListHR() {
   const [errorMessage, setErrorMessage] = useState(false);
   const [emptyRows, setEmptyRows] = useState();
   const [activeEmployees, setActiveEmployees] = useState([]);
-  const [isNotFound, setIsNotFound] = useState(false);
+  // const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -111,10 +111,10 @@ export default function EmployeeListHR() {
         } else {
           console.log('empListVendorRes', empListItSpocRes);
           setEmployeeList(empListItSpocRes.data);
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0)
+          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
           const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
-          setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'))
-          setIsNotFound(!filteredUsers.length && !!filterName)
+          setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+          // setIsNotFound(!filteredUsers.length && !!filterName);
           setTimeout(() => {
             setIsLoading(false);
           }, 500);
@@ -155,8 +155,12 @@ export default function EmployeeListHR() {
   };
 
   const handleFilterByName = (event) => {
-    setPage(0);
+    console.log('onfilter', event.target.value);
     setFilterName(event.target.value);
+    setPage(0);
+    const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), event.target.value);
+    setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+    // setIsNotFound(!filteredUsers.length && !!event.target.value);
   };
 
   // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
@@ -280,7 +284,7 @@ export default function EmployeeListHR() {
                             )}
                           </TableBody>
 
-                          {isNotFound && (
+                          {/* {isNotFound && (
                             <TableBody>
                               <TableRow>
                                 <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -302,7 +306,7 @@ export default function EmployeeListHR() {
                                 </TableCell>
                               </TableRow>
                             </TableBody>
-                          )}
+                          )} */}
                         </Table>
                       </TableContainer>
                     </Scrollbar>

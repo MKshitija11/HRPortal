@@ -90,6 +90,9 @@ export default function EmployeeListSM() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
+  const [emptyRows, setEmptyRows] = useState();
+  const [activeEmployees, setActiveEmployees] = useState([]);
+
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
@@ -110,6 +113,18 @@ export default function EmployeeListSM() {
         } else {
           console.log('empListVendorRes', empListManagerReq);
           setEmployeeList(empListManagerRes.data);
+
+          // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
+
+          // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
+
+          // const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
+
+          // const isNotFound = !filteredUsers.length && !!filterName;
+          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListManagerRes.data.length) : 0);
+          const filteredUsers = applySortFilter(empListManagerRes.data, getComparator(order, orderBy), filterName);
+          setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+
           setTimeout(() => {
             setIsLoading(false);
           }, 500);
@@ -178,17 +193,20 @@ export default function EmployeeListSM() {
   };
 
   const handleFilterByName = (event) => {
-    setPage(0);
     setFilterName(event.target.value);
+    setPage(0);
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
+    const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), event.target.value);
+    setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
+  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
 
-  const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
+  // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
 
-  const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
+  // const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
 
-  const isNotFound = !filteredUsers.length && !!filterName;
+  // const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>
@@ -324,7 +342,7 @@ export default function EmployeeListSM() {
                               )}
                             </TableBody>
 
-                            {isNotFound && (
+                            {/* {isNotFound && (
                               <TableBody>
                                 <TableRow>
                                   <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -346,7 +364,7 @@ export default function EmployeeListSM() {
                                   </TableCell>
                                 </TableRow>
                               </TableBody>
-                            )}
+                            )} */}
                           </Table>
                         </TableContainer>
                       </Scrollbar>

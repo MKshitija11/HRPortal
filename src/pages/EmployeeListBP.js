@@ -90,6 +90,8 @@ export default function EmployeeListBP() {
   const [isLoading, setIsLoading] = useState(false);
   const [csvData = [], setCsvData] = useState();
   const [errorMessage, setErrorMessage] = useState(false);
+  const [emptyRows, setEmptyRows] = useState();
+  const [activeEmployees, setActiveEmployees] = useState([]);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -103,12 +105,21 @@ export default function EmployeeListBP() {
       Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
         if (empListVendorRes.data.error) {
           setErrorMessage(true);
-          setIsLoading(false);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
         } else {
           setEmployeeList(empListVendorRes.data);
           const downloadActiveEmp = empListVendorRes.data.filter((employees) => employees.employeeStatus === 'Active');
           setCsvData(downloadActiveEmp);
-          setIsLoading(false);
+
+          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
+          const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
+          setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
         }
       });
     } else {
@@ -146,15 +157,11 @@ export default function EmployeeListBP() {
   };
 
   const handleFilterByName = (event) => {
-    setPage(0);
     setFilterName(event.target.value);
+    setPage(0);
+    const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), event.target.value);
+    setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
   };
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
-
-  const activeEmployees = employeeList.filter((employees) => employees.employeeStatus === 'Active');
-  const filteredUsers = applySortFilter(activeEmployees, getComparator(order, orderBy), filterName);
-  const isNotFound = !employeeList.length && !!filterName;
 
   const Heading = [
     [
@@ -286,10 +293,10 @@ export default function EmployeeListBP() {
                     numSelected={selected.length}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
-                    employeeList={filteredUsers}
+                    employeeList={activeEmployees}
                   />
 
-                  {filteredUsers.length === 0 ? (
+                  {activeEmployees.length === 0 ? (
                     <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
                       <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
                       <Typography variant="h4" noWrap color="black">
@@ -305,89 +312,67 @@ export default function EmployeeListBP() {
                               order={order}
                               orderBy={orderBy}
                               headLabel={TABLE_HEAD}
-                              rowCount={filteredUsers.length}
+                              rowCount={activeEmployees.length}
                               numSelected={selected.length}
                               onRequestSort={handleRequestSort}
                               onSelectAllClick={handleSelectAllClick}
                             />
 
                             <TableBody>
-                              {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                const {
-                                  id,
-                                  employeeId,
-                                  employeeFullName,
-                                  employeeStatus,
-                                  partnerName,
-                                  supportDevelopment,
-                                } = row;
-                                const selectedUser = selected.indexOf(employeeFullName) !== -1;
+                              {activeEmployees
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row) => {
+                                  const {
+                                    id,
+                                    employeeId,
+                                    employeeFullName,
+                                    employeeStatus,
+                                    partnerName,
+                                    supportDevelopment,
+                                  } = row;
+                                  const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
-                                return (
-                                  <TableRow
-                                    hover
-                                    key={id}
-                                    tabIndex={-1}
-                                    role="checkbox"
-                                    selected={selectedUser}
-                                    onClick={() => ViewEmployee(row.id)}
-                                    sx={{ cursor: 'pointer' }}
-                                  >
-                                    <TableCell align="left">{employeeId}</TableCell>
+                                  return (
+                                    <TableRow
+                                      hover
+                                      key={id}
+                                      tabIndex={-1}
+                                      role="checkbox"
+                                      selected={selectedUser}
+                                      onClick={() => ViewEmployee(row.id)}
+                                      sx={{ cursor: 'pointer' }}
+                                    >
+                                      <TableCell align="left">{employeeId}</TableCell>
 
-                                    <TableCell component="th" scope="row">
-                                      <Typography noWrap>{employeeFullName}</Typography>
-                                    </TableCell>
+                                      <TableCell component="th" scope="row">
+                                        <Typography noWrap>{employeeFullName}</Typography>
+                                      </TableCell>
 
-                                    <TableCell align="left">{partnerName}</TableCell>
+                                      <TableCell align="left">{partnerName}</TableCell>
 
-                                    <TableCell align="left">{supportDevelopment}</TableCell>
-                                    <TableCell align="left">
-                                      <Label
-                                        color={
-                                          (employeeStatus === 'Active' && 'success') ||
-                                          (employeeStatus === 'Rejected by TL' && 'error') ||
-                                          (employeeStatus === 'Rejected by SM' && 'error') ||
-                                          (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
-                                          'warning'
-                                        }
-                                      >
-                                        {employeeStatus}
-                                      </Label>
-                                    </TableCell>
-                                  </TableRow>
-                                );
-                              })}
+                                      <TableCell align="left">{supportDevelopment}</TableCell>
+                                      <TableCell align="left">
+                                        <Label
+                                          color={
+                                            (employeeStatus === 'Active' && 'success') ||
+                                            (employeeStatus === 'Rejected by TL' && 'error') ||
+                                            (employeeStatus === 'Rejected by SM' && 'error') ||
+                                            (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
+                                            'warning'
+                                          }
+                                        >
+                                          {employeeStatus}
+                                        </Label>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
                               {emptyRows > 0 && (
                                 <TableRow style={{ height: 53 * emptyRows }}>
                                   <TableCell colSpan={6} />
                                 </TableRow>
                               )}
                             </TableBody>
-
-                            {isNotFound && (
-                              <TableBody>
-                                <TableRow>
-                                  <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                    <Paper
-                                      sx={{
-                                        textAlign: 'center',
-                                      }}
-                                    >
-                                      <Typography variant="h6" paragraph>
-                                        Not found
-                                      </Typography>
-
-                                      <Typography variant="body2">
-                                        No results found for &nbsp;
-                                        <strong>&quot;{filterName}&quot;</strong>.
-                                        <br /> Try checking for typos or using complete words.
-                                      </Typography>
-                                    </Paper>
-                                  </TableCell>
-                                </TableRow>
-                              </TableBody>
-                            )}
                           </Table>
                         </TableContainer>
                       </Scrollbar>
@@ -395,7 +380,7 @@ export default function EmployeeListBP() {
                       <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={filteredUsers.length}
+                        count={activeEmployees.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}

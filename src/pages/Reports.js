@@ -20,6 +20,8 @@ import {
   TablePagination,
 } from '@mui/material';
 // components
+import HandleApi from '../components/CustomComponent/HandleApi';
+
 import Loader from '../components/Loader/Loader';
 import Label from '../components/label';
 import Iconify from '../components/iconify';
@@ -92,7 +94,8 @@ export default function EmployeeListBP() {
   const [isLoading, setIsLoading] = useState(false);
   const [emptyRows, setEmptyRows] = useState();
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [isNotFound, setIsNotFound] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+  // const [isNotFound, setIsNotFound] = useState(false);
 
   const [csvData = [], setCsvData] = useState();
 
@@ -145,23 +148,30 @@ export default function EmployeeListBP() {
       };
       setIsLoading(true);
       Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
-        console.log('empListVendorRes', empListItSpocRes);
-        setEmployeeList(empListItSpocRes.data);
-        // console.log('employeeList', employeeList);
-        setCsvData(empListItSpocRes.data);
-        const pendingAndActiveEmployees = empListItSpocRes.data.filter(
-          (employees) =>
-            employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
-        );
-        const users = applySortFilter(pendingAndActiveEmployees, getComparator(order, orderBy), filterName);
-        console.log('USERS', users);
-        setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0);
+        if (empListItSpocRes.data.error) {
+          setErrorMessage(true);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        } else {
+          console.log('empListVendorRes', empListItSpocRes);
+          setEmployeeList(empListItSpocRes.data);
+          // console.log('employeeList', employeeList);
+          setCsvData(empListItSpocRes.data);
+          const pendingAndActiveEmployees = empListItSpocRes.data.filter(
+            (employees) =>
+              employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
+          );
+          const users = applySortFilter(pendingAndActiveEmployees, getComparator(order, orderBy), filterName);
 
-        setIsNotFound(!users.length && !!filterName);
-        setFilteredUsers(users);
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
+          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0);
+
+          // setIsNotFound(!users.length && !!filterName);
+          setFilteredUsers(users);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        }
       });
     } else {
       navigate('/login');
@@ -194,8 +204,17 @@ export default function EmployeeListBP() {
   };
 
   const handleFilterByName = (event) => {
-    setPage(0);
     setFilterName(event.target.value);
+    setPage(0);
+    const pendingAndActiveEmployees = employeeList.filter(
+      (employees) => employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
+    );
+    const users = applySortFilter(pendingAndActiveEmployees, getComparator(order, orderBy), event.target.value);
+
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0);
+
+    // setIsNotFound(!users.length && !!event.target.value);
+    setFilteredUsers(users);
   };
 
   // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
@@ -290,109 +309,119 @@ export default function EmployeeListBP() {
       </Helmet>
 
       {/* <Container disableGutters> */}
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="ri:file-excel-2-line" />}
-            onClick={() => exportToCSV()}
-            color="primary"
-            size="medium"
-          >
-            Download Excel
-          </Button>
+      {isLoading ? (
+        <Stack justifyContent="center" alignItems="center">
+          <Loader />
         </Stack>
-
-        {isLoading ? (
-          <Stack justifyContent="center" alignItems="center">
-            <Loader />
-          </Stack>
-        ) : (
-          <Card
-            container
-            sx={{
-              border: '1px solid lightgray',
-              borderRadius: '8px',
-            }}
-          >
-            <UserListToolbar
-              numSelected={selected.length}
-              filterName={filterName}
-              onFilterName={handleFilterByName}
-              employeeList={filteredUsers}
-            />
-            {filteredUsers.length === 0 ? (
-              <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
-                <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
-                <Typography variant="h4" noWrap color="black">
-                  No Records Found!!
-                </Typography>
+      ) : (
+        <>
+          {errorMessage ? (
+            <HandleApi />
+          ) : (
+            <Container>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
+                <Button
+                  variant="contained"
+                  startIcon={<Iconify icon="ri:file-excel-2-line" />}
+                  onClick={() => exportToCSV()}
+                  color="primary"
+                  size="medium"
+                >
+                  Download Excel
+                </Button>
               </Stack>
-            ) : (
-              <>
-                <Scrollbar>
-                  <TableContainer sx={{ minWidth: 800 }}>
-                    <Table>
-                      <UserListHead
-                        order={order}
-                        orderBy={orderBy}
-                        headLabel={TABLE_HEAD}
-                        rowCount={filteredUsers.length}
-                        numSelected={selected.length}
-                        onRequestSort={handleRequestSort}
-                        onSelectAllClick={handleSelectAllClick}
-                      />
-                      <TableBody>
-                        {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                          const { id, employeeId, employeeFullName, employeeStatus, partnerName, supportDevelopment } =
-                            row;
-                          const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
-                          return (
-                            <TableRow
-                              hover
-                              key={id}
-                              tabIndex={-1}
-                              role="checkbox"
-                              selected={selectedUser}
-                              // onClick={() => ViewEmployee(row.id)}
-                              sx={{ cursor: 'pointer' }}
-                            >
-                              <TableCell align="left">{employeeId}</TableCell>
+              <Card
+                container
+                sx={{
+                  border: '1px solid lightgray',
+                  borderRadius: '8px',
+                }}
+              >
+                <UserListToolbar
+                  numSelected={selected.length}
+                  filterName={filterName}
+                  onFilterName={handleFilterByName}
+                  employeeList={filteredUsers}
+                />
+                {filteredUsers.length === 0 ? (
+                  <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
+                    <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
+                    <Typography variant="h4" noWrap color="black">
+                      No Records Found!!
+                    </Typography>
+                  </Stack>
+                ) : (
+                  <>
+                    <Scrollbar>
+                      <TableContainer sx={{ minWidth: 800 }}>
+                        <Table>
+                          <UserListHead
+                            order={order}
+                            orderBy={orderBy}
+                            headLabel={TABLE_HEAD}
+                            rowCount={filteredUsers.length}
+                            numSelected={selected.length}
+                            onRequestSort={handleRequestSort}
+                            onSelectAllClick={handleSelectAllClick}
+                          />
+                          <TableBody>
+                            {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                              const {
+                                id,
+                                employeeId,
+                                employeeFullName,
+                                employeeStatus,
+                                partnerName,
+                                supportDevelopment,
+                              } = row;
+                              const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
-                              <TableCell component="th" scope="row">
-                                <Typography noWrap>{employeeFullName}</Typography>
-                              </TableCell>
-
-                              <TableCell align="left">{partnerName}</TableCell>
-
-                              <TableCell align="left">{supportDevelopment}</TableCell>
-                              <TableCell align="left">
-                                <Label
-                                  // color={(employeeStatus === 'Active' && 'success') || 'warning'}
-                                  color={
-                                    (employeeStatus === 'Active' && 'success') ||
-                                    (employeeStatus === 'Rejected by TL' && 'error') ||
-                                    (employeeStatus === 'Rejected by SM' && 'error') ||
-                                    (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
-                                    (employeeStatus === 'Resigned' && 'error') ||
-                                    'warning'
-                                  }
+                              return (
+                                <TableRow
+                                  hover
+                                  key={id}
+                                  tabIndex={-1}
+                                  role="checkbox"
+                                  selected={selectedUser}
+                                  // onClick={() => ViewEmployee(row.id)}
+                                  sx={{ cursor: 'pointer' }}
                                 >
-                                  {employeeStatus}
-                                </Label>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                        {emptyRows > 0 && (
-                          <TableRow style={{ height: 53 * emptyRows }}>
-                            <TableCell colSpan={6} />
-                          </TableRow>
-                        )}
-                      </TableBody>
+                                  <TableCell align="left">{employeeId}</TableCell>
 
-                      {isNotFound && (
+                                  <TableCell component="th" scope="row">
+                                    <Typography noWrap>{employeeFullName}</Typography>
+                                  </TableCell>
+
+                                  <TableCell align="left">{partnerName}</TableCell>
+
+                                  <TableCell align="left">{supportDevelopment}</TableCell>
+                                  <TableCell align="left">
+                                    <Label
+                                      // color={(employeeStatus === 'Active' && 'success') || 'warning'}
+                                      color={
+                                        (employeeStatus === 'Active' && 'success') ||
+                                        (employeeStatus === 'Rejected by TL' && 'error') ||
+                                        (employeeStatus === 'Rejected by SM' && 'error') ||
+                                        (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
+                                        (employeeStatus === 'Resigned' && 'error') ||
+                                        'warning'
+                                      }
+                                    >
+                                      {employeeStatus}
+                                    </Label>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                            {emptyRows > 0 && (
+                              <TableRow style={{ height: 53 * emptyRows }}>
+                                <TableCell colSpan={6} />
+                              </TableRow>
+                            )}
+                          </TableBody>
+
+                          {/* {isNotFound && (
                         <TableBody>
                           <TableRow>
                             <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -414,25 +443,27 @@ export default function EmployeeListBP() {
                             </TableCell>
                           </TableRow>
                         </TableBody>
-                      )}
-                    </Table>
-                  </TableContainer>
-                </Scrollbar>
+                      )} */}
+                        </Table>
+                      </TableContainer>
+                    </Scrollbar>
 
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
-                  component="div"
-                  count={filteredUsers.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-              </>
-            )}
-          </Card>
-        )}
-      </Container>
+                    <TablePagination
+                      rowsPerPageOptions={[5, 10, 25]}
+                      component="div"
+                      count={filteredUsers.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                  </>
+                )}
+              </Card>
+            </Container>
+          )}
+        </>
+      )}
     </>
   );
 }

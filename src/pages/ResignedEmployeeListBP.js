@@ -18,6 +18,8 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
+import HandleApi from '../components/CustomComponent/HandleApi';
+
 import Loader from '../components/Loader/Loader';
 // components
 import Label from '../components/label';
@@ -88,6 +90,10 @@ export default function ResignedEmployeeListBP() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [csvData = [], setCsvData] = useState();
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [emptyRows, setEmptyRows] = useState();
+  const [resignedEmployees, setResignedEmployees] = useState([]);
+  // const [isNotFound, setIsNotFound] = useState(false);
 
   const Heading = [
     [
@@ -177,15 +183,36 @@ export default function ResignedEmployeeListBP() {
 
       setIsLoading(true);
       Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
-        console.log('empListVendorRes', empListVendorRes);
-        setEmployeeList(empListVendorRes.data);
-        const downloadResignedEmp = empListVendorRes.data.filter(
-          (employees) => employees.employeeStatus === 'Resigned'
-        );
-        setCsvData(downloadResignedEmp);
-        setIsLoading(false);
-        console.log('employeeList', employeeList);
+        if (empListVendorRes.data.error) {
+          setErrorMessage(true);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        } else {
+          console.log('empListVendorRes', empListVendorRes);
+          setEmployeeList(empListVendorRes.data);
+          const downloadResignedEmp = empListVendorRes.data.filter(
+            (employees) => employees.employeeStatus === 'Resigned'
+          );
+          setCsvData(downloadResignedEmp);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListVendorRes.data.length) : 0);
+          const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
+          setResignedEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
+          // setIsNotFound(!filteredUsers.length && !!filterName);
+        }
       });
+
+      // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
+
+      // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
+
+      // const resignedEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned');
+      // console.log('FILTER USERS', filterName);
+
+      // const isNotFound = !filteredUsers.length && !!filterName;
     } else {
       navigate('/login');
     }
@@ -249,18 +276,12 @@ export default function ResignedEmployeeListBP() {
   };
 
   const handleFilterByName = (event) => {
-    setPage(0);
     setFilterName(event.target.value);
+    setPage(0);
+    const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), event.target.value);
+    setResignedEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
+    // setIsNotFound(!filteredUsers.length && !!event.target.value);
   };
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
-
-  const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
-
-  const resignedEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned');
-  console.log('FILTER USERS', filterName);
-
-  const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>
@@ -268,128 +289,132 @@ export default function ResignedEmployeeListBP() {
         <title> HR Portal | Employees(Partner)</title>
       </Helmet>
 
-      {/* <Container disableGutters> */}
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-          {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="material-symbols:person-add-outline" />}
-            onClick={NewEmployee}
-            color="primary"
-            // color="#0072BC"
-            size="medium"
-          >
-            New Employee
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<Iconify icon="ri:file-excel-2-line" />}
-            onClick={() => exportToCSV()}
-            color="primary"
-            size="medium"
-          >
-            Download Excel
-          </Button>
+      {isLoading ? (
+        <Stack justifyContent="center" alignItems="center">
+          <Loader />
         </Stack>
-        {isLoading ? (
-          <Stack justifyContent="center" alignItems="center">
-            <Loader />
-          </Stack>
-        ) : (
-          <>
-            <Card
-              container
-              sx={{
-                border: '1px solid lightgray',
-                borderRadius: '8px',
-              }}
-            >
-              <UserListToolbar
-                numSelected={selected.length}
-                filterName={filterName}
-                onFilterName={handleFilterByName}
-                employeeList={resignedEmployees}
-              />
+      ) : (
+        <>
+          {errorMessage ? (
+            <HandleApi />
+          ) : (
+            <Container>
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
+                {/* <Typography variant="h4">Employees ({employeeList.length})</Typography> */}
+                <Button
+                  variant="contained"
+                  startIcon={<Iconify icon="material-symbols:person-add-outline" />}
+                  onClick={NewEmployee}
+                  color="primary"
+                  // color="#0072BC"
+                  size="medium"
+                >
+                  New Employee
+                </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<Iconify icon="ri:file-excel-2-line" />}
+                  onClick={() => exportToCSV()}
+                  color="primary"
+                  size="medium"
+                >
+                  Download Excel
+                </Button>
+              </Stack>
 
-              {resignedEmployees.length === 0 ? (
-                <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
-                  <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
-                  <Typography variant="h4" noWrap color="black">
-                    No Records Found!!
-                  </Typography>
-                </Stack>
-              ) : (
-                <>
-                  <Scrollbar>
-                    <TableContainer sx={{ minWidth: 800 }}>
-                      <Table>
-                        <UserListHead
-                          order={order}
-                          orderBy={orderBy}
-                          headLabel={TABLE_HEAD}
-                          rowCount={employeeList.length}
-                          numSelected={selected.length}
-                          onRequestSort={handleRequestSort}
-                          onSelectAllClick={handleSelectAllClick}
-                        />
+              <>
+                <Card
+                  container
+                  sx={{
+                    border: '1px solid lightgray',
+                    borderRadius: '8px',
+                  }}
+                >
+                  <UserListToolbar
+                    numSelected={selected.length}
+                    filterName={filterName}
+                    onFilterName={handleFilterByName}
+                    employeeList={resignedEmployees}
+                  />
 
-                        <TableBody>
-                          {resignedEmployees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                            const {
-                              id,
-                              employeeId,
-                              employeeFullName,
-                              employeeStatus,
-                              partnerName,
-                              supportDevelopment,
-                            } = row;
-                            const selectedUser = selected.indexOf(employeeFullName) !== -1;
+                  {resignedEmployees.length === 0 ? (
+                    <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
+                      <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
+                      <Typography variant="h4" noWrap color="black">
+                        No Records Found!!
+                      </Typography>
+                    </Stack>
+                  ) : (
+                    <>
+                      <Scrollbar>
+                        <TableContainer sx={{ minWidth: 800 }}>
+                          <Table>
+                            <UserListHead
+                              order={order}
+                              orderBy={orderBy}
+                              headLabel={TABLE_HEAD}
+                              rowCount={employeeList.length}
+                              numSelected={selected.length}
+                              onRequestSort={handleRequestSort}
+                              onSelectAllClick={handleSelectAllClick}
+                            />
 
-                            return (
-                              <TableRow
-                                hover
-                                key={id}
-                                tabIndex={-1}
-                                role="checkbox"
-                                selected={selectedUser}
-                                onClick={() => ViewEmployee(row.id)}
-                              
-                                sx={{ cursor: 'pointer' }}
-                              >
-                                <TableCell align="left">{employeeId}</TableCell>
+                            <TableBody>
+                              {resignedEmployees
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row) => {
+                                  const {
+                                    id,
+                                    employeeId,
+                                    employeeFullName,
+                                    employeeStatus,
+                                    partnerName,
+                                    supportDevelopment,
+                                  } = row;
+                                  const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
-                                <TableCell component="th" scope="row">
-                                  <Typography noWrap>{employeeFullName}</Typography>
-                                </TableCell>
+                                  return (
+                                    <TableRow
+                                      hover
+                                      key={id}
+                                      tabIndex={-1}
+                                      role="checkbox"
+                                      selected={selectedUser}
+                                      onClick={() => ViewEmployee(row.id)}
+                                      sx={{ cursor: 'pointer' }}
+                                    >
+                                      <TableCell align="left">{employeeId}</TableCell>
 
-                                <TableCell align="left">{partnerName}</TableCell>
+                                      <TableCell component="th" scope="row">
+                                        <Typography noWrap>{employeeFullName}</Typography>
+                                      </TableCell>
 
-                                <TableCell align="left">{supportDevelopment}</TableCell>
-                                <TableCell align="left">
-                                  <Label
-                                    color={
-                                      // (employeeStatus === 'Active' && 'success') ||
-                                      // (employeeStatus === 'Rejected by TL' && 'error') ||
-                                      // (employeeStatus === 'Rejected by SM' && 'error') ||
-                                      // (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
-                                      (employeeStatus === 'Resigned' && 'error') || 
-                                      'warning'
-                                    }
-                                  >
-                                    {employeeStatus}
-                                  </Label>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                          {emptyRows > 0 && (
-                            <TableRow style={{ height: 53 * emptyRows }}>
-                              <TableCell colSpan={6} />
-                            </TableRow>
-                          )}
-                        </TableBody>
+                                      <TableCell align="left">{partnerName}</TableCell>
 
+                                      <TableCell align="left">{supportDevelopment}</TableCell>
+                                      <TableCell align="left">
+                                        <Label
+                                          color={
+                                            // (employeeStatus === 'Active' && 'success') ||
+                                            // (employeeStatus === 'Rejected by TL' && 'error') ||
+                                            // (employeeStatus === 'Rejected by SM' && 'error') ||
+                                            // (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
+                                            (employeeStatus === 'Resigned' && 'error') || 'warning'
+                                          }
+                                        >
+                                          {employeeStatus}
+                                        </Label>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              {emptyRows > 0 && (
+                                <TableRow style={{ height: 53 * emptyRows }}>
+                                  <TableCell colSpan={6} />
+                                </TableRow>
+                              )}
+                            </TableBody>
+                            {/* 
                         {isNotFound && (
                           <TableBody>
                             <TableRow>
@@ -412,26 +437,28 @@ export default function ResignedEmployeeListBP() {
                               </TableCell>
                             </TableRow>
                           </TableBody>
-                        )}
-                      </Table>
-                    </TableContainer>
-                  </Scrollbar>
+                        )} */}
+                          </Table>
+                        </TableContainer>
+                      </Scrollbar>
 
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={resignedEmployees.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </>
-              )}
-            </Card>
-          </>
-        )}
-      </Container>
+                      <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={resignedEmployees.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                      />
+                    </>
+                  )}
+                </Card>
+              </>
+            </Container>
+          )}
+        </>
+      )}
     </>
   );
 }

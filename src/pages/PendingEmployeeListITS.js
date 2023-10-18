@@ -88,7 +88,7 @@ export default function PendingEmployeeListHR() {
   const [isLoading, setIsLoading] = useState(false);
   const [emptyRows, setEmptyRows] = useState();
   const [pendingEmployees, setPendingEmployees] = useState([]);
-  const [isNotFound, setIsNotFound] = useState(false);
+  // const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -109,7 +109,7 @@ export default function PendingEmployeeListHR() {
         setPendingEmployees(
           filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review')
         );
-        setIsNotFound(!filteredUsers.length && !!filterName)
+        // setIsNotFound(!filteredUsers.length && !!filterName)
 
         setTimeout(() => {
           setIsLoading(false);
@@ -151,8 +151,15 @@ export default function PendingEmployeeListHR() {
   };
 
   const handleFilterByName = (event) => {
-    setPage(0);
     setFilterName(event.target.value);
+    setPage(0);
+
+    const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), event.target.value);
+        setPendingEmployees(
+          filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review')
+        );
+        // setIsNotFound(!filteredUsers.length && !!event.target.value)
+
   };
 
   return (
@@ -265,7 +272,7 @@ export default function PendingEmployeeListHR() {
                           )}
                         </TableBody>
 
-                        {isNotFound && (
+                        {/* {isNotFound && (
                           <TableBody>
                             <TableRow>
                               <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -287,7 +294,7 @@ export default function PendingEmployeeListHR() {
                               </TableCell>
                             </TableRow>
                           </TableBody>
-                        )}
+                        )} */}
                       </Table>
                     </TableContainer>
                   </Scrollbar>

@@ -89,8 +89,6 @@ export default function ViewEmployee() {
   const [teamLeadSelected, setTeamLeadSelected] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log('VM===', invoiceList);
-
   const evaluationPeriodList = [
     {
       value: '15 Days',
@@ -235,7 +233,6 @@ export default function ViewEmployee() {
   ];
 
   const handleChangeWaSwitch = (evt) => {
-    console.log();
     if (evt.target.checked) {
       document.getElementById('whatsappNumber').value = state.mobileNumber;
       state.whatsappNumber = state.mobileNumber;
@@ -243,13 +240,8 @@ export default function ViewEmployee() {
       document.getElementById('whatsappNumber').value = '';
       state.whatsappNumber = '';
     }
-    console.log('state.mobileNumber', state.mobileNumber);
-    console.log('state.whatsappNumber', state.whatsappNumber);
   };
   const handleChangeEvent = (evt) => {
-    console.log('evt.target.value', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
-
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
@@ -257,9 +249,6 @@ export default function ViewEmployee() {
   };
 
   const handleChangeMv = (evt) => {
-    console.log('evt.target.value', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
-
     const getSubVerticalsReq = {
       key: 'SUB_VERTICAL',
       value: evt.target.value,
@@ -267,15 +256,11 @@ export default function ViewEmployee() {
 
     Configuration.getSubVerticals(getSubVerticalsReq).then((getSubVerticalsRes) => {
       state.subVerticalList = getSubVerticalsRes.data;
-      console.log('subVerticalList', state.subVerticalList);
       setVerticalSubList(state.subVerticalList);
     });
   };
 
   const handleChangeSv = (evt) => {
-    console.log('evt.target.value', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
-
     const getDepartmentReq = {
       key: 'DEPARTMENTS',
       value: evt.target.value,
@@ -283,15 +268,11 @@ export default function ViewEmployee() {
 
     Configuration.getDepartments(getDepartmentReq).then((getDepartmentRes) => {
       state.departmentList = getDepartmentRes.data;
-      console.log('departmentList', state.departmentList);
       setDepartmentList(state.departmentList);
     });
   };
 
   const handleChangeDpt = (evt) => {
-    console.log('evt.target.value', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
-
     const getFunctionReq = {
       key: 'FUNCTIONS',
       value: evt.target.value,
@@ -299,16 +280,11 @@ export default function ViewEmployee() {
 
     Configuration.getFunctions(getFunctionReq).then((getFunctionsRes) => {
       state.functionsList = getFunctionsRes.data;
-      console.log('functionList', state.functionsList);
       setFunctionsList(state.functionsList);
     });
   };
 
-  console.log('FUNCTION ====', functionsList);
   const handleChangeFun = (evt) => {
-    console.log('evt.target.value', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
-
     const getProjectsReq = {
       key: 'PROJECTS',
       value: evt.target.value,
@@ -332,9 +308,6 @@ export default function ViewEmployee() {
   };
 
   const handleChangeSM = (evt) => {
-    console.log('evt.target.value', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
-
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
@@ -345,14 +318,12 @@ export default function ViewEmployee() {
     };
 
     Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
-      console.log('departmentList', getTLBySMListRes.data);
       state.tlList = getTLBySMListRes?.data;
       setTeamLeadBySMList(state.tlList);
     });
   };
 
   const handleChangeDropDown = (evt) => {
-    console.log('evt.target.value', evt.target.value);
     if (evt.target.value === 'New') {
       document.employeeForm.replacementEcode.value = 'NA';
     } else {
@@ -361,9 +332,6 @@ export default function ViewEmployee() {
   };
 
   const handleChangeProject = (evt) => {
-    console.log('evt.target.value', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
-
     const getInvoiceReq = {
       key: 'INVOICE_TYPE',
       value: evt.target.value,
@@ -527,7 +495,6 @@ export default function ViewEmployee() {
 
   const [empData = {}, setEmpData] = useState();
   const [reportingList = [], setReportingList] = useState();
-  // console.log('REPORTING LIST ', reportingList);
   const [buttonDisable, setButtonDisable] = useState();
 
   useEffect(() => {
@@ -536,7 +503,6 @@ export default function ViewEmployee() {
 
     if (USERDETAILS != null) {
       console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
       setReportingList(REPORTINGDETAILS);
 
@@ -544,18 +510,13 @@ export default function ViewEmployee() {
       setUserProfile(USERDETAILS.userProfile);
       state.partnerName = USERDETAILS.partnerName;
       state.createdBy = USERDETAILS.spocEmailId;
-      console.log('partnerName', partnerName);
       const mainVerticalReq = {
         key: 'MAIN_VERTICAL',
         value: '',
       };
 
-      console.log('mainVerticalReq', mainVerticalReq);
-
       Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
-        console.log('mainVerticalRes', mainVerticalRes.data);
         setVerticalMainList(mainVerticalRes.data);
-        console.log(' mainVerticalRes.data', verticalMainList);
         state.mainVerticalList = mainVerticalRes.data;
       });
     }
@@ -618,27 +579,12 @@ export default function ViewEmployee() {
       }, 500);
 
       const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
-      console.log(
-        'API SENIOR MANAGER===',
-        REPORTINGDETAILS.find((o) => o.managerEmail === state.reportingManager)?.managerName
-      );
 
       const getTLBySMListReq = {
         managerEmail: EMP_DETAILS.reportingManager,
       };
 
-      console.log('API GET TL BY SM REQ===', getTLBySMListReq);
-
       Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
-        console.log('API GET TL BY SM RES===', getTLBySMListRes?.data);
-
-        console.log(
-          'TEAM LEAD',
-          getTLBySMListRes?.data.find(
-            (o) => o.managerEmail === EMP_DETAILS.reportingManager && o.teamLeadEmail === EMP_DETAILS.reportingTeamLead
-          )?.teamLeadName
-        );
-
         const TLObj = getTLBySMListRes?.data.find(
           (o) => o.managerEmail === EMP_DETAILS.reportingManager && o.teamLeadEmail === EMP_DETAILS.reportingTeamLead
         );
@@ -675,11 +621,9 @@ export default function ViewEmployee() {
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
-    console.log('employeeFormData::', employeeFormData);
-    console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
+
     if (!param) {
       if (validForm()) {
-        console.log('INSIDE IF');
         setIsLoading(true);
         Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
           console.log('employeeFormRes::', employeeFormRes.data);
@@ -692,7 +636,6 @@ export default function ViewEmployee() {
         });
       }
     } else {
-      console.log('INSIDE ELSE');
       setIsLoading(true);
       Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
         console.log('employeeFormRes::', employeeFormRes.data);
@@ -741,7 +684,6 @@ export default function ViewEmployee() {
     lob: state.lob || '',
     skillSet: state.skillSet || '',
   };
-  console.log('state vertical ====', state.verticalMain);
 
   const validationSchema = Yup.object({
     employeeFirstName: Yup.string()
@@ -896,7 +838,7 @@ export default function ViewEmployee() {
                             </Typography>
                           ) : openRejectedconfirmationModal ? (
                             <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                              Details of <b>{empData.employeeFullName}</b> has been rejected by{' '}
+                              Details of <b>{empData.employeeFullName}</b> has been rejected by
                               <b>{empData.reportingItSpoc}</b>
                             </Typography>
                           ) : null}
@@ -1718,7 +1660,6 @@ export default function ViewEmployee() {
 
                       <Grid container spacing={2}>
                         {/* MAIN_VERTICAL */}
-                        {console.log('values of mv===', verticalMainList)}
                         <Grid item xs={12} sm={6}>
                           <TextField
                             labelId="demo-select-small"

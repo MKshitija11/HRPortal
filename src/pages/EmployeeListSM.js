@@ -104,33 +104,38 @@ export default function EmployeeListSM() {
       };
 
       setIsLoading(true);
-      Configuration.getEmpListManager(empListManagerReq).then((empListManagerRes) => {
-        if (empListManagerRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
-          console.log('empListVendorRes', empListManagerReq);
-          setEmployeeList(empListManagerRes.data);
+      Configuration.getEmpListManager(empListManagerReq)
+        .then((empListManagerRes) => {
+          if (empListManagerRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            console.log('empListVendorRes', empListManagerReq);
+            setEmployeeList(empListManagerRes.data);
 
-          // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
+            // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
 
-          // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
+            // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
 
-          // const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
+            // const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
 
-          // const isNotFound = !filteredUsers.length && !!filterName;
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListManagerRes.data.length) : 0);
-          const filteredUsers = applySortFilter(empListManagerRes.data, getComparator(order, orderBy), filterName);
-          setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            // const isNotFound = !filteredUsers.length && !!filterName;
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListManagerRes.data.length) : 0);
+            const filteredUsers = applySortFilter(empListManagerRes.data, getComparator(order, orderBy), filterName);
+            setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
 
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-          console.log('employeeList', employeeList);
-        }
-      });
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+            console.log('employeeList', employeeList);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }

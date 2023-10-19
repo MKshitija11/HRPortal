@@ -104,25 +104,30 @@ export default function PendingEmployeeListSM() {
       };
 
       setIsLoading(true);
-      Configuration.getEmpListManager(empListManagerReq).then((empListManagerRes) => {
-        if (empListManagerRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
-          setEmployeeList(empListManagerRes.data);
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListManagerRes.data.length) : 0);
-          const filteredUsers = applySortFilter(empListManagerRes.data, getComparator(order, orderBy), filterName);
-          setPendingEmployees(
-            filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For SM Review')
-          );
+      Configuration.getEmpListManager(empListManagerReq)
+        .then((empListManagerRes) => {
+          if (empListManagerRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            setEmployeeList(empListManagerRes.data);
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListManagerRes.data.length) : 0);
+            const filteredUsers = applySortFilter(empListManagerRes.data, getComparator(order, orderBy), filterName);
+            setPendingEmployees(
+              filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For SM Review')
+            );
 
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        }
-      });
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }

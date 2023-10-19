@@ -181,40 +181,45 @@ export default function RejectedEmployeeListBP() {
       };
 
       setIsLoading(true);
-      Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
-        if (empListVendorRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
-          console.log('empListVendorRes', empListVendorRes);
-          setEmployeeList(empListVendorRes.data);
-          const downloadRejectedEmp = empListVendorRes.data.filter(
-            (employees) =>
-              employees.employeeStatus === 'Rejected by TL' ||
-              employees.employeeStatus === 'Rejected by SM' ||
-              employees.employeeStatus === 'Rejected by IT Spoc'
-          );
-          setCsvData(downloadRejectedEmp);
-
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
-          const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
-          setRejectedEmployees(
-            filteredUsers.filter(
+      Configuration.getEmpListVendor(empListVendorReq)
+        .then((empListVendorRes) => {
+          if (empListVendorRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            console.log('empListVendorRes', empListVendorRes);
+            setEmployeeList(empListVendorRes.data);
+            const downloadRejectedEmp = empListVendorRes.data.filter(
               (employees) =>
                 employees.employeeStatus === 'Rejected by TL' ||
                 employees.employeeStatus === 'Rejected by SM' ||
                 employees.employeeStatus === 'Rejected by IT Spoc'
-            )
-          );
-          // setIsNotFound(!filteredUsers.length && !!filterName);
+            );
+            setCsvData(downloadRejectedEmp);
 
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        }
-      });
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
+            const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
+            setRejectedEmployees(
+              filteredUsers.filter(
+                (employees) =>
+                  employees.employeeStatus === 'Rejected by TL' ||
+                  employees.employeeStatus === 'Rejected by SM' ||
+                  employees.employeeStatus === 'Rejected by IT Spoc'
+              )
+            );
+            // setIsNotFound(!filteredUsers.length && !!filterName);
+
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }

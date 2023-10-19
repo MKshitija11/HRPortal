@@ -103,36 +103,33 @@ export default function PendingEmployeeListTL() {
         teamLeadId: USERDETAILS.spocEmailId,
       };
       setIsLoading(true);
-      Configuration.getEmpListTeamLead(getEmpListTLReq).then((empListTLRes) => {
-        console.log('empListVendorRes--------', empListTLRes);
-        if (empListTLRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
-          console.log('empListVendorRes', empListTLRes);
-          setEmployeeList(empListTLRes.data);
-          
-          // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListTLRes.data.length) : 0;
+      Configuration.getEmpListTeamLead(getEmpListTLReq)
+        .then((empListTLRes) => {
+          console.log('empListVendorRes--------', empListTLRes);
+          if (empListTLRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            console.log('empListVendorRes', empListTLRes);
+            setEmployeeList(empListTLRes.data);
 
-          // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListTLRes.data.length) : 0);
+            const filteredUsers = applySortFilter(empListTLRes.data, getComparator(order, orderBy), filterName);
+            setPendingEmployees(
+              filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For TL Review')
+            );
 
-          // const pendingEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For TL Review');
-
-          // const isNotFound = !filteredUsers.length && !!filterName;
-
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListTLRes.data.length) : 0);
-          const filteredUsers = applySortFilter(empListTLRes.data, getComparator(order, orderBy), filterName);
-          setPendingEmployees(
-            filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For TL Review')
-          );
-
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        }
-      });
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }

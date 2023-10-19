@@ -619,29 +619,39 @@ export default function ViewEmployee() {
       if (validForm()) {
         console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
         setIsLoading(true);
-        Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
+        Configuration.updateEmployeeData(employeeFormData)
+          .then((employeeFormRes) => {
+            console.log('employeeFormRes::', employeeFormRes.data);
+            if (employeeFormRes) {
+              setTimeout(() => {
+                setIsLoading(false);
+                setOpenSuccessModal(true);
+              }, 500);
+            }
+            // navigate('/employeesSM');
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            alert('Something went wrong');
+          });
+      }
+    } else {
+      setIsLoading(true);
+      Configuration.updateEmployeeData(employeeFormData)
+        .then((employeeFormRes) => {
           console.log('employeeFormRes::', employeeFormRes.data);
           if (employeeFormRes) {
             setTimeout(() => {
               setIsLoading(false);
-              setOpenSuccessModal(true);
+              setRejectedConfirmationModal(true);
             }, 500);
           }
-          // navigate('/employeesSM');
+          // navigate('/EmployeesSM');
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
         });
-      }
-    } else {
-      setIsLoading(true);
-      Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
-        console.log('employeeFormRes::', employeeFormRes.data);
-        if (employeeFormRes) {
-          setTimeout(() => {
-            setIsLoading(false);
-            setRejectedConfirmationModal(true);
-          }, 500);
-        }
-        // navigate('/EmployeesSM');
-      });
     }
   };
 
@@ -742,15 +752,12 @@ export default function ViewEmployee() {
       }, 500);
 
       const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
-    
+
       const getTLBySMListReq = {
         managerEmail: EMP_DETAILS.reportingManager,
       };
 
-
       Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
-     
-
         const TLObj = getTLBySMListRes?.data.find(
           (o) => o.managerEmail === EMP_DETAILS.reportingManager && o.teamLeadEmail === EMP_DETAILS.reportingTeamLead
         );
@@ -816,10 +823,10 @@ export default function ViewEmployee() {
         excludeEmptyString: false,
       })
       .required('Whatsapp Number is required'),
-      personalEmail: Yup.string()
-      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address' )
-         .email('Invalid email address')
-         .required('Personal email is required'),
+    personalEmail: Yup.string()
+      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address')
+      .email('Invalid email address')
+      .required('Personal email is required'),
     officialEmail: Yup.string()
       .email('Invalid official email')
       .required('Official email is required')
@@ -1136,8 +1143,8 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
                             // }}
                             inputProps={{
-                              maxLength: "10"
-                             }}
+                              maxLength: '10',
+                            }}
                           />
                         </Grid>
                         <Grid item xs={4} textAlign="center">
@@ -1199,8 +1206,8 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
                             // }}
                             inputProps={{
-                              maxLength: "10"
-                             }}
+                              maxLength: '10',
+                            }}
                           />
                         </Grid>
 

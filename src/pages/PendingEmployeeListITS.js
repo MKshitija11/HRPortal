@@ -100,22 +100,27 @@ export default function PendingEmployeeListHR() {
         itSpocId: USERDETAILS.spocEmailId,
       };
       setIsLoading(true);
-      Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
-        console.log('empListVendorRes', empListItSpocRes);
-        setEmployeeList(empListItSpocRes.data);
+      Configuration.getEmpListItSpoc(empListItSpocReq)
+        .then((empListItSpocRes) => {
+          console.log('empListVendorRes', empListItSpocRes);
+          setEmployeeList(empListItSpocRes.data);
 
-        setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListItSpocRes.data.length) : 0);
-        const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
-        setPendingEmployees(
-          filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review')
-        );
-        // setIsNotFound(!filteredUsers.length && !!filterName)
+          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListItSpocRes.data.length) : 0);
+          const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
+          setPendingEmployees(
+            filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review')
+          );
+          // setIsNotFound(!filteredUsers.length && !!filterName)
 
-        setTimeout(() => {
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+          console.log('employeeList', employeeList);
+        })
+        .catch((error) => {
           setIsLoading(false);
-        }, 500);
-        console.log('employeeList', employeeList);
-      });
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }
@@ -155,11 +160,8 @@ export default function PendingEmployeeListHR() {
     setPage(0);
 
     const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), event.target.value);
-        setPendingEmployees(
-          filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review')
-        );
-        // setIsNotFound(!filteredUsers.length && !!event.target.value)
-
+    setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review'));
+    // setIsNotFound(!filteredUsers.length && !!event.target.value)
   };
 
   return (

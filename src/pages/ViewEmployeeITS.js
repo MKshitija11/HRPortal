@@ -533,72 +533,77 @@ export default function ViewEmployee() {
     };
 
     setIsLoading(true);
-    Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
-      console.log('employeeFormRes::', viewEmployeeRes.data);
-      const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
-      const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
-      setEmpData(EMP_DETAILS);
+    Configuration.viewEmployeeData(viewEmployeeReq)
+      .then((viewEmployeeRes) => {
+        console.log('employeeFormRes::', viewEmployeeRes.data);
+        const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
+        const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
+        setEmpData(EMP_DETAILS);
 
-      const tempData = {
-        ...state,
-        newReplacement: EMP_DETAILS.newReplacement,
-        id: EMP_DETAILS.id,
-        employeeId: EMP_DETAILS.employeeId,
-        employeeStatus: EMP_DETAILS.employeeStatus,
-        supportDevelopment: EMP_DETAILS.supportDevelopment,
-        evaluationPeriod: EMP_DETAILS.evaluationPeriod,
-        // projectType: EMP_DETAILS.projectType,
-        maximusOpus: EMP_DETAILS.maximusOpus,
-        billingSlab: EMP_DETAILS.billingSlab,
-        invoiceType: EMP_DETAILS.invoiceType,
-        reportingTeamLead: EMP_DETAILS.reportingTeamLead,
-        reportingManager: EMP_DETAILS.reportingManager,
-        functionDesc: EMP_DETAILS.functionDesc,
-        employeeFirstName: EMP_DETAILS.employeeFirstName,
-        employeeLastName: EMP_DETAILS.employeeLastName,
-        officialEmail: EMP_DETAILS.officialEmail,
-        personalEmail: EMP_DETAILS.personalEmail,
-        mobileNumber: EMP_DETAILS.mobileNumber,
-        whatsappNumber: EMP_DETAILS.whatsappNumber,
-        joiningDate: EMP_DETAILS.joiningDate,
-        replacementEcode: EMP_DETAILS.replacementEcode,
-        verticalMain: EMP_DETAILS.verticalMain,
-        verticalSub: EMP_DETAILS.verticalSub,
-        departmentDesc: EMP_DETAILS.departmentDesc,
-        lob: EMP_DETAILS.lob,
-        skillSet: EMP_DETAILS.skillSet,
-        gender: EMP_DETAILS.gender,
-        dateOfBirth: EMP_DETAILS.dateOfBirth,
-        experience: EMP_DETAILS.experience,
-        totalExperience: EMP_DETAILS.totalExperience,
-        reportingItSpoc: EMP_DETAILS.reportingItSpoc,
-        employeeFullName: EMP_DETAILS.employeeFullName,
-      };
-      setPartnerName(EMP_DETAILS.partnerName);
-      if (state.employeeStatus !== 'Pending For IT Spoc Review') {
-        setButtonDisable(true);
-      }
-      setTimeout(() => {
+        const tempData = {
+          ...state,
+          newReplacement: EMP_DETAILS.newReplacement,
+          id: EMP_DETAILS.id,
+          employeeId: EMP_DETAILS.employeeId,
+          employeeStatus: EMP_DETAILS.employeeStatus,
+          supportDevelopment: EMP_DETAILS.supportDevelopment,
+          evaluationPeriod: EMP_DETAILS.evaluationPeriod,
+          // projectType: EMP_DETAILS.projectType,
+          maximusOpus: EMP_DETAILS.maximusOpus,
+          billingSlab: EMP_DETAILS.billingSlab,
+          invoiceType: EMP_DETAILS.invoiceType,
+          reportingTeamLead: EMP_DETAILS.reportingTeamLead,
+          reportingManager: EMP_DETAILS.reportingManager,
+          functionDesc: EMP_DETAILS.functionDesc,
+          employeeFirstName: EMP_DETAILS.employeeFirstName,
+          employeeLastName: EMP_DETAILS.employeeLastName,
+          officialEmail: EMP_DETAILS.officialEmail,
+          personalEmail: EMP_DETAILS.personalEmail,
+          mobileNumber: EMP_DETAILS.mobileNumber,
+          whatsappNumber: EMP_DETAILS.whatsappNumber,
+          joiningDate: EMP_DETAILS.joiningDate,
+          replacementEcode: EMP_DETAILS.replacementEcode,
+          verticalMain: EMP_DETAILS.verticalMain,
+          verticalSub: EMP_DETAILS.verticalSub,
+          departmentDesc: EMP_DETAILS.departmentDesc,
+          lob: EMP_DETAILS.lob,
+          skillSet: EMP_DETAILS.skillSet,
+          gender: EMP_DETAILS.gender,
+          dateOfBirth: EMP_DETAILS.dateOfBirth,
+          experience: EMP_DETAILS.experience,
+          totalExperience: EMP_DETAILS.totalExperience,
+          reportingItSpoc: EMP_DETAILS.reportingItSpoc,
+          employeeFullName: EMP_DETAILS.employeeFullName,
+        };
+        setPartnerName(EMP_DETAILS.partnerName);
+        if (state.employeeStatus !== 'Pending For IT Spoc Review') {
+          setButtonDisable(true);
+        }
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+
+        const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
+
+        const getTLBySMListReq = {
+          managerEmail: EMP_DETAILS.reportingManager,
+        };
+
+        Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
+          const TLObj = getTLBySMListRes?.data.find(
+            (o) => o.managerEmail === EMP_DETAILS.reportingManager && o.teamLeadEmail === EMP_DETAILS.reportingTeamLead
+          );
+
+          state.tlList = getTLBySMListRes?.data;
+          setTeamLeadBySMList(state.tlList);
+          tempData.reportingTeamLead = TLObj;
+          setState(tempData);
+        });
+      })
+      .catch((error) => {
         setIsLoading(false);
-      }, 500);
-
-      const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
-
-      const getTLBySMListReq = {
-        managerEmail: EMP_DETAILS.reportingManager,
-      };
-
-      Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
-        const TLObj = getTLBySMListRes?.data.find(
-          (o) => o.managerEmail === EMP_DETAILS.reportingManager && o.teamLeadEmail === EMP_DETAILS.reportingTeamLead
-        );
-
-        state.tlList = getTLBySMListRes?.data;
-        setTeamLeadBySMList(state.tlList);
-        tempData.reportingTeamLead = TLObj;
-        setState(tempData);
+        alert('Something went wrong');
       });
-    });
   }, []);
 
   const updateEmployeeData = (param, setFieldValue) => {
@@ -629,28 +634,38 @@ export default function ViewEmployee() {
     if (!param) {
       if (validForm()) {
         setIsLoading(true);
-        Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
+        Configuration.updateEmployeeData(employeeFormData)
+          .then((employeeFormRes) => {
+            console.log('employeeFormRes::', employeeFormRes.data);
+            if (employeeFormRes) {
+              setTimeout(() => {
+                setIsLoading(false);
+                setOpenSuccessModal(true);
+              }, 500);
+            }
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            alert('Something went wrong');
+          });
+      }
+    } else {
+      setIsLoading(true);
+      Configuration.updateEmployeeData(employeeFormData)
+        .then((employeeFormRes) => {
           console.log('employeeFormRes::', employeeFormRes.data);
           if (employeeFormRes) {
             setTimeout(() => {
               setIsLoading(false);
-              setOpenSuccessModal(true);
+              setRejectedConfirmationModal(true);
             }, 500);
           }
+          // navigate('/EmployeesITS');
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
         });
-      }
-    } else {
-      setIsLoading(true);
-      Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
-        console.log('employeeFormRes::', employeeFormRes.data);
-        if (employeeFormRes) {
-          setTimeout(() => {
-            setIsLoading(false);
-            setRejectedConfirmationModal(true);
-          }, 500);
-        }
-        // navigate('/EmployeesITS');
-      });
     }
   };
 
@@ -838,7 +853,9 @@ export default function ViewEmployee() {
                             </Typography>
                           ) : openSuccessModal ? (
                             <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                              Details of <b>{empData.employeeFullName}</b> has been approved
+                              {/* Details of <b>{empData.employeeFullName}</b> has been approved
+                               */}
+                               <b>{empData.employeeFullName}</b> has been OnBoarded Successfully
                             </Typography>
                           ) : openRejectedconfirmationModal ? (
                             <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
@@ -1026,8 +1043,8 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
                             // }}
                             inputProps={{
-                              maxLength: "10"
-                             }}
+                              maxLength: '10',
+                            }}
                           />
                         </Grid>
                         <Grid item xs={4} textAlign="center">
@@ -1088,8 +1105,8 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
                             // }}
                             inputProps={{
-                              maxLength: "10"
-                             }}
+                              maxLength: '10',
+                            }}
                           />
                         </Grid>
 
@@ -1981,6 +1998,7 @@ export default function ViewEmployee() {
                           </Button>
                         </Stack>
                       )} */}
+
                         <Stack spacing={2} direction="row" justifyContent="center">
                           {state.employeeStatus === 'Active' ? (
                             <Button

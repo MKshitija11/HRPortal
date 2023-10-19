@@ -637,6 +637,9 @@ export default function ViewEmployee() {
               setOpenSuccessModal(true);
             }, 500);
           }
+        }) .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
         });
       }
     } else {
@@ -647,6 +650,9 @@ export default function ViewEmployee() {
           setIsLoading(false);
           setRejectedConfirmationModal(true);
         }
+      }) .catch((error) => {
+        setIsLoading(false);
+        alert('Something went wrong');
       });
     }
   };

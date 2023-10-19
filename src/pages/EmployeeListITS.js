@@ -102,24 +102,29 @@ export default function EmployeeListHR() {
         itSpocId: USERDETAILS.spocEmailId,
       };
       setIsLoading(true);
-      Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
-        if (empListItSpocRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
-          console.log('empListVendorRes', empListItSpocRes);
-          setEmployeeList(empListItSpocRes.data);
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
-          const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
-          setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-          // setIsNotFound(!filteredUsers.length && !!filterName);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        }
-      });
+      Configuration.getEmpListItSpoc(empListItSpocReq)
+        .then((empListItSpocRes) => {
+          if (empListItSpocRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            console.log('empListVendorRes', empListItSpocRes);
+            setEmployeeList(empListItSpocRes.data);
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
+            const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
+            setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            // setIsNotFound(!filteredUsers.length && !!filterName);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }
@@ -189,7 +194,6 @@ export default function EmployeeListHR() {
           ) : (
             <Container>
               <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-            
                 <Button
                   variant="contained"
                   startIcon={<Iconify icon="eva:plus-fill" />}

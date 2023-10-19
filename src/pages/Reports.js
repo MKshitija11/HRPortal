@@ -147,32 +147,37 @@ export default function EmployeeListBP() {
         itSpocId: USERDETAILS.spocEmailId,
       };
       setIsLoading(true);
-      Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
-        if (empListItSpocRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
-          console.log('empListVendorRes', empListItSpocRes);
-          setEmployeeList(empListItSpocRes.data);
-          // console.log('employeeList', employeeList);
-          setCsvData(empListItSpocRes.data);
-          const pendingAndActiveEmployees = empListItSpocRes.data.filter(
-            (employees) =>
-              employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
-          );
-          const users = applySortFilter(pendingAndActiveEmployees, getComparator(order, orderBy), filterName);
+      Configuration.getEmpListItSpoc(empListItSpocReq)
+        .then((empListItSpocRes) => {
+          if (empListItSpocRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            console.log('empListVendorRes', empListItSpocRes);
+            setEmployeeList(empListItSpocRes.data);
+            // console.log('employeeList', employeeList);
+            setCsvData(empListItSpocRes.data);
+            const pendingAndActiveEmployees = empListItSpocRes.data.filter(
+              (employees) =>
+                employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
+            );
+            const users = applySortFilter(pendingAndActiveEmployees, getComparator(order, orderBy), filterName);
 
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0);
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0);
 
-          // setIsNotFound(!users.length && !!filterName);
-          setFilteredUsers(users);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        }
-      });
+            // setIsNotFound(!users.length && !!filterName);
+            setFilteredUsers(users);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }
@@ -384,7 +389,9 @@ export default function EmployeeListBP() {
                                   tabIndex={-1}
                                   role="checkbox"
                                   selected={selectedUser}
-                                  // onClick={() => ViewEmployee(row.id)}
+                                  onClick={() => {
+                                    navigate('/ViewEmployeeITS', { state: { row } });
+                                  }}
                                   sx={{ cursor: 'pointer' }}
                                 >
                                   <TableCell align="left">{employeeId}</TableCell>

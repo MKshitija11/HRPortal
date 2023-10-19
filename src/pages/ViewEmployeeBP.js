@@ -466,6 +466,9 @@ export default function ViewEmployee({ props }) {
             setOpenSuccessModal(true);
           }, 500);
         }
+      }) .catch((error) => {
+        setIsLoading(false);
+        alert('Something went wrong');
       });
     } else {
       setFailedModal(true);
@@ -570,6 +573,9 @@ export default function ViewEmployee({ props }) {
         tempData.reportingTeamLead = TLObj;
         setState(tempData);
       });
+    }) .catch((error) => {
+      setIsLoading(false);
+      alert('Something went wrong');
     });
   }, []);
 

@@ -181,48 +181,51 @@ export default function PendingEmployeeListBP() {
       };
 
       setIsLoading(true);
-      Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
-        if (empListVendorRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
-          console.log('empListVendorRes', empListVendorRes);
-          setEmployeeList(empListVendorRes.data);
-          const downloadPendingEmp = empListVendorRes.data.filter(
-            (employees) =>
-              employees.employeeStatus === 'Pending For TL Review' ||
-              employees.employeeStatus === 'Pending For SM Review' ||
-              employees.employeeStatus === 'Pending For IT Spoc Review'
-          );
-          setCsvData(downloadPendingEmp);
-
-          console.log('employeeList', employeeList);
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
-          const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
-
-          setPendingEmployees(
-            filteredUsers.filter(
+      Configuration.getEmpListVendor(empListVendorReq)
+        .then((empListVendorRes) => {
+          if (empListVendorRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            console.log('empListVendorRes', empListVendorRes);
+            setEmployeeList(empListVendorRes.data);
+            const downloadPendingEmp = empListVendorRes.data.filter(
               (employees) =>
                 employees.employeeStatus === 'Pending For TL Review' ||
                 employees.employeeStatus === 'Pending For SM Review' ||
                 employees.employeeStatus === 'Pending For IT Spoc Review'
-            )
-          );
-          // setIsNotFound(!filteredUsers.length && !!filterName);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        }
-      });
+            );
+            setCsvData(downloadPendingEmp);
+
+            console.log('employeeList', employeeList);
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
+            const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
+
+            setPendingEmployees(
+              filteredUsers.filter(
+                (employees) =>
+                  employees.employeeStatus === 'Pending For TL Review' ||
+                  employees.employeeStatus === 'Pending For SM Review' ||
+                  employees.employeeStatus === 'Pending For IT Spoc Review'
+              )
+            );
+            // setIsNotFound(!filteredUsers.length && !!filterName);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }
     // eslint-disable-next-line
   }, []);
-
-
 
   const NewEmployee = () => {
     navigate('/NewEmployee');

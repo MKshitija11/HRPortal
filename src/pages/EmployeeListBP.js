@@ -102,26 +102,33 @@ export default function EmployeeListBP() {
       };
 
       setIsLoading(true);
-      Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
-        if (empListVendorRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
-          setEmployeeList(empListVendorRes.data);
-          const downloadActiveEmp = empListVendorRes.data.filter((employees) => employees.employeeStatus === 'Active');
-          setCsvData(downloadActiveEmp);
+      Configuration.getEmpListVendor(empListVendorReq)
+        .then((empListVendorRes) => {
+          if (empListVendorRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            setEmployeeList(empListVendorRes.data);
+            const downloadActiveEmp = empListVendorRes.data.filter(
+              (employees) => employees.employeeStatus === 'Active'
+            );
+            setCsvData(downloadActiveEmp);
 
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
-          const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
-          setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
+            const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
+            setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
 
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        }
-      });
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }

@@ -104,33 +104,38 @@ export default function EmployeeListTL() {
       };
 
       setIsLoading(true);
-      Configuration.getEmpListTeamLead(getEmpListTLReq).then((empListTLRes) => {
-        console.log('empListVendorRes=====>', empListTLRes);
-        if (empListTLRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
+      Configuration.getEmpListTeamLead(getEmpListTLReq)
+        .then((empListTLRes) => {
           console.log('empListVendorRes=====>', empListTLRes);
-          setEmployeeList(empListTLRes.data);
-          // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
+          if (empListTLRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            console.log('empListVendorRes=====>', empListTLRes);
+            setEmployeeList(empListTLRes.data);
+            // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
 
-          // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
+            // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
 
-          // const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
+            // const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
 
-          // const isNotFound = !filteredUsers.length && !!filterName;
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListTLRes.data.length) : 0);
-          const filteredUsers = applySortFilter(empListTLRes.data, getComparator(order, orderBy), filterName);
-          setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-          // setIsNotFound(filteredUsers.length && !!filterName);
+            // const isNotFound = !filteredUsers.length && !!filterName;
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListTLRes.data.length) : 0);
+            const filteredUsers = applySortFilter(empListTLRes.data, getComparator(order, orderBy), filterName);
+            setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            // setIsNotFound(filteredUsers.length && !!filterName);
 
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        }
-      });
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       navigate('/login');
     }

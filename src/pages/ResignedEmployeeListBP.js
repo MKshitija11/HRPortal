@@ -182,28 +182,33 @@ export default function ResignedEmployeeListBP() {
       };
 
       setIsLoading(true);
-      Configuration.getEmpListVendor(empListVendorReq).then((empListVendorRes) => {
-        if (empListVendorRes.data.error) {
-          setErrorMessage(true);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-        } else {
-          console.log('empListVendorRes', empListVendorRes);
-          setEmployeeList(empListVendorRes.data);
-          const downloadResignedEmp = empListVendorRes.data.filter(
-            (employees) => employees.employeeStatus === 'Resigned'
-          );
-          setCsvData(downloadResignedEmp);
-          setTimeout(() => {
-            setIsLoading(false);
-          }, 500);
-          setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListVendorRes.data.length) : 0);
-          const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
-          setResignedEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
-          // setIsNotFound(!filteredUsers.length && !!filterName);
-        }
-      });
+      Configuration.getEmpListVendor(empListVendorReq)
+        .then((empListVendorRes) => {
+          if (empListVendorRes.data.error) {
+            setErrorMessage(true);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+          } else {
+            console.log('empListVendorRes', empListVendorRes);
+            setEmployeeList(empListVendorRes.data);
+            const downloadResignedEmp = empListVendorRes.data.filter(
+              (employees) => employees.employeeStatus === 'Resigned'
+            );
+            setCsvData(downloadResignedEmp);
+            setTimeout(() => {
+              setIsLoading(false);
+            }, 500);
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListVendorRes.data.length) : 0);
+            const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
+            setResignedEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
+            // setIsNotFound(!filteredUsers.length && !!filterName);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
 
       // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
 

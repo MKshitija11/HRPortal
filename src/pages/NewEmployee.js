@@ -447,7 +447,7 @@ export default function EmployeeList() {
       })
       .required('Whatsapp Number is required'),
     personalEmail: Yup.string()
-   .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address' )
+      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address')
       .email('Invalid email address')
       .required('Personal email is required'),
     officialEmail: Yup.string()

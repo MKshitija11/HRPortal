@@ -1,6 +1,10 @@
 import { Typography, Stack, Button } from '@mui/material';
 
 export default function HandleApi() {
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   return (
     <>
       <Stack sx={{ alignItems: 'center', justifyContent: 'center', mt: 10 }}>
@@ -21,7 +25,9 @@ export default function HandleApi() {
           Something went wrong!!
         </Typography>
         <Stack direction="row" alignItems="center" justifyContent="center">
-          <Button variant="contained">Go Back</Button>
+          <Button variant="contained" onClick={refreshPage}>
+            Retry
+          </Button>
         </Stack>
       </Stack>
     </>

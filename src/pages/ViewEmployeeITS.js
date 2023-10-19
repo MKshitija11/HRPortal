@@ -194,8 +194,12 @@ export default function ViewEmployee() {
       label: 'Health',
     },
     {
-      value: 'Motor',
-      label: 'Motor',
+      value: 'Motor OD',
+      label: 'Motor OD',
+    },
+    {
+      value: 'Motor TP',
+      label: 'Motor TP',
     },
     {
       value: 'Non-motor',
@@ -1005,7 +1009,7 @@ export default function ViewEmployee() {
                             fullWidth
                             id="mobileNumber"
                             label="Mobile Number"
-                            name="mobileNumber"
+                            name="tel"
                             autoComplete="off"
                             type="number"
                             value={values.mobileNumber}
@@ -1021,6 +1025,9 @@ export default function ViewEmployee() {
                             //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                             //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
                             // }}
+                            inputProps={{
+                              maxLength: "10"
+                             }}
                           />
                         </Grid>
                         <Grid item xs={4} textAlign="center">
@@ -1061,6 +1068,7 @@ export default function ViewEmployee() {
                             autoComplete="off"
                             name="whatsappNumber"
                             required
+                            type="tel"
                             fullWidth
                             id="whatsappNumber"
                             label="Whatsapp Number"
@@ -1079,6 +1087,9 @@ export default function ViewEmployee() {
                             //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                             //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
                             // }}
+                            inputProps={{
+                              maxLength: "10"
+                             }}
                           />
                         </Grid>
 

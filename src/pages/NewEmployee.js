@@ -446,7 +446,10 @@ export default function EmployeeList() {
         excludeEmptyString: false,
       })
       .required('Whatsapp Number is required'),
-    personalEmail: Yup.string().email('Invalid personal email').required('Personal email is required'),
+    personalEmail: Yup.string()
+   .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address' )
+      .email('Invalid email address')
+      .required('Personal email is required'),
     officialEmail: Yup.string()
       .email('Invalid official email')
       .required('Official email is required')
@@ -711,13 +714,16 @@ export default function EmployeeList() {
                         variant="outlined"
                         required
                         fullWidth
-                        type="number"
+                        type="tel"
                         id="mobileNumber"
                         label="Mobile Number"
                         value={values.mobileNumber}
                         onChange={(evt) => {
                           handleChange(evt);
                           handleChangeEvent(evt);
+                        }}
+                        inputProps={{
+                          maxLength: '10',
                         }}
                         onBlur={handleBlur}
                         error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}
@@ -778,6 +784,7 @@ export default function EmployeeList() {
                       <TextField
                         autoComplete="off"
                         name="whatsappNumber"
+                        type="tel"
                         variant="outlined"
                         required
                         fullWidth
@@ -791,6 +798,9 @@ export default function EmployeeList() {
                         onChange={(evt) => {
                           handleChange(evt);
                           handleChangeEvent(evt);
+                        }}
+                        inputProps={{
+                          maxLength: '10',
                         }}
                         error={formik.touched.whatsappNumber && Boolean(formik.errors.whatsappNumber)}
                         helperText={formik.touched.whatsappNumber && formik.errors.whatsappNumber}

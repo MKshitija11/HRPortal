@@ -621,7 +621,10 @@ export default function ViewEmployee({ props }) {
         excludeEmptyString: false,
       })
       .required('Whatsapp Number is required'),
-    personalEmail: Yup.string().email('Invalid personal email').required('Personal email is required'),
+      personalEmail: Yup.string()
+      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address' )
+         .email('Invalid email address')
+         .required('Personal email is required'),
     officialEmail: Yup.string()
       .email('Invalid official email')
       .required('Official email is required')
@@ -928,7 +931,7 @@ export default function ViewEmployee({ props }) {
                             label="Mobile Number"
                             name="mobileNumber"
                             autoComplete="off"
-                            type="number"
+                            type="tel"
                             value={values.mobileNumber ?? ''}
                             onChange={(evt) => {
                               handleChange(evt);
@@ -954,6 +957,8 @@ export default function ViewEmployee({ props }) {
                                     ? 'grey'
                                     : 'black',
                               },
+
+                              maxLength: '10',
                             }}
                           />
                         </Grid>
@@ -1026,6 +1031,7 @@ export default function ViewEmployee({ props }) {
                             name="whatsappNumber"
                             required
                             fullWidth
+                            type="tel"
                             id="whatsappNumber"
                             label="Whatsapp Number"
                             value={values.whatsappNumber}
@@ -1055,6 +1061,7 @@ export default function ViewEmployee({ props }) {
                                     ? 'grey'
                                     : 'black',
                               },
+                              maxLength: "10"
                             }}
                           />
                         </Grid>

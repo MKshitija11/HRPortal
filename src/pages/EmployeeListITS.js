@@ -189,7 +189,7 @@ export default function EmployeeListHR() {
           ) : (
             <Container>
               <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
-                <Typography variant="h4">Employees ({employeeList.length})</Typography>
+            
                 <Button
                   variant="contained"
                   startIcon={<Iconify icon="eva:plus-fill" />}

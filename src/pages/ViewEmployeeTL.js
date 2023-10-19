@@ -197,8 +197,12 @@ export default function ViewEmployee() {
       label: 'Health',
     },
     {
-      value: 'Motor',
-      label: 'Motor',
+      value: 'Motor OD',
+      label: 'Motor OD',
+    },
+    {
+      value: 'Motor TP',
+      label: 'Motor TP',
     },
     {
       value: 'Non-motor',
@@ -820,7 +824,10 @@ export default function ViewEmployee() {
         excludeEmptyString: false,
       })
       .required('Whatsapp Number is required'),
-    personalEmail: Yup.string().email('Invalid personal email').required('Personal email is required'),
+      personalEmail: Yup.string()
+      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address' )
+         .email('Invalid email address')
+         .required('Personal email is required'),
     officialEmail: Yup.string()
       .email('Invalid official email')
       .required('Official email is required')
@@ -1116,7 +1123,7 @@ export default function ViewEmployee() {
                             label="Mobile Number"
                             name="mobileNumber"
                             autoComplete="off"
-                            type="number"
+                            type="tel"
                             value={values.mobileNumber}
                             onChange={(evt) => {
                               handleChange(evt);
@@ -1130,6 +1137,9 @@ export default function ViewEmployee() {
                             //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                             // }}
+                            inputProps={{
+                              maxLength: "10"
+                             }}
                           />
                         </Grid>
                         <Grid item xs={4} textAlign="center">
@@ -1174,6 +1184,7 @@ export default function ViewEmployee() {
                             fullWidth
                             id="whatsappNumber"
                             label="Whatsapp Number"
+                            type="tel"
                             value={values.whatsappNumber}
                             onBlur={(evt) => {
                               handleChange(evt);
@@ -1189,6 +1200,9 @@ export default function ViewEmployee() {
                             //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                             // }}
+                            inputProps={{
+                              maxLength: "10"
+                             }}
                           />
                         </Grid>
 

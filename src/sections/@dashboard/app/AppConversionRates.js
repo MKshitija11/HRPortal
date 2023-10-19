@@ -42,14 +42,13 @@ export default function AppConversionRates({ title, subheader, chartData, ...oth
   const navigate = useNavigate();
   console.log('OTHER', other);
 
-  const handleClickChart = (prtnerName) => {
-    navigate('/Reports', {
-      state: {
-        partnerNameChart: prtnerName,
-      },
-    });
-    // alert(prtnerName);
-  };
+  // const handleClickChart = (prtnerName) => {
+  //   navigate('/Reports', {
+  //     state: {
+  //       partnerNameChart: prtnerName,
+  //     },
+  //   });
+  // };
   // console.log('APP CONVERSION RATES.... ', chartData)
   const chartLabels = chartData.map((i) => i.chartLabel);
   console.log('CHART LABLES', chartLabels);
@@ -59,7 +58,6 @@ export default function AppConversionRates({ title, subheader, chartData, ...oth
 
   const chartColors = chartData.map((i) => i.chartColor);
   console.log('CHART COLOS', chartColors);
-
 
   // const series = [
   //   {
@@ -84,11 +82,11 @@ export default function AppConversionRates({ title, subheader, chartData, ...oth
       //       speed: 400,
       //     },
       //   },
-      events: {
-        click: (event, chartContext, config) => {
-          handleClickChart(chartLabels[config.dataPointIndex]);
-        },
-      },
+      // events: {
+      //   click: (event, chartContext, config) => {
+      //     handleClickChart(chartLabels[config.dataPointIndex]);
+      //   },
+      // },
       // },
       chart: {
         type: 'bar',

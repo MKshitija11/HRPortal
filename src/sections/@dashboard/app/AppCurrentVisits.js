@@ -52,21 +52,24 @@ export default function AppCurrentVisits({
   const theme = useTheme();
 
   const chartLabels = chartData.map((i) => i.chartLabel);
+  console.log("chart Labels", chartLabels)
 
   const chartSeries = chartData.map((i) => Number(i.chartValue));
+  console.log("chart series", chartSeries)
 
-  const chartColors = ["#32CD02", "#f5c71a", "#F70202", "#1e90ff"];
+  // const chartColors = ["#32CD02", "#f5c71a", "#F70202", "#1e90ff"];
+  const chartColors = ["#32CD02", "#FFA500", "#FF7400", "#FFC100", "#ed1708"];
 
   const navigate = useNavigate();
 
-  const handleClickChart = (OBstatus) => {
-    // alert(OBstatus);
-    navigate("/Reports", {
-      state: {
-        empStatus: OBstatus,
-      },
-    });
-  };
+  // const handleClickChart = (OBstatus) => {
+  //   // alert(OBstatus);
+  //   navigate("/Reports", {
+  //     state: {
+  //       empStatus: OBstatus,
+  //     },
+  //   });
+  // };
 
   console.log("chartSeries", chartSeries);
   const chartOptions = useChart({
@@ -110,11 +113,11 @@ export default function AppCurrentVisits({
         },
       },
 
-      events: {
-        dataPointSelection: (event, chartContext, config) => {
-          handleClickChart(config.w.config.labels[config.dataPointIndex]);
-        },
-      },
+      // events: {
+      //   dataPointSelection: (event, chartContext, config) => {
+      //     handleClickChart(config.w.config.labels[config.dataPointIndex]);
+      //   },
+      // },
     },
   });
 

@@ -78,6 +78,8 @@ export default function ViewEmployee() {
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [openRejectedconfirmationModal, setRejectedConfirmationModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAlertMessage, setShowAlertMessage] = useState(false);
+  const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
 
   const evaluationPeriodList = [
     {
@@ -129,6 +131,10 @@ export default function ViewEmployee() {
       value: 'Project',
       label: 'Project',
     },
+    {
+      value: 'Infra Support',
+      label: 'Infra Support',
+    },
   ];
 
   const invoiceTypeList = [
@@ -150,6 +156,10 @@ export default function ViewEmployee() {
     {
       value: 'Opus',
       label: 'Opus',
+    },
+    {
+      value: 'Infra',
+      label: 'Infra',
     },
   ];
 
@@ -236,6 +246,10 @@ export default function ViewEmployee() {
     {
       value: 'Customer Support',
       label: 'Customer Support',
+    },
+    {
+      value: 'Infra',
+      label: 'Infra',
     },
   ];
 
@@ -450,10 +464,20 @@ export default function ViewEmployee() {
       document.employeeForm.replacementEcode.value = 'NA';
       document.employeeForm.replacementEcode.readOnly = true;
       state.replacementEcode = 'NA';
+      setState({
+        ...state,
+        replacementEcode: "NA",
+        newReplacement: evt.target.value,
+      });
     } else {
       document.employeeForm.replacementEcode.value = '';
       document.employeeForm.replacementEcode.readOnly = false;
       state.replacementEcode = '';
+      setState({
+        ...state,
+        replacementEcode: "",
+        newReplacement: evt.target.value,
+      });
     }
   };
 
@@ -482,7 +506,8 @@ export default function ViewEmployee() {
 
   const handleCloseUpdateModal = () => {
     setOpenUpdateModal(false);
-    updateEmployeeData();
+    // updateEmployeeData();
+    updateActiveEmployee();
   };
 
   const handleRejectionModal = (param, setFieldValue) => {
@@ -612,7 +637,6 @@ export default function ViewEmployee() {
       // setRejectedConfirmationModal(true)
     } else {
       document.getElementById('employeeStatus').value = 'Pending For SM Review';
-
       setState({
         ...state,
         employeeStatus: 'Pending For SM Review',
@@ -628,32 +652,72 @@ export default function ViewEmployee() {
 
     if (!param) {
       if (validForm()) {
-        console.log('JSON:employeeFormData::', employeeFormData);
+        console.log('JSON:employeeFormData from valid::', employeeFormData);
         setIsLoading(true);
-        Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
-          if (employeeFormRes) {
-            setTimeout(() => {
-              setIsLoading(false);
-              setOpenSuccessModal(true);
-            }, 500);
-          }
-        }) .catch((error) => {
-          setIsLoading(false);
-          alert('Something went wrong');
-        });
+        Configuration.updateEmployeeData(employeeFormData)
+          .then((employeeFormRes) => {
+            if (employeeFormRes) {
+              setTimeout(() => {
+                setIsLoading(false);
+                setOpenSuccessModal(true);
+              }, 500);
+            }
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            alert('Something went wrong');
+          });
+      } else {
+        setShowAlertMessage(true);
       }
     } else {
       console.log('JSON:employeeFormData::', employeeFormData);
       setIsLoading(true);
-      Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
-        if (employeeFormRes) {
+      Configuration.updateEmployeeData(employeeFormData)
+        .then((employeeFormRes) => {
+          if (employeeFormRes) {
+            setIsLoading(false);
+            setRejectedConfirmationModal(true);
+          }
+        })
+        .catch((error) => {
           setIsLoading(false);
-          setRejectedConfirmationModal(true);
-        }
-      }) .catch((error) => {
-        setIsLoading(false);
-        alert('Something went wrong');
-      });
+          alert('Something went wrong');
+        });
+    }
+  };
+
+  const updateActiveEmployee = () => {
+    document.getElementById('employeeStatus').value = 'Active';
+    setState({
+      ...state,
+      employeeStatus: 'Active',
+    });
+    state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
+
+    const employeeFormObj = new FormData(document.getElementById('employeeForm'));
+
+    const employeeFormData = Object.fromEntries(employeeFormObj.entries());
+    employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
+
+    console.log('JSON:employeeFormData::', employeeFormData);
+    if (validForm()) {
+      setIsLoading(true);
+      Configuration.updateEmployeeData(employeeFormData)
+        .then((employeeFormRes) => {
+          if (employeeFormRes) {
+            setTimeout(() => {
+              setIsLoading(false);
+              setUpdateActiveEmp(true);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
+    } else {
+      setShowAlertMessage(true);
     }
   };
 
@@ -662,7 +726,6 @@ export default function ViewEmployee() {
   const [empData = {}, setEmpData] = useState();
 
   const [reportingList = [], setReportingList] = useState();
-
 
   const [verticalMainList = [], setVerticalMainList] = useState();
   const [verticalSubList = [], setVerticalSubList] = useState();
@@ -830,10 +893,10 @@ export default function ViewEmployee() {
         excludeEmptyString: false,
       })
       .required('Whatsapp Number is required'),
-      personalEmail: Yup.string()
-      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address' )
-         .email('Invalid email address')
-         .required('Personal email is required'),
+    personalEmail: Yup.string()
+      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address')
+      .email('Invalid email address')
+      .required('Personal email is required'),
     officialEmail: Yup.string()
       .email('Invalid official email')
       .required('Official email is required')
@@ -916,7 +979,6 @@ export default function ViewEmployee() {
                 } = formik;
                 return (
                   <>
-                  
                     <Stack alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
                       <Modal
                         open={
@@ -924,7 +986,8 @@ export default function ViewEmployee() {
                           openRejectionModal ||
                           openUpdateModal ||
                           openSuccessModal ||
-                          openRejectedconfirmationModal
+                          openRejectedconfirmationModal ||
+                          updateActiveEmp
                         }
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
@@ -966,6 +1029,10 @@ export default function ViewEmployee() {
                               Details of <b>{empData.employeeFullName}</b> has been rejected by {''}
                               <b>{empData.reportingTeamLead}</b>
                             </Typography>
+                          ) : updateActiveEmp ? (
+                            <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
+                              Details of <b>{empData.employeeFullName}</b> has been updated successfully
+                            </Typography>
                           ) : null}
 
                           <Grid
@@ -975,7 +1042,7 @@ export default function ViewEmployee() {
                             justifyContent={'center'}
                             style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
                           >
-                            {openSuccessModal || openRejectedconfirmationModal ? (
+                            {openSuccessModal || openRejectedconfirmationModal || updateActiveEmp ? (
                               <Stack direction="row" justifyContent="center">
                                 <Button
                                   size="medium"
@@ -985,6 +1052,7 @@ export default function ViewEmployee() {
                                   onClick={() => {
                                     setOpenSuccessModal(false);
                                     setRejectedConfirmationModal(false);
+                                    setUpdateActiveEmp(false);
                                     navigate('/EmployeesTL');
                                   }}
                                   sx={{ mt: 2 }}
@@ -1144,8 +1212,8 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                             // }}
                             inputProps={{
-                              maxLength: "10"
-                             }}
+                              maxLength: '10',
+                            }}
                           />
                         </Grid>
                         <Grid item xs={4} textAlign="center">
@@ -1207,8 +1275,8 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                             // }}
                             inputProps={{
-                              maxLength: "10"
-                             }}
+                              maxLength: '10',
+                            }}
                           />
                         </Grid>
 
@@ -2024,6 +2092,11 @@ export default function ViewEmployee() {
               }}
             </Formik>
           )}
+          {showAlertMessage ? (
+            <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center', mt: 2 }}>
+              Note: Please provide values for mandatory fields
+            </Typography>
+          ) : null}
         </Card>
       </Container>
     </>

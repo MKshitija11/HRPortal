@@ -70,7 +70,8 @@ export default function ViewEmployee({ props }) {
   const [isChecked, setIsChecked] = useState(false);
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
-  const [failedModal, setFailedModal] = useState(false);
+  // const [failedModal, setFailedModal] = useState(false);
+  const [showAlertMessage, setShowAlertMessage] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [teamLead, setTeamLead] = useState();
@@ -124,6 +125,10 @@ export default function ViewEmployee({ props }) {
     {
       value: 'Project',
       label: 'Project',
+    },
+    {
+      value: 'Infra Support',
+      label: 'Infra Support',
     },
   ];
 
@@ -300,20 +305,22 @@ export default function ViewEmployee({ props }) {
 
   const handleChangeDropDown = (evt) => {
     if (evt.target.value === 'New') {
-      document.employeeForm.replacementEcode.value = 'NA';
+      // document.employeeForm.replacementEcode.value = 'NA';
       document.employeeForm.replacementEcode.readOnly = true;
       state.replacementEcode = 'NA';
       setState({
         ...state,
-        newReplacement: 'NA',
+        replacementEcode: "NA",
+        newReplacement: evt.target.value,
       });
     } else {
-      document.employeeForm.replacementEcode.value = '';
+      // document.employeeForm.replacementEcode.value = '';
       document.employeeForm.replacementEcode.readOnly = false;
       state.replacementEcode = '';
       setState({
         ...state,
-        newReplacement: '',
+        replacementEcode: "",
+        newReplacement: evt.target.value,
       });
     }
   };
@@ -427,7 +434,8 @@ export default function ViewEmployee({ props }) {
         navigate('/EmployeesBP');
       });
     } else {
-      setFailedModal(true);
+      // setFailedModal(true);
+      setShowAlertMessage(true)
     }
   };
 
@@ -471,7 +479,8 @@ export default function ViewEmployee({ props }) {
         alert('Something went wrong');
       });
     } else {
-      setFailedModal(true);
+      // setFailedModal(true);
+      setShowAlertMessage(true)
     }
   };
 
@@ -679,7 +688,7 @@ export default function ViewEmployee({ props }) {
 
         <Stack alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
           <Modal
-            open={openModal || openUpdateModal || openSuccessModal || failedModal}
+            open={openModal || openUpdateModal || openSuccessModal}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
@@ -710,11 +719,7 @@ export default function ViewEmployee({ props }) {
                 <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
                   Details of <b>{empData.employeeFullName}</b> has been Updated successfully
                 </Typography>
-              ) : failedModal ? (
-                <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                  Sorry! Failed to update <b>{empData.employeeFullName}</b> details
-                </Typography>
-              ) : null}
+              )  : null}
 
               <Grid
                 container
@@ -739,22 +744,7 @@ export default function ViewEmployee({ props }) {
                       OK
                     </Button>
                   </Stack>
-                ) : failedModal ? (
-                  <Stack direction="row" justifyContent="center">
-                    <Button
-                      size="medium"
-                      variant="contained"
-                      type="button"
-                      color="primary"
-                      onClick={() => {
-                        setFailedModal(false);
-                      }}
-                      sx={{ mt: 2 }}
-                    >
-                      OK
-                    </Button>
-                  </Stack>
-                ) : (
+                )  : (
                   <>
                     <Stack justifyContent="center">
                       <Button
@@ -1903,6 +1893,11 @@ export default function ViewEmployee({ props }) {
               }}
             </Formik>
           )}
+            {showAlertMessage ? (
+            <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center', mt:2 }}>
+              Note: Please provide values for mandatory fields
+            </Typography>
+          ) : null}
         </Card>
       </Container>
     </>

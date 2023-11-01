@@ -88,7 +88,8 @@ export default function ViewEmployee() {
   const [openRejectedconfirmationModal, setRejectedConfirmationModal] = useState(false);
   const [teamLeadSelected, setTeamLeadSelected] = useState();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [showAlertMessage, setShowAlertMessage] = useState(false);
+  const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
   const evaluationPeriodList = [
     {
       value: '15 Days',
@@ -139,6 +140,10 @@ export default function ViewEmployee() {
       value: 'Project',
       label: 'Project',
     },
+    {
+      value: 'Infra Support',
+      label: 'Infra Support',
+    },
   ];
   const maximusOpusList = [
     {
@@ -148,6 +153,10 @@ export default function ViewEmployee() {
     {
       value: 'Opus',
       label: 'Opus',
+    },
+    {
+      value: 'Infra',
+      label: 'Infra',
     },
   ];
   const genderList = [
@@ -233,6 +242,10 @@ export default function ViewEmployee() {
     {
       value: 'Customer Support',
       label: 'Customer Support',
+    },
+    {
+      value: 'Infra',
+      label: 'Infra',
     },
   ];
 
@@ -330,8 +343,18 @@ export default function ViewEmployee() {
   const handleChangeDropDown = (evt) => {
     if (evt.target.value === 'New') {
       document.employeeForm.replacementEcode.value = 'NA';
+      setState({
+        ...state,
+        replacementEcode: "NA",
+        newReplacement: evt.target.value,
+      });
     } else {
       document.employeeForm.replacementEcode.value = '';
+      setState({
+        ...state,
+        replacementEcode: "",
+        newReplacement: evt.target.value,
+      });
     }
   };
 
@@ -380,7 +403,7 @@ export default function ViewEmployee() {
 
   const handleCloseUpdateModal = () => {
     setOpenUpdateModal(false);
-    updateEmployeeData();
+    updateActiveEmployee();
   };
 
   const failFocus = (autoFocusObj) => {
@@ -648,6 +671,8 @@ export default function ViewEmployee() {
             setIsLoading(false);
             alert('Something went wrong');
           });
+      } else {
+        setShowAlertMessage(true);
       }
     } else {
       setIsLoading(true);
@@ -666,6 +691,40 @@ export default function ViewEmployee() {
           setIsLoading(false);
           alert('Something went wrong');
         });
+    }
+  };
+
+  const updateActiveEmployee = () => {
+    document.getElementById('employeeStatus').value = 'Active';
+    setState({
+      ...state,
+      employeeStatus: 'Active',
+    });
+    state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
+
+    const employeeFormObj = new FormData(document.getElementById('employeeForm'));
+
+    const employeeFormData = Object.fromEntries(employeeFormObj.entries());
+    employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
+
+    console.log('JSON:employeeFormData::', employeeFormData);
+    if (validForm()) {
+      setIsLoading(true);
+      Configuration.updateEmployeeData(employeeFormData)
+        .then((employeeFormRes) => {
+          if (employeeFormRes) {
+            setTimeout(() => {
+              setIsLoading(false);
+              setUpdateActiveEmp(true);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
+    } else {
+      setShowAlertMessage(true);
     }
   };
 
@@ -819,7 +878,8 @@ export default function ViewEmployee() {
                           openRejectionModal ||
                           openUpdateModal ||
                           openSuccessModal ||
-                          openRejectedconfirmationModal
+                          openRejectedconfirmationModal ||
+                          updateActiveEmp
                         }
                         aria-labelledby="modal-modal-title"
                         aria-describedby="modal-modal-description"
@@ -855,12 +915,16 @@ export default function ViewEmployee() {
                             <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
                               {/* Details of <b>{empData.employeeFullName}</b> has been approved
                                */}
-                               <b>{empData.employeeFullName}</b> has been OnBoarded Successfully
+                              <b>{empData.employeeFullName}</b> has been OnBoarded Successfully
                             </Typography>
                           ) : openRejectedconfirmationModal ? (
                             <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
                               Details of <b>{empData.employeeFullName}</b> has been rejected by
                               <b>{empData.reportingItSpoc}</b>
+                            </Typography>
+                          ) : updateActiveEmp ? (
+                            <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
+                              Details of <b>{empData.employeeFullName}</b> has been updated successfully
                             </Typography>
                           ) : null}
 
@@ -871,7 +935,7 @@ export default function ViewEmployee() {
                             justifyContent={'center'}
                             style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
                           >
-                            {openSuccessModal || openRejectedconfirmationModal ? (
+                            {openSuccessModal || openRejectedconfirmationModal || updateActiveEmp ? (
                               <Stack direction="row" justifyContent="center">
                                 <Button
                                   size="medium"
@@ -882,6 +946,7 @@ export default function ViewEmployee() {
                                   onClick={() => {
                                     setOpenSuccessModal(false);
                                     setRejectedConfirmationModal(false);
+                                    setUpdateActiveEmp(false)
                                     navigate('/EmployeesITS');
                                   }}
                                   sx={{ mt: 2 }}
@@ -1019,16 +1084,16 @@ export default function ViewEmployee() {
                         </Grid>
 
                         <Grid item xs={4}>
-                          <TextField
+                          {/* <TextField
                             InputLabelProps={{ shrink: true }}
                             variant="outlined"
                             required
                             fullWidth
                             id="mobileNumber"
                             label="Mobile Number"
-                            name="tel"
+                            name="Mobile Number"
                             autoComplete="off"
-                            type="number"
+                            type="tel"
                             value={values.mobileNumber}
                             onChange={(evt) => {
                               handleChange(evt);
@@ -1041,6 +1106,33 @@ export default function ViewEmployee() {
                             // inputProps={{
                             //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                             //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
+                            // }}
+                            inputProps={{
+                              maxLength: '10',
+                            }}
+                          /> */}
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            variant="outlined"
+                            required
+                            fullWidth
+                            id="mobileNumber"
+                            label="Mobile Number"
+                            name="mobileNumber"
+                            autoComplete="off"
+                            type="tel"
+                            value={values.mobileNumber}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            onBlur={handleBlur}
+                            // error={Boolean(formik.errors.mobileNumber)}
+                            error={touched.mobileNumber ? errors.mobileNumber : ''}
+                            helperText={touched.mobileNumber ? formik.errors.mobileNumber : ''}
+                            // inputProps={{
+                            //   readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
+                            //   style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
                             // }}
                             inputProps={{
                               maxLength: '10',
@@ -2047,6 +2139,11 @@ export default function ViewEmployee() {
               }}
             </Formik>
           )}
+          {showAlertMessage ? (
+            <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center', mt: 2 }}>
+              Note: Please provide values for mandatory fields
+            </Typography>
+          ) : null}
         </Card>
       </Container>
     </>

@@ -2,9 +2,8 @@ import axios from 'axios';
 
 export default {
   // BASE_URL: "http://10.39.48.255:8888/HrsmApplication/",   // DEVELOPMENT
-  // BASE_URL: 'https://api.bagicuat.bajajallianz.com/BagicHRSM/', // UAT
-  BASE_URL: "https://webapi.bajajallianz.com/BagicHRSM/", // PROD
-  
+  BASE_URL: 'https://api.bagicuat.bajajallianz.com/BagicHRSM/', // UAT
+  // BASE_URL: 'https://webapi.bajajallianz.com/BagicHRSM/', // PROD
 
   login(loginReq) {
     console.log('function->', 'login');
@@ -26,7 +25,6 @@ export default {
     console.log('function->', 'getEmpListTeamLead');
     console.log('url->', `${this.BASE_URL}getEmpListTL`);
     console.log('request->', getEmpListTLReq);
-
     return axios.post(`${this.BASE_URL}getEmpListTL`, getEmpListTLReq);
   },
 
@@ -144,5 +142,11 @@ export default {
     console.log('url->', `${this.BASE_URL}getTLBySM`);
     console.log('data->', RequestTeamLead);
     return axios.post(`${this.BASE_URL}getTLBySM`, RequestTeamLead);
+  },
+  getDashBoardForSM(RequestSeniorManager) {
+    console.log('function->', 'getDashBoardForSM');
+    console.log('url->', `${this.BASE_URL}getDashBoardForSM`);
+    console.log('data->', RequestSeniorManager);
+    return axios.post(`${this.BASE_URL}getDashBoardForSM`, RequestSeniorManager);
   },
 };

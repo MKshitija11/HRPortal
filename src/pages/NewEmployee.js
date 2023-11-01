@@ -170,6 +170,10 @@ export default function EmployeeList() {
       value: 'Project',
       label: 'Project',
     },
+    {
+      value: 'Infra Support',
+      label: 'Infra Support',
+    },
   ];
 
   const handleOpenModal = () => {

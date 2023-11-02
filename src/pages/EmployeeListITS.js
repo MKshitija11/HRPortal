@@ -83,7 +83,7 @@ export default function EmployeeListHR() {
 
   const [filterName, setFilterName] = useState('');
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
 
   const [employeeList = [], setEmployeeList] = useState();
 
@@ -316,7 +316,7 @@ export default function EmployeeListHR() {
                     </Scrollbar>
 
                     <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
+                      rowsPerPageOptions={[25, 50, 100 ]}
                       component="div"
                       count={activeEmployees.length}
                       rowsPerPage={rowsPerPage}

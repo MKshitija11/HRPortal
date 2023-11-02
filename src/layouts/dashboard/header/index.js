@@ -28,7 +28,7 @@ const StyledRoot = styled(AppBar)(({ theme }) => ({
 
   [theme.breakpoints.up('xs')]: {
     width: `calc(100% - ${NAV_WIDTH + 1}px)`,
-    top: 5,
+    // top: 5,
   },
 }));
 

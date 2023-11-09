@@ -5,6 +5,7 @@ import { Box, List, ListItemText } from '@mui/material';
 //
 import { StyledNavItem, StyledNavItemIcon } from './styles';
 import SvgColor from '../svg-color';
+import Configuration from '../../utils/Configuration';
 
 // ----------------------------------------------------------------------
 
@@ -15,8 +16,23 @@ export default function NavSection() {
   const [employeeList = [], setEmployeeList] = useState();
 
   useEffect(() => {
+    const loginRequest = {
+      username: 'ravi.kumar044@bajajallianz.co.in',
+      password: 'passWord',
+    };
+
+    Configuration.login(loginRequest)
+    .then((LoginResponse) => {
+      console.log('LoginForm.login.LoginResponse nav section >>>>', LoginResponse.data.length);
+    })
+  })
+
+  useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+    const ROLE = sessionStorage.getItem('ROLE')
+    
     console.log('USERDETAILS.NAV.userProfile', USERDETAILS);
+    console.log('ROLE', ROLE);
 
     if (!USERDETAILS) {
       console.log('inside first if');
@@ -61,7 +77,8 @@ export default function NavSection() {
     const dataTeamLead = [
       {
         title: 'Active',
-        path: '/EmployeesTL',
+        // path: '/EmployeesTL',
+        path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
         icon: icon('ic_user'),
       },
       {
@@ -74,6 +91,11 @@ export default function NavSection() {
         path: '/ResignedEmployeesListTL',
         icon: icon('ic_user'),
       },
+      {
+        title: 'Switch role',
+        path: '/SwitchRole',
+        icon: icon('ic_user'),
+      }
     ];
     const dataSeniorManager = [
       {

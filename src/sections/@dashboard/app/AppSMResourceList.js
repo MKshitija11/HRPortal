@@ -59,14 +59,16 @@ export default function AppSMResourceList({ chartType, title, subheader, chartDa
 
   const navigate = useNavigate();
 
-  //   const handleClickChart = (OBstatus) => {
-  //     // alert(OBstatus);
-  //     navigate('/Reports', {
-  //       state: {
-  //         empStatus: OBstatus,
-  //       },
-  //     });
-  //   };
+  const handleClickChart = (OBstatus) => {
+    alert(OBstatus);
+    navigate('/EmployeesITS', {
+      state: {
+        // reportingManager:
+        empStatus: OBstatus,
+        filterBySM: true
+      },
+    });
+  };
 
   console.log('chartSeries', chartSeries);
 
@@ -79,23 +81,25 @@ export default function AppSMResourceList({ chartType, title, subheader, chartDa
     ],
 
     options: {
-      //   events: {
-      //     click: (event, chartContext, config) => {
-      //       handleClickChart(chartLabels[config.dataPointIndex]);
-      //     },
-      //   },
-      // },
       chart: {
         type: 'bar',
         height: 380,
-        width:100
+        width: 100,
+        events: {
+          click: (event, chartContext, config) => {
+            handleClickChart(chartLabels[config.dataPointIndex]);
+            console.log('handle click ', chartLabels[config.dataPointIndex]);
+          },
+        },
       },
+      // events: {
+      //   click: console.log('CLICKED !!'),
+      // },
       plotOptions: {
         bar: {
           borderRadius: 4,
           horizontal: false,
-          columnWidth: '50%' 
-          
+          columnWidth: '50%',
         },
       },
       dataLabels: {

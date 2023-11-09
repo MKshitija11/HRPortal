@@ -6,7 +6,10 @@ import ReactApexChart from 'react-apexcharts';
 import { Card, CardHeader } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // utils
+import Configuration from '../../../utils/Configuration';
+
 import { fNumber } from '../../../utils/formatNumber';
+// Configuration
 // components
 import { useChart } from '../../../components/chart';
 
@@ -42,13 +45,16 @@ export default function AppConversionRates({ title, subheader, chartData, ...oth
   const navigate = useNavigate();
   console.log('OTHER', other);
 
-  // const handleClickChart = (prtnerName) => {
-  //   navigate('/Reports', {
-  //     state: {
-  //       partnerNameChart: prtnerName,
-  //     },
-  //   });
-  // };
+  const handleClickChart = (prtnerName) => {
+    console.log('CLICKEDDDDD', prtnerName);
+
+    navigate('/EmployeesITS', {
+      state: {
+        partnerNameChart: prtnerName,
+        filterByPartner: true,
+      },
+    });
+  };
   // console.log('APP CONVERSION RATES.... ', chartData)
   const chartLabels = chartData.map((i) => i.chartLabel);
   console.log('CHART LABLES', chartLabels);
@@ -82,15 +88,15 @@ export default function AppConversionRates({ title, subheader, chartData, ...oth
       //       speed: 400,
       //     },
       //   },
-      // events: {
-      //   click: (event, chartContext, config) => {
-      //     handleClickChart(chartLabels[config.dataPointIndex]);
-      //   },
-      // },
-      // },
+
       chart: {
         type: 'bar',
         height: 120,
+        events: {
+          click: (event, chartContext, config) => {
+            handleClickChart(chartLabels[config.dataPointIndex]);
+          },
+        },
       },
       plotOptions: {
         bar: {

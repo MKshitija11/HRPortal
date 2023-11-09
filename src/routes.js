@@ -25,10 +25,13 @@ import HandleApi from './components/CustomComponent/HandleApi';
 import Reports from './pages/Reports';
 import PendingEmployeeListTL from './pages/PendingEmployeeListTL';
 import PendingEmployeeListSM from './pages/PendingEmployeeListSM';
+import ResignedEmployeeListSM from './pages/ResignedEmployeeListSM';
 import PendingEmployeeListITS from './pages/PendingEmployeeListITS';
 import PendingEmployeeListBP from './pages/PendingEmployeeListBP';
 import RejectedEmployeeListBP from './pages/RejectedEmployeeListBP';
 import ResignedEmployeeListBP from './pages/ResignedEmployeeListBP';
+import ResignedEmployeeListITS from './pages/ResignedEmployeeListITS';
+import ResignedEmployeeListTL from './pages/ResignedEmployeeListTL';
 
 // ----------------------------------------------------------------------
 
@@ -47,16 +50,19 @@ export default function Router() {
         { path: 'ResignedEmployeesBP', element: <ResignedEmployeeListBP /> },
         { path: 'EmployeesTL', element: <EmployeeListTL /> },
         { path: 'EmployeesListTL', element: <PendingEmployeeListTL /> },
+        { path: 'ResignedEmployeesListTL', element: <ResignedEmployeeListTL /> },
         { path: 'EmployeesSM', element: <EmployeeListSM /> },
         { path: 'EmployeesListSM', element: <PendingEmployeeListSM /> },
+        { path: 'ResignedEmployeesListSM', element: <ResignedEmployeeListSM /> },
         { path: 'EmployeesITS', element: <EmployeeListITS /> },
         { path: 'PendingEmployeesITS', element: <PendingEmployeeListITS /> },
+        { path: 'ResignedEmployeesITS', element: <ResignedEmployeeListITS /> },
         { path: 'NewEmployee', element: <NewEmployee /> },
         { path: 'ViewEmployeeBP', element: <ViewEmployeeBP /> },
         { path: 'ViewEmployeeTL', element: <ViewEmployeeTL /> },
         { path: 'ViewEmployeeSM', element: <ViewEmployeeSM /> },
         { path: 'ViewEmployeeITS', element: <ViewEmployeeITS /> },
-        
+
         { path: 'Loader', element: <Loader /> },
         { path: 'HandleApi', element: <HandleApi /> },
       ],
@@ -94,6 +100,10 @@ export default function Router() {
       element: <PendingEmployeeListTL />,
     },
     {
+      path: 'ResignedEmployeesListTL',
+      element: <ResignedEmployeeListTL />,
+    },
+    {
       path: 'EmployeesSM',
       element: <EmployeeListSM />,
     },
@@ -102,12 +112,21 @@ export default function Router() {
       element: <PendingEmployeeListSM />,
     },
     {
+      path: 'ResignedEmployeesListSM',
+      element: <ResignedEmployeeListSM />,
+    },
+
+    {
       path: 'EmployeesITS',
       element: <EmployeeListITS />,
     },
     {
       path: 'PendingEmployeesITS',
       element: <PendingEmployeeListITS />,
+    },
+    {
+      path: 'ResignedEmployeesITS',
+      element: <ResignedEmployeeListITS />,
     },
     { path: 'ViewEmployeeBP', element: <ViewEmployeeBP /> },
     { path: 'ViewEmployeeTL', element: <ViewEmployeeTL /> },

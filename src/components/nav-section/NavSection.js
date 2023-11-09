@@ -69,6 +69,11 @@ export default function NavSection() {
         path: `/EmployeesListTL`,
         icon: icon('ic_user'),
       },
+      {
+        title: 'Resigned',
+        path: '/ResignedEmployeesListTL',
+        icon: icon('ic_user'),
+      },
     ];
     const dataSeniorManager = [
       {
@@ -79,6 +84,11 @@ export default function NavSection() {
       {
         title: 'Pending',
         path: `/EmployeesListSM`,
+        icon: icon('ic_user'),
+      },
+      {
+        title: 'Resigned',
+        path: `/ResignedEmployeesListSM`,
         icon: icon('ic_user'),
       },
     ];
@@ -111,6 +121,11 @@ export default function NavSection() {
       //   path: '/PendingEmployeesITS',
       //   icon: icon('ic_user'),
       // },
+      {
+        title: 'Resigned',
+        path: '/ResignedEmployeesITS',
+        icon: icon('ic_user'),
+      },
       {
         title: 'Reports',
         path: '/Reports',

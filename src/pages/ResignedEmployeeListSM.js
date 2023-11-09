@@ -1,8 +1,7 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
-import * as XLSX from 'xlsx';
 // @mui
 import {
   Card,
@@ -19,6 +18,7 @@ import {
   TablePagination,
 } from '@mui/material';
 import HandleApi from '../components/CustomComponent/HandleApi';
+
 import Loader from '../components/Loader/Loader';
 // components
 import Label from '../components/label';
@@ -65,14 +65,13 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.employeeFullName?.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.employeeFullName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function PendingEmployeeListBP() {
+export default function ResignedEmployeeListSM() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [page, setPage] = useState(0);
 
@@ -89,98 +88,10 @@ export default function PendingEmployeeListBP() {
   const [employeeList = [], setEmployeeList] = useState();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [csvData = [], setCsvData] = useState();
   const [emptyRows, setEmptyRows] = useState();
   const [pendingEmployees, setPendingEmployees] = useState([]);
   // const [isNotFound, setIsNotFound] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
-  const Heading = [
-    [
-      'Partner Name',
-      'Employee ID',
-      'First Name',
-      'Last Name',
-      'Full Name',
-      'Status',
-      'Official Email',
-      'Personal Email',
-      'Mobile Number',
-      'Whatsapp Number',
-      'Joining Date',
-      'ReportingTeamLead',
-      'ReportingManager',
-      'ReportingItSpoc',
-      'BillingSlab',
-      'EvaluationPeriod',
-      'NewReplacement',
-      'ReplacementEcode',
-      'SupportDevelopment',
-      'Function',
-      'Department',
-      'Vertical(Main)',
-      'Vertical(Sub)',
-      'LOB',
-      'Maximus/Opus',
-      'Invoice Type',
-    ],
-  ];
-  const selectedCols = csvData.map((n) => [
-    n.partnerName,
-    n.employeeId,
-    n.employeeFirstName,
-    n.employeeLastName,
-    n.employeeFullName,
-    n.employeeStatus,
-    n.officialEmail,
-    n.personalEmail,
-    n.mobileNumber,
-    n.whatsappNumber,
-    n.joiningDate,
-    n.reportingTeamLead,
-    n.reportingManager,
-    n.reportingItSpoc,
-    n.billingSlab,
-    n.evaluationPeriod,
-    n.newReplacement,
-    n.replacementEcode,
-    n.supportDevelopment,
-    n.functionDesc,
-    n.departmentDesc,
-    n.verticalMain,
-    n.verticalSub,
-    n.lob,
-    n.maximusOpus,
-    n.invoiceType,
-  ]);
-
-  const downloadEmployeeData = () => {
-    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-    const empListItSpocReq = {
-      itSpocId: USERDETAILS.spocEmailId,
-      download: 'Excel',
-    };
-    Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
-      console.log('Download response ', empListItSpocRes.data);
-      setCsvData(empListItSpocRes.data);
-      exportToCSV();
-    });
-  };
-
-
-  const exportToCSV = () => {
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet([]);
-    XLSX.utils.sheet_add_aoa(ws, Heading);
-
-    XLSX.utils.sheet_add_json(ws, selectedCols, {
-      origin: 'A2',
-      skipHeader: true,
-    });
-
-    XLSX.utils.book_append_sheet(wb, ws, 'DATA');
-
-    XLSX.writeFile(wb, 'EmployeeData.xlsx');
-  };
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -188,44 +99,24 @@ export default function PendingEmployeeListBP() {
       console.log('USERDETAILS', USERDETAILS);
       console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
-      const empListVendorReq = {
-        partnerName: USERDETAILS.partnerName,
-        // itSpocId: USERDETAILS.spocEmailId,
-        itSpocId: 'NA',
+      const empListManagerReq = {
+        managerId: USERDETAILS.spocEmailId,
       };
 
       setIsLoading(true);
-      Configuration.getEmpListVendor(empListVendorReq)
-        .then((empListVendorRes) => {
-          if (empListVendorRes.data.error) {
+      Configuration.getEmpListManager(empListManagerReq)
+        .then((empListManagerRes) => {
+          if (empListManagerRes.data.error) {
             setErrorMessage(true);
             setTimeout(() => {
               setIsLoading(false);
             }, 500);
           } else {
-            console.log('empListVendorRes', empListVendorRes);
-            setEmployeeList(empListVendorRes.data);
-            const downloadPendingEmp = empListVendorRes.data.filter(
-              (employees) =>
-                employees.employeeStatus === 'Pending For TL Review' ||
-                employees.employeeStatus === 'Pending For SM Review' ||
-                employees.employeeStatus === 'Pending For IT Spoc Review'
-            );
-            setCsvData(downloadPendingEmp);
+            setEmployeeList(empListManagerRes.data);
+            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListManagerRes.data.length) : 0);
+            const filteredUsers = applySortFilter(empListManagerRes.data, getComparator(order, orderBy), filterName);
+            setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
 
-            console.log('employeeList', employeeList);
-            setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
-            const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
-
-            setPendingEmployees(
-              filteredUsers.filter(
-                (employees) => employees.employeeStatus === 'Resigned'
-                // employees.employeeStatus === 'Pending For TL Review' ||
-                // employees.employeeStatus === 'Pending For SM Review' ||
-                // employees.employeeStatus === 'Pending For IT Spoc Review'
-              )
-            );
-            // setIsNotFound(!filteredUsers.length && !!filterName);
             setTimeout(() => {
               setIsLoading(false);
             }, 500);
@@ -243,15 +134,6 @@ export default function PendingEmployeeListBP() {
 
   const NewEmployee = () => {
     navigate('/NewEmployee');
-  };
-
-  const ViewEmployee = (rowId) => {
-    console.log('rowId', rowId);
-    navigate('/ViewEmployeeBP', {
-      state: {
-        id: rowId,
-      },
-    });
   };
 
   const handleRequestSort = (event, property) => {
@@ -281,34 +163,24 @@ export default function PendingEmployeeListBP() {
   const handleFilterByName = (event) => {
     setFilterName(event.target.value);
     setPage(0);
+    setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
     const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), event.target.value);
-
-    setPendingEmployees(
-      filteredUsers.filter(
-        (employees) => employees.employeeStatus === 'Resigned'
-        // employees.employeeStatus === 'Pending For SM Review' ||
-        // employees.employeeStatus === 'Pending For IT Spoc Review'
-      )
-    );
-    // setIsNotFound(!filteredUsers.length && !!event.target.value);
+    setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
   };
 
   // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
 
   // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
-  // const pendingEmployees = filteredUsers.filter(
-  //   (employees) =>
-  //     employees.employeeStatus === 'Pending For TL Review' ||
-  //     employees.employeeStatus === 'Pending For SM Review' ||
-  //     employees.employeeStatus === 'Pending For IT Spoc Review'
-  // );
 
+  // const pendingEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For SM Review');
+  // console.log('pendingEmployees', filteredUsers);
   // const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>
+      {console.log('LENGTH===', employeeList.length)}
       <Helmet>
-        <title> HR Portal | Employees(Partner)</title>
+        <title> Employees | HR Portal </title>
       </Helmet>
 
       {/* <Container disableGutters> */}
@@ -325,28 +197,16 @@ export default function PendingEmployeeListBP() {
               <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
                 <Button
                   variant="contained"
-                  startIcon={<Iconify icon="material-symbols:person-add-outline" />}
+                  startIcon={<Iconify icon="eva:plus-fill" />}
                   onClick={NewEmployee}
-                  color="primary"
-                  // color="#0072BC"
-                  size="medium"
+                  sx={{ display: 'none' }}
                 >
                   New Employee
-                </Button>
-                <Button
-                  variant="contained"
-                  startIcon={<Iconify icon="ri:file-excel-2-line" />}
-                  onClick={() => downloadEmployeeData()}
-                  color="primary"
-                  size="medium"
-                >
-                  Download Excel
                 </Button>
               </Stack>
 
               <>
                 <Card
-                  container
                   sx={{
                     border: '1px solid lightgray',
                     borderRadius: '8px',
@@ -358,7 +218,6 @@ export default function PendingEmployeeListBP() {
                     onFilterName={handleFilterByName}
                     employeeList={pendingEmployees}
                   />
-
                   {pendingEmployees.length === 0 ? (
                     <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
                       <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
@@ -370,18 +229,16 @@ export default function PendingEmployeeListBP() {
                     <>
                       <Scrollbar>
                         <TableContainer sx={{ minWidth: 800, height: '60vh' }}>
-                          {' '}
                           <Table>
                             <UserListHead
                               order={order}
                               orderBy={orderBy}
                               headLabel={TABLE_HEAD}
-                              rowCount={pendingEmployees.length}
+                              rowCount={employeeList.length}
                               numSelected={selected.length}
                               onRequestSort={handleRequestSort}
                               onSelectAllClick={handleSelectAllClick}
                             />
-
                             <TableBody>
                               {pendingEmployees
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -403,25 +260,28 @@ export default function PendingEmployeeListBP() {
                                       tabIndex={-1}
                                       role="checkbox"
                                       selected={selectedUser}
-                                      onClick={() => ViewEmployee(row.id)}
+                                      // onClick={() => ViewEmployee(row.id)}
+                                      onClick={() => {
+                                        console.log('EMPLOYEE DETAILS.....', row);
+                                        navigate('/ViewEmployeeSM', { state: { row } });
+                                      }}
                                       sx={{ cursor: 'pointer' }}
                                     >
                                       <TableCell align="left">{employeeId}</TableCell>
 
-                                      <TableCell component="th" scope="row">
+                                      <TableCell component="th" scope="row" padding="none">
                                         <Typography noWrap>{employeeFullName}</Typography>
                                       </TableCell>
 
                                       <TableCell align="left">{partnerName}</TableCell>
 
                                       <TableCell align="left">{supportDevelopment}</TableCell>
+
                                       <TableCell align="left">
                                         <Label
                                           color={
+                                            (employeeStatus === 'Pending For SM Review' && 'warning') ||
                                             (employeeStatus === 'Active' && 'success') ||
-                                            (employeeStatus === 'Rejected by TL' && 'error') ||
-                                            (employeeStatus === 'Rejected by SM' && 'error') ||
-                                            (employeeStatus === 'Rejected by IT Spoc' && 'error') ||
                                             (employeeStatus === 'Resigned' && 'error') ||
                                             'warning'
                                           }
@@ -467,7 +327,7 @@ export default function PendingEmployeeListBP() {
                       </Scrollbar>
 
                       <TablePagination
-                        rowsPerPageOptions={[25, 50, 75]}
+                        rowsPerPageOptions={[25, 50, 100]}
                         component="div"
                         count={pendingEmployees.length}
                         rowsPerPage={rowsPerPage}

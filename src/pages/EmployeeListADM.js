@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import { filter } from "lodash";
-import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { filter } from 'lodash';
+import { useState, useEffect } from 'react';
 // @mui
 import {
   Card,
@@ -16,24 +16,24 @@ import {
   Typography,
   TableContainer,
   TablePagination,
-} from "@mui/material";
+} from '@mui/material';
 // components
-import Label from "../components/label";
-import Iconify from "../components/iconify";
-import Scrollbar from "../components/scrollbar";
+import Label from '../components/label';
+import Iconify from '../components/iconify';
+import Scrollbar from '../components/scrollbar';
 // sections
-import { UserListHead, UserListToolbar } from "../sections/@dashboard/user";
+import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import Configuration from "../utils/Configuration";
+import Configuration from '../utils/Configuration';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "empId", label: "Employee Code", alignRight: false },
-  { id: "name", label: "Name", alignRight: false },
-  { id: "company", label: "Company", alignRight: false },
-  { id: "role", label: "Role", alignRight: false },
-  { id: "status", label: "Status", alignRight: false },
+  { id: 'empId', label: 'Employee Code', alignRight: false },
+  { id: 'name', label: 'Name', alignRight: false },
+  { id: 'company', label: 'Company', alignRight: false },
+  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === "desc"
+  return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -62,11 +62,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(
-      array,
-      (_user) =>
-        _user.employeeFullName.toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
+    return filter(array, (_user) => _user.employeeFullName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -76,48 +72,46 @@ export default function EmployeeListADM() {
 
   const [page, setPage] = useState(0);
 
-  const [order, setOrder] = useState("asc");
+  const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState("empId");
+  const [orderBy, setOrderBy] = useState('empId');
 
-  const [filterName, setFilterName] = useState("");
+  const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(25);
 
   const [employeeList = [], setEmployeeList] = useState();
 
   useEffect(() => {
-    const USERDETAILS = JSON.parse(sessionStorage.getItem("USERDETAILS"));
+    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log("USERDETAILS", USERDETAILS);
-      console.log("USERDETAILS.partnerName", USERDETAILS.partnerName);
+      console.log('USERDETAILS', USERDETAILS);
+      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
       const empListItSpocReq = {
         itSpocId: USERDETAILS.spocEmailId,
       };
 
-      Configuration.getEmpListItSpoc(empListItSpocReq).then(
-        (empListItSpocRes) => {
-          console.log("empListVendorRes", empListItSpocRes);
-          setEmployeeList(empListItSpocRes.data);
-          console.log("employeeList", employeeList);
-        }
-      );
+      Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
+        console.log('empListVendorRes', empListItSpocRes);
+        setEmployeeList(empListItSpocRes.data);
+        console.log('employeeList', employeeList);
+      });
     } else {
-      navigate("/login");
+      navigate('/login');
     }
     // eslint-disable-next-line
   }, []);
 
   const NewEmployee = () => {
-    navigate("/NewEmployee");
+    navigate('/NewEmployee');
   };
 
   const ViewEmployee = (rowId) => {
-    console.log("rowId", rowId);
-    navigate("/ViewEmployeeITS", {
+    console.log('rowId', rowId);
+    navigate('/ViewEmployeeITS', {
       state: {
         id: rowId,
       },
@@ -125,8 +119,8 @@ export default function EmployeeListADM() {
   };
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
@@ -171,14 +165,9 @@ export default function EmployeeListADM() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
 
-  const filteredUsers = applySortFilter(
-    employeeList,
-    getComparator(order, orderBy),
-    filterName
-  );
+  const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -190,21 +179,13 @@ export default function EmployeeListADM() {
 
       {/* <Container disableGutters> */}
       <Container>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={3}
-        >
-          <Typography variant="h4">
-            Employees ({employeeList.length})
-          </Typography>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={3}>
+          <Typography variant="h4">Employees ({employeeList.length})</Typography>
           <Button
             variant="contained"
             startIcon={<Iconify icon="eva:plus-fill" />}
             onClick={NewEmployee}
-           
-            sx={{ display: "none" }}
+            sx={{ display: 'none' }}
           >
             New Employee
           </Button>
@@ -212,8 +193,8 @@ export default function EmployeeListADM() {
 
         <Card
           sx={{
-            border: "1px solid lightgray",
-            borderRadius: "8px",
+            border: '1px solid lightgray',
+            borderRadius: '8px',
           }}
         >
           <UserListToolbar
@@ -236,60 +217,43 @@ export default function EmployeeListADM() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const {
-                        id,
-                        employeeId,
-                        employeeFullName,
-                        employeeStatus,
-                        partnerName,
-                        departmentDesc,
-                      } = row;
-                      const selectedUser =
-                        selected.indexOf(employeeFullName) !== -1;
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    const { id, employeeId, employeeFullName, employeeStatus, partnerName, departmentDesc } = row;
+                    const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={selectedUser}
-                          onClick={() => ViewEmployee(row.id)}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <TableCell align="left">{employeeId}</TableCell>
+                    return (
+                      <TableRow
+                        hover
+                        key={id}
+                        tabIndex={-1}
+                        role="checkbox"
+                        selected={selectedUser}
+                        onClick={() => ViewEmployee(row.id)}
+                        sx={{ cursor: 'pointer' }}
+                      >
+                        <TableCell align="left">{employeeId}</TableCell>
 
-                          <TableCell component="th" scope="row" padding="none">
-                            {/* <Stack
+                        <TableCell component="th" scope="row" padding="none">
+                          {/* <Stack
                               direction="row"
                               alignItems="center"
                               spacing={2}
                             > */}
-                            {/* <Avatar alt={empoyeeFullName} src={avatarUrl} /> */}
-                            <Typography noWrap>{employeeFullName}</Typography>
-                            {/* </Stack> */}
-                          </TableCell>
+                          {/* <Avatar alt={empoyeeFullName} src={avatarUrl} /> */}
+                          <Typography noWrap>{employeeFullName}</Typography>
+                          {/* </Stack> */}
+                        </TableCell>
 
-                          <TableCell align="left">{partnerName}</TableCell>
+                        <TableCell align="left">{partnerName}</TableCell>
 
-                          <TableCell align="left">{departmentDesc}</TableCell>
+                        <TableCell align="left">{departmentDesc}</TableCell>
 
-                          <TableCell align="left">
-                            <Label
-                              color={
-                                (employeeStatus === "Active" && "success") ||
-                                "error"
-                              }
-                            >
-                              {employeeStatus}
-                            </Label>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                        <TableCell align="left">
+                          <Label color={(employeeStatus === 'Active' && 'success') || 'error'}>{employeeStatus}</Label>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -303,7 +267,7 @@ export default function EmployeeListADM() {
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                         <Paper
                           sx={{
-                            textAlign: "center",
+                            textAlign: 'center',
                           }}
                         >
                           <Typography variant="h6" paragraph>
@@ -313,8 +277,7 @@ export default function EmployeeListADM() {
                           <Typography variant="body2">
                             No results found for &nbsp;
                             <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete
-                            words.
+                            <br /> Try checking for typos or using complete words.
                           </Typography>
                         </Paper>
                       </TableCell>
@@ -326,7 +289,7 @@ export default function EmployeeListADM() {
           </Scrollbar>
 
           <TablePagination
-          rowsPerPageOptions={[25, 50, 100 ]}
+            rowsPerPageOptions={[25, 50, 75]}
             component="div"
             count={employeeList.length}
             rowsPerPage={rowsPerPage}

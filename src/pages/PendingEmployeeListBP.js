@@ -153,6 +153,19 @@ export default function PendingEmployeeListBP() {
     n.invoiceType,
   ]);
 
+  const downloadEmployeeData = () => {
+    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+    const empListItSpocReq = {
+      itSpocId: USERDETAILS.spocEmailId,
+      download: 'Excel',
+    };
+    Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
+      console.log('Download response ', empListItSpocRes.data);
+      setCsvData(empListItSpocRes.data);
+      exportToCSV();
+    });
+  };
+
   const exportToCSV = () => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet([]);
@@ -323,7 +336,7 @@ export default function PendingEmployeeListBP() {
                 <Button
                   variant="contained"
                   startIcon={<Iconify icon="ri:file-excel-2-line" />}
-                  onClick={() => exportToCSV()}
+                  onClick={() => downloadEmployeeData()}
                   color="primary"
                   size="medium"
                 >
@@ -356,7 +369,7 @@ export default function PendingEmployeeListBP() {
                   ) : (
                     <>
                       <Scrollbar>
-                        <TableContainer sx={{ minWidth: 800 }}>
+                      <TableContainer sx={{ minWidth: 800, height: '60vh' }}>
                           <Table>
                             <UserListHead
                               order={order}
@@ -452,7 +465,7 @@ export default function PendingEmployeeListBP() {
                       </Scrollbar>
 
                       <TablePagination
-                  rowsPerPageOptions={[25, 50, 100 ]}
+                        rowsPerPageOptions={[25, 50, 75]}
                         component="div"
                         count={pendingEmployees.length}
                         rowsPerPage={rowsPerPage}

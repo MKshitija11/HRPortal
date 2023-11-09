@@ -88,7 +88,7 @@ export default function EmployeeListBP() {
 
   const [filterName, setFilterName] = useState('');
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
 
   const [employeeList = [], setEmployeeList] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -96,8 +96,10 @@ export default function EmployeeListBP() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState(false);
   // const [isNotFound, setIsNotFound] = useState(false);
+  const [filteredSM, setFilteredSM] = useState();
 
   const [csvData = [], setCsvData] = useState();
+  console.log('LOCATION', location.state);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -158,15 +160,18 @@ export default function EmployeeListBP() {
             console.log('empListVendorRes', empListItSpocRes);
             setEmployeeList(empListItSpocRes.data);
             // console.log('employeeList', employeeList);
-            setCsvData(empListItSpocRes.data);
+            // setCsvData(empListItSpocRes.data);
             const pendingAndActiveEmployees = empListItSpocRes.data.filter(
               (employees) =>
-                employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
+                employees.employeeStatus === 'Active' ||
+                employees.employeeStatus === 'Pending For IT Spoc Review' ||
+                employees.employeeStatus === 'Resigned'
             );
+
             const users = applySortFilter(pendingAndActiveEmployees, getComparator(order, orderBy), filterName);
 
             setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0);
-
+ 
             // setIsNotFound(!users.length && !!filterName);
             setFilteredUsers(users);
             setTimeout(() => {
@@ -212,7 +217,10 @@ export default function EmployeeListBP() {
     setFilterName(event.target.value);
     setPage(0);
     const pendingAndActiveEmployees = employeeList.filter(
-      (employees) => employees.employeeStatus === 'Active' || employees.employeeStatus === 'Pending For IT Spoc Review'
+      (employees) =>
+        employees.employeeStatus === 'Active' ||
+        employees.employeeStatus === 'Pending For IT Spoc Review' ||
+        employees.employeeStatus === 'Resigned'
     );
     const users = applySortFilter(pendingAndActiveEmployees, getComparator(order, orderBy), event.target.value);
 
@@ -292,6 +300,19 @@ export default function EmployeeListBP() {
 
   // console.log('selectedCols', selectedCols);
 
+  const downloadEmployeeData = () => {
+    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+    const empListItSpocReq = {
+      itSpocId: USERDETAILS.spocEmailId,
+      download: 'Excel',
+    };
+    Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
+      console.log('Download response ', empListItSpocRes.data);
+      setCsvData(empListItSpocRes.data);
+      exportToCSV();
+    });
+  };
+
   const exportToCSV = () => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet([]);
@@ -328,7 +349,8 @@ export default function EmployeeListBP() {
                 <Button
                   variant="contained"
                   startIcon={<Iconify icon="ri:file-excel-2-line" />}
-                  onClick={() => exportToCSV()}
+                  // onClick={() => exportToCSV()}
+                  onClick={() => downloadEmployeeData()}
                   color="primary"
                   size="medium"
                 >
@@ -359,7 +381,7 @@ export default function EmployeeListBP() {
                 ) : (
                   <>
                     <Scrollbar>
-                      <TableContainer sx={{ minWidth: 800 }}>
+                      <TableContainer sx={{ minWidth: 800, height: '60vh' }}>
                         <Table>
                           <UserListHead
                             order={order}
@@ -456,7 +478,7 @@ export default function EmployeeListBP() {
                     </Scrollbar>
 
                     <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
+                      rowsPerPageOptions={[25, 50, 75]}
                       component="div"
                       count={filteredUsers.length}
                       rowsPerPage={rowsPerPage}

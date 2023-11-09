@@ -264,7 +264,7 @@ export default function EmployeeListSM() {
                   ) : (
                     <>
                       <Scrollbar>
-                        <TableContainer sx={{ minWidth: 800 }}>
+                        <TableContainer sx={{ minWidth: 800, height: '60vh' }}>
                           <Table>
                             <UserListHead
                               order={order}
@@ -375,7 +375,7 @@ export default function EmployeeListSM() {
                       </Scrollbar>
 
                       <TablePagination
-                  rowsPerPageOptions={[25, 50, 100 ]}
+                        rowsPerPageOptions={[25, 50, 75]}
                         component="div"
                         count={activeEmployees.length}
                         rowsPerPage={rowsPerPage}

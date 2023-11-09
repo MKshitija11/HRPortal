@@ -230,7 +230,7 @@ export default function PendingEmployeeListSM() {
                   ) : (
                     <>
                       <Scrollbar>
-                        <TableContainer sx={{ minWidth: 800 }}>
+                        <TableContainer sx={{ minWidth: 800, height: '60vh' }}>
                           <Table>
                             <UserListHead
                               order={order}
@@ -328,7 +328,7 @@ export default function PendingEmployeeListSM() {
                       </Scrollbar>
 
                       <TablePagination
-                 rowsPerPageOptions={[25, 50, 100 ]}
+                        rowsPerPageOptions={[25, 50, 75]}
                         component="div"
                         count={pendingEmployees.length}
                         rowsPerPage={rowsPerPage}

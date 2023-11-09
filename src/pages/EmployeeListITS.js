@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
@@ -72,7 +72,7 @@ function applySortFilter(array, comparator, query) {
 
 export default function EmployeeListHR() {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -92,6 +92,7 @@ export default function EmployeeListHR() {
   const [emptyRows, setEmptyRows] = useState();
   const [activeEmployees, setActiveEmployees] = useState([]);
   // const [isNotFound, setIsNotFound] = useState(false);
+  console.log('location data>>>.', location);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -114,8 +115,40 @@ export default function EmployeeListHR() {
             setEmployeeList(empListItSpocRes.data);
             setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
             const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
-            setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
             // setIsNotFound(!filteredUsers.length && !!filterName);
+            // const pendingAndActiveEmployees = empListItSpocRes.data.filter(
+            //   (employees) => employees.partnerName === 'Clover Infotech'
+            // );
+
+            // if (!location.state?.filterByPartner) {
+            //   setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            // } else {
+            //   setActiveEmployees(
+            //     filteredUsers.filter(
+            //       (employees) =>
+            //         employees.partnerName === location.state.partnerNameChart && employees.employeeStatus === 'Active'
+            //     )
+            //   );
+            // }
+
+            if (location.state?.filterByPartner) {
+              setActiveEmployees(
+                filteredUsers.filter(
+                  (employees) =>
+                    employees.partnerName === location.state.partnerNameChart && employees.employeeStatus === 'Active'
+                )
+              );
+            } else if (location.state?.filterBySM) {
+              setActiveEmployees(
+                filteredUsers.filter(
+                  (employees) =>
+                    employees.reportingManager === location.state.empStatus && employees.employeeStatus === 'Active'
+                )
+              );
+            } else {
+              setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            }
+
             setTimeout(() => {
               setIsLoading(false);
             }, 500);
@@ -123,7 +156,7 @@ export default function EmployeeListHR() {
         })
         .catch((error) => {
           setIsLoading(false);
-          alert('Something went wrong');
+          // alert('Something went wrong');
         });
     } else {
       navigate('/login');
@@ -226,7 +259,7 @@ export default function EmployeeListHR() {
                 ) : (
                   <>
                     <Scrollbar>
-                      <TableContainer sx={{ minWidth: 800 }}>
+                      <TableContainer sx={{ minWidth: 800, height: '60vh' }}>
                         <Table>
                           <UserListHead
                             order={order}
@@ -316,7 +349,7 @@ export default function EmployeeListHR() {
                     </Scrollbar>
 
                     <TablePagination
-                      rowsPerPageOptions={[25, 50, 100 ]}
+                      rowsPerPageOptions={[25, 50, 75]}
                       component="div"
                       count={activeEmployees.length}
                       rowsPerPage={rowsPerPage}

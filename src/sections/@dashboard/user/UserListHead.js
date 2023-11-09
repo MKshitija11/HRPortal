@@ -29,7 +29,7 @@ export default function UserListHead({ order, orderBy, headLabel, onRequestSort 
   };
 
   return (
-    <TableHead>
+    <TableHead style={{position: 'sticky', top: 0, background: 'grey'}}>
       <TableRow>
         {/* {headLabel.map((headCell) => (
           <TableCell

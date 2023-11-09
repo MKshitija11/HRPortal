@@ -83,7 +83,7 @@ export default function EmployeeListBP() {
 
   const [filterName, setFilterName] = useState('');
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
 
   const [employeeList = [], setEmployeeList] = useState();
 
@@ -229,6 +229,19 @@ export default function EmployeeListBP() {
     n.invoiceType,
   ]);
 
+  const downloadEmployeeData = () => {
+    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+    const empListItSpocReq = {
+      itSpocId: USERDETAILS.spocEmailId,
+      download: 'Excel',
+    };
+    Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
+      console.log('Download response ', empListItSpocRes.data);
+      setCsvData(empListItSpocRes.data);
+      exportToCSV();
+    });
+  };
+
   const exportToCSV = () => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet([]);
@@ -280,7 +293,7 @@ export default function EmployeeListBP() {
                 <Button
                   variant="contained"
                   startIcon={<Iconify icon="ri:file-excel-2-line" />}
-                  onClick={() => exportToCSV()}
+                  onClick={() => downloadEmployeeData()}
                   color="primary"
                   size="medium"
                 >
@@ -313,7 +326,7 @@ export default function EmployeeListBP() {
                   ) : (
                     <>
                       <Scrollbar>
-                        <TableContainer sx={{ minWidth: 800 }}>
+                        <TableContainer sx={{ minWidth: 800, height: '60vh' }}>
                           <Table>
                             <UserListHead
                               order={order}
@@ -385,7 +398,7 @@ export default function EmployeeListBP() {
                       </Scrollbar>
 
                       <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPageOptions={[25, 50, 75]}
                         component="div"
                         count={activeEmployees.length}
                         rowsPerPage={rowsPerPage}

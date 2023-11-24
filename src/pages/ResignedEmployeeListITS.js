@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
@@ -70,7 +70,7 @@ function applySortFilter(array, comparator, query) {
 
 export default function PendingEmployeeListHR() {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -88,16 +88,14 @@ export default function PendingEmployeeListHR() {
   const [isLoading, setIsLoading] = useState(false);
   const [emptyRows, setEmptyRows] = useState();
   const [pendingEmployees, setPendingEmployees] = useState([]);
+  console.log('location data>>>.', location);
   // const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
-
       const empListItSpocReq = {
-        itSpocId: USERDETAILS.spocEmailId,
+        itSpocId: USERDETAILS?.[0]?.spocEmailId,
       };
       setIsLoading(true);
       Configuration.getEmpListItSpoc(empListItSpocReq)
@@ -107,7 +105,32 @@ export default function PendingEmployeeListHR() {
 
           setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListItSpocRes.data.length) : 0);
           const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
-          setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
+          console.log("LOCATION FROM ITS", location.state)
+          if(location.state?.filterByPartner) {
+            setPendingEmployees(
+              filteredUsers.filter(
+                (employees) =>
+                  employees.partnerName === location.state.partnerName && employees.employeeStatus === location.state.empOBStatus
+              )
+            );
+          }
+          else if (location.state?.filterBySM) {
+            setPendingEmployees(
+              filteredUsers.filter(
+                (employees) =>
+                  employees.reportingManager === location.state.reportingManager &&
+                  employees.employeeStatus === location.state.empOBStatus
+              )
+            );
+          } 
+          else if (location.state?.empOBStatus) {
+            setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === location.state.empOBStatus));
+          }
+          else {
+            setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
+          }
+
+          // setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
           // setIsNotFound(!filteredUsers.length && !!filterName)
 
           setTimeout(() => {

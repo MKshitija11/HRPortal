@@ -15,7 +15,7 @@ import { useChart } from '../../../components/chart';
 
 // ----------------------------------------------------------------------
 
-const CHART_HEIGHT = 372;
+const CHART_HEIGHT = 672;
 const LEGEND_HEIGHT = 77;
 
 const StyledChartWrapper = styled('div')(({ theme }) => ({
@@ -48,64 +48,119 @@ export default function AppConversionRates({ title, subheader, chartData, ...oth
   const handleClickChart = (prtnerName) => {
     console.log('CLICKEDDDDD', prtnerName);
 
-    navigate('/EmployeesITS', {
-      state: {
-        partnerNameChart: prtnerName,
-        filterByPartner: true,
-      },
-    });
+    // navigate('/EmployeesITS', {
+    //   state: {
+    //     partnerNameChart: prtnerName,
+    //     filterByPartner: true,
+    //   },
+    // });
   };
+
+  const handleClickedData = (OBstatus, chartName, chartData) => {
+    if (OBstatus === 'Active') {
+      navigate('/EmployeesITS', {
+        state: {
+          partnerName: chartData,
+          empOBStatus: OBstatus,
+          filterByPartner: true,
+        },
+      });
+    } else if (OBstatus === 'Resigned') {
+      navigate('/ResignedEmployeesITS', {
+        state: {
+          partnerName: chartData,
+          empOBStatus: OBstatus,
+          filterByPartner: true,
+        },
+      });
+    }
+  };
+
   // console.log('APP CONVERSION RATES.... ', chartData)
-  const chartLabels = chartData.map((i) => i.chartLabel);
+  // const chartLabels = chartData.map((i) => i.chartLabel);
+  const chartLabels = chartData.map((i) => i.partnerName);
   console.log('CHART LABLES', chartLabels);
 
-  const chartSeries = chartData.map((i) => i.chartValue);
+  // const chartSeries = chartData.map((i) => i.chartValue);
+  const chartSeries = chartData.map((i) => i.total);
   console.log('CHART SERIES', chartSeries);
 
   const chartColors = chartData.map((i) => i.chartColor);
   console.log('CHART COLOS', chartColors);
 
-  // const series = [
-  //   {
-  //     name: "Height in feet",
-  //     data: [2722, 2080, 2063, 1972, 1516],
-  //   },
-  // ];
+  const activeCount = chartData.map((i) => i.activeCount);
+  const resignedCount = chartData.map((i) => i.resignedCount);
+  // const activeCount = chartData.map((i) => i.activeCount);
+  // const partnerName = chartData.map((i) => i.partnerName);
+  // const totalCount = chartData.map((i) => i.total);
 
   const chartOptions = {
     series: [
       {
-        data: chartSeries,
+        name: 'Active',
+        data: activeCount,
+        color: '#008000',
+      },
+      {
+        name: 'Resigned',
+        data: resignedCount,
+        color: '#ff0000',
       },
     ],
 
     options: {
-      // chart: {
-      //   animations: {
-      //     speed: 200,
-      //     easing: "easeinout",
-      //     dynamicAnimation: {
-      //       speed: 400,
-      //     },
-      //   },
-
       chart: {
         type: 'bar',
-        height: 120,
+        height: 350,
+        stacked: true,
+        animations: {
+          enabled: true,
+          easing: 'easeinout',
+          speed: 500,
+          animateGradually: {
+            enabled: true,
+            delay: 150,
+          },
+          dynamicAnimation: {
+            enabled: true,
+            speed: 350,
+          },
+        },
         events: {
           click: (event, chartContext, config) => {
             handleClickChart(chartLabels[config.dataPointIndex]);
           },
+          dataPointSelection: (event, chartContext, config) => {
+            handleClickedData(
+              config.w.config.series[config.seriesIndex].name,
+              chartLabels,
+              chartLabels[config.dataPointIndex]
+            );
+          },
         },
+      },
+      stroke: {
+        width: 1,
+        colors: ['#fff'],
       },
       plotOptions: {
         bar: {
           borderRadius: 4,
           horizontal: true,
+          dataLabels: {
+            total: {
+              enabled: true,
+              offsetX: 0,
+              style: {
+                fontSize: '13px',
+                fontWeight: 900,
+              },
+            },
+          },
         },
       },
       dataLabels: {
-        // enabled: false,
+        enabled: true,
         markers: {
           colors: ['#F44336', '#E91E63', '#9C27B0'],
         },
@@ -217,14 +272,16 @@ export default function AppConversionRates({ title, subheader, chartData, ...oth
         />
       </StyledChartWrapper> */}
       <CardHeader title={title} subheader={subheader} />
-      <ReactApexChart
-        options={chartOptions.options}
-        series={chartOptions.series}
-        // series={series}
-        type="bar"
-        height={350}
-        colors={chartColors}
-      />
+      <StyledChartWrapper dir="ltr">
+        <ReactApexChart
+          options={chartOptions.options}
+          series={chartOptions.series}
+          // series={series}
+          type="bar"
+          height={450}
+          colors={chartColors}
+        />
+      </StyledChartWrapper>
     </Card>
   );
 }

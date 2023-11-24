@@ -48,21 +48,15 @@ export default function DashboardAppPage() {
     let USERDETAILS = '';
     USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
-
-      console.log('USERDETAILS.userProfile', USERDETAILS.userProfile);
-
-      if (USERDETAILS.userProfile !== 'BAGIC_ITS') {
-        console.log(USERDETAILS.userProfile);
+      if (USERDETAILS?.[0]?.userProfile !== 'BAGIC_ITS') {
         navigate('/401');
       }
 
-      setLoggedName(USERDETAILS.spocName);
+      setLoggedName(USERDETAILS?.[0]?.spocName);
 
       const dashBoardReq = {
-        key: USERDETAILS.userProfile,
-        value: USERDETAILS.spocUsername,
+        key: USERDETAILS?.[0]?.userProfile,
+        value: USERDETAILS?.[0]?.spocUsername,
       };
 
       setIsLoading(true);
@@ -72,9 +66,9 @@ export default function DashboardAppPage() {
             setErrorMessage(true);
             setIsLoading(false);
           } else {
-            setPartnerEmpList(dashBoardRes.data.partnerEmployees);
+            // setPartnerEmpList(dashBoardRes.data.partnerEmployees);
             setEmpStatusList(dashBoardRes.data.statusOnboarding);
-            setState(partnerEmpList, dashBoardRes.data.partnerEmployees);
+            // setState(partnerEmpList, dashBoardRes.data.partnerEmployees);
             setState(empStatusList, dashBoardRes.data.statusOnboarding);
             setIsLoading(false);
           }
@@ -103,12 +97,27 @@ export default function DashboardAppPage() {
           setIsLoading(false);
         }
       });
+
+      Configuration.getDashBoardForPartner()
+        .then((partnerRes) => {
+          if (partnerRes.data.error) {
+            setErrorMessage(true);
+            setIsLoading(false);
+          } else {
+            setPartnerEmpList(partnerRes.data.partnerEmployees);
+            setState(partnerEmpList, partnerRes.data.partnerEmployees);
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     }
     // eslint-disable-next-line
   }, []);
 
   const theme = useTheme();
-
   return (
     <>
       {console.log('SM resource list==>', smResourceList)}

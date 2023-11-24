@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
@@ -70,7 +70,7 @@ function applySortFilter(array, comparator, query) {
 
 export default function PendingEmployeeListHR() {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -89,15 +89,15 @@ export default function PendingEmployeeListHR() {
   const [emptyRows, setEmptyRows] = useState();
   const [pendingEmployees, setPendingEmployees] = useState([]);
   // const [isNotFound, setIsNotFound] = useState(false);
+  console.log('location data>>>.', location.state);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
       console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
       const empListItSpocReq = {
-        itSpocId: USERDETAILS.spocEmailId,
+        itSpocId: USERDETAILS?.[0]?.spocEmailId,
       };
       setIsLoading(true);
       Configuration.getEmpListItSpoc(empListItSpocReq)
@@ -107,9 +107,20 @@ export default function PendingEmployeeListHR() {
 
           setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListItSpocRes.data.length) : 0);
           const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
-          setPendingEmployees(
-            filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review')
-          );
+          if (location.state?.filterBySM) {
+            setPendingEmployees(
+              filteredUsers.filter(
+                (employees) =>
+                  employees.reportingManager === location.state.empStatus &&
+                  employees.employeeStatus === 'Pending For IT Spoc Review'
+              )
+            );
+          } else {
+            setPendingEmployees(
+              filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review')
+            );
+          }
+
           // setIsNotFound(!filteredUsers.length && !!filterName)
 
           setTimeout(() => {
@@ -160,7 +171,21 @@ export default function PendingEmployeeListHR() {
     setPage(0);
 
     const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), event.target.value);
-    setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review'));
+
+    if (location.state?.filterBySM) {
+      setPendingEmployees(
+        filteredUsers.filter(
+          (employees) =>
+            employees.reportingManager === location.state.reportingManager &&
+            employees.employeeStatus === location.state.empOBStatus
+        )
+      );
+      console.log('FILTER BY SM', filteredUsers.reportingManager);
+    } else {
+      setPendingEmployees(
+        filteredUsers.filter((employees) => employees.employeeStatus === 'Pending For IT Spoc Review')
+      );
+    }
     // setIsNotFound(!filteredUsers.length && !!event.target.value)
   };
 

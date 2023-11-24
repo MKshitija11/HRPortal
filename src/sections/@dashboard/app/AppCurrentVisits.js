@@ -58,8 +58,8 @@ export default function AppCurrentVisits({
   console.log("chart series", chartSeries)
 
   // const chartColors = ["#32CD02", "#f5c71a", "#F70202", "#1e90ff"];
-  const chartColors = ["#32CD02", "#FFA500", "#FF7400", "#FFC100", "#ed1708"];
-
+  // const chartColors = ["#32CD02", "#FFA500", "#FF7400", "#FFC100", "#ed1708"];
+const chartColors =["#008000", "#FFA500", "#ff0000"]
   const navigate = useNavigate();
 
   // const handleClickChart = (OBstatus) => {
@@ -70,6 +70,39 @@ export default function AppCurrentVisits({
   //     },
   //   });
   // };
+
+  const handleClickedData = (OBstatus, chartName, chartData) => {
+    // alert('inside handle click data');
+    console.log('OBSTATUS>>>>> 1', OBstatus);
+    console.log('OBSTATUS>>>>> 2', chartName);
+    console.log('OBSTATUS>>>>> 3', chartData);
+
+    if (chartData === 'Active') {
+      console.log('active');
+      navigate('/EmployeesITS', {
+        state: {
+          empOBStatus: chartData,
+          filterByStatus: true,
+        },
+      });
+    } else if (chartData === 'Pending') {
+      console.log('active');
+      navigate('/PendingEmployeesITS', {
+        state: {
+          empOBStatus: chartData,
+          filterByStatus: true,
+        },
+      });
+    } else if (chartData === 'Resigned') {
+      console.log('active');
+      navigate('/ResignedEmployeesITS', {
+        state: {
+          empOBStatus: chartData,
+          filterByStatus: true,
+        },
+      });
+    }
+  };
 
   console.log("chartSeries", chartSeries);
   const chartOptions = useChart({
@@ -102,7 +135,7 @@ export default function AppCurrentVisits({
       animations: {
         enabled: true,
         easing: "easeinout",
-        speed: 800,
+        speed: 500,
         animateGradually: {
           enabled: true,
           delay: 150,
@@ -118,6 +151,15 @@ export default function AppCurrentVisits({
       //     handleClickChart(config.w.config.labels[config.dataPointIndex]);
       //   },
       // },
+      events : {
+        dataPointSelection: (event, chartContext, config) => {
+          handleClickedData(
+            config.w.config.series[config.seriesIndex].name,
+            chartLabels,
+            chartLabels[config.dataPointIndex]
+          );
+        },
+      }
     },
   });
 

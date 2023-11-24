@@ -92,7 +92,7 @@ export default function EmployeeListHR() {
   const [emptyRows, setEmptyRows] = useState();
   const [activeEmployees, setActiveEmployees] = useState([]);
   // const [isNotFound, setIsNotFound] = useState(false);
-  console.log('location data>>>.', location);
+  console.log('location data>>>.', location.state);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -100,7 +100,7 @@ export default function EmployeeListHR() {
       console.log('USERDETAILS', USERDETAILS);
 
       const empListItSpocReq = {
-        itSpocId: USERDETAILS.spocEmailId,
+        itSpocId: USERDETAILS?.[0]?.spocEmailId,
       };
       setIsLoading(true);
       Configuration.getEmpListItSpoc(empListItSpocReq)
@@ -115,6 +115,7 @@ export default function EmployeeListHR() {
             setEmployeeList(empListItSpocRes.data);
             setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
             const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
+
             // setIsNotFound(!filteredUsers.length && !!filterName);
             // const pendingAndActiveEmployees = empListItSpocRes.data.filter(
             //   (employees) => employees.partnerName === 'Clover Infotech'
@@ -130,22 +131,27 @@ export default function EmployeeListHR() {
             //     )
             //   );
             // }
-
             if (location.state?.filterByPartner) {
               setActiveEmployees(
                 filteredUsers.filter(
                   (employees) =>
-                    employees.partnerName === location.state.partnerNameChart && employees.employeeStatus === 'Active'
+                    employees.partnerName === location.state.partnerName &&
+                    employees.employeeStatus === location.state.empOBStatus
                 )
               );
             } else if (location.state?.filterBySM) {
               setActiveEmployees(
                 filteredUsers.filter(
                   (employees) =>
-                    employees.reportingManager === location.state.empStatus && employees.employeeStatus === 'Active'
+                    employees.reportingManager === location.state.reportingManager &&
+                    employees.employeeStatus === location.state.empOBStatus
                 )
               );
+              console.log('FILTER BY SM', filteredUsers.reportingManager);
+            } else if (location.state?.empOBStatus) {
+              setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
             } else {
+              console.log('INSIDE ELSE BLOCK');
               setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
             }
 
@@ -164,6 +170,7 @@ export default function EmployeeListHR() {
     // eslint-disable-next-line
   }, []);
 
+  console.log('LOCATION>>>>>>>>>>>', location, activeEmployees);
   const NewEmployee = () => {
     navigate('/NewEmployee');
   };

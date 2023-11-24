@@ -36,8 +36,18 @@ import Configuration from '../utils/Configuration';
 
 export default function SwitchRole({ props }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(true);
   const [value, setValue] = useState();
+  const [role, setRole] = useState();
+  const ROLE = sessionStorage.getItem('ROLE');
+
+  useEffect(() => {
+    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+    setRole(USERDETAILS?.[0]?.userProfile);
+
+    // setOpenModal(true);
+  }, [role]);
 
   const handleChange = (event) => {
     console.log('EVENT', event.target.value);
@@ -49,6 +59,11 @@ export default function SwitchRole({ props }) {
     setOpenModal(false);
     console.log('HANDLE CLOSE MODAL EVENT', value);
     sessionStorage.setItem('ROLE', value);
+    if (value === 'BAGIC_TL') {
+      navigate('/EmployeesTL');
+    } else if (value === 'BAGIC_SM') {
+      navigate('/EmployeesSM');
+    }
   };
 
   return (
@@ -70,24 +85,36 @@ export default function SwitchRole({ props }) {
               boxShadow: 24,
               p: 4,
               borderRadius: '8px',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
             component="form"
           >
-            <Typography style={{ textAlign: 'center' }}>Please Select Role </Typography>
-            <FormControl>
-              <FormLabel id="demo-controlled-radio-buttons-group">Gender</FormLabel>
+            <Typography style={{ textAlign: 'center', color: 'black' }}>
+              <b>Please Select Role</b>{' '}
+            </Typography>
+            <FormControl
+              style={{
+                alignItems: 'center',
+                alignSelf: 'center',
+                justifyContent: 'center',
+              }}
+            >
               <RadioGroup
                 aria-labelledby="demo-controlled-radio-buttons-group"
                 name="controlled-radio-buttons-group"
                 value={value}
                 onChange={handleChange}
+                defaultValue={ROLE}
+                style={{ flexDirection: 'row', paddingLeft: '30%' }}
               >
                 <FormControlLabel value="BAGIC_TL" control={<Radio />} label="Team Lead" />
                 <FormControlLabel value="BAGIC_SM" control={<Radio />} label="Senior Manager" />
               </RadioGroup>
               <>
-                <Stack justifyContent="center">
+                <Stack style={{ justifyContent: 'center', paddingLeft: '20%' }}>
                   <Button
+                    style={{ margin: '0 auto', display: 'flex', justifyContent: 'center' }}
                     size="medium"
                     variant="contained"
                     type="button"

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink as RouterLink } from 'react-router-dom';
+import { NavLink as RouterLink, useLocation } from 'react-router-dom';
 // @mui
 import { Box, List, ListItemText } from '@mui/material';
 //
@@ -14,41 +14,52 @@ let redirectUrl = '';
 export default function NavSection() {
   const [menuList = [], setMenuList] = useState();
   const [employeeList = [], setEmployeeList] = useState();
+  const location = useLocation();
+  const [switchRole, setSwitchRole] = useState(false);
+  const ROLE = sessionStorage.getItem('ROLE');
+  // const ROLE = 'BAGIC_SM';
 
   useEffect(() => {
     const loginRequest = {
-      username: 'ravi.kumar044@bajajallianz.co.in',
-      password: 'passWord',
+      // username: 'mandar.pathak@bajajallianz.co.in',
+      // username: 'ravi.kumar044@bajajallianz.co.in',
+      username: 'pooja.rebba@bajajallianz.co.in',
+
+      password: 'password',
     };
 
-    Configuration.login(loginRequest)
-    .then((LoginResponse) => {
-      console.log('LoginForm.login.LoginResponse nav section >>>>', LoginResponse.data.length);
-    })
-  })
+    Configuration.login(loginRequest).then((LoginResponse) => {
+      console.log('LoginForm.login.LoginResponse nav section >>>>', LoginResponse.data);
+      console.log('type', typeof LoginResponse.data);
+      // if (LoginResponse.data.length === 2) {
+      //   setSwitchRole(true);
+      //   // sessionStorage.setItem('ROLE', value);
+      //   // if (LoginResponse.data?.[0]?.userProfile === 'BAGIC_SM') {
+      //   //   redirectUrl = '/EmployeesSM';
+      //   // }
+      // }
+    });
+  });
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-    const ROLE = sessionStorage.getItem('ROLE')
-    
-    console.log('USERDETAILS.NAV.userProfile', USERDETAILS);
+
     console.log('ROLE', ROLE);
 
     if (!USERDETAILS) {
       console.log('inside first if');
       redirectUrl = '/login';
-    } else if (USERDETAILS?.userProfile === 'BAGIC_ADMIN') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ADMIN') {
       redirectUrl = '/Dashboard';
-    } else if (USERDETAILS?.userProfile === 'BAGIC_PARTNER') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
       redirectUrl = '/EmployeesBP';
-    } else if (USERDETAILS?.userProfile === 'BAGIC_TL') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') {
       redirectUrl = '/EmployeesTL';
-    } else if (USERDETAILS?.userProfile === 'BAGIC_SM') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
       redirectUrl = '/EmployeesSM';
-    } else if (USERDETAILS?.userProfile === 'BAGIC_ITS') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS') {
       redirectUrl = '/EmployeesITS';
     }
-    console.log('USERDETAILS.NAV.userProfile.redirectUrl', redirectUrl);
 
     const dataUser = [
       {
@@ -83,37 +94,49 @@ export default function NavSection() {
       },
       {
         title: 'Pending',
-        path: `/EmployeesListTL`,
+        path: ROLE === 'BAGIC_TL' ? `/EmployeesListTL` : '/EmployeesListSM',
         icon: icon('ic_user'),
       },
       {
         title: 'Resigned',
-        path: '/ResignedEmployeesListTL',
+        path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
         icon: icon('ic_user'),
       },
-      {
+    ];
+    if (ROLE && !dataTeamLead.find((role) => role.path === '/SwitchRole')) {
+      dataTeamLead.push({
         title: 'Switch role',
         path: '/SwitchRole',
         icon: icon('ic_user'),
-      }
-    ];
+      });
+    }
     const dataSeniorManager = [
       {
         title: 'Active',
-        path: '/EmployeesSM',
+        // path: '/EmployeesSM',
+        path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
         icon: icon('ic_user'),
       },
       {
         title: 'Pending',
-        path: `/EmployeesListSM`,
+        path: ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : '/EmployeesListSM',
+        // path: `/EmployeesListSM`,
         icon: icon('ic_user'),
       },
       {
         title: 'Resigned',
-        path: `/ResignedEmployeesListSM`,
+        path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
+        // path: `/ResignedEmployeesListSM`,
         icon: icon('ic_user'),
       },
     ];
+    if (ROLE && !dataSeniorManager.find((role) => role.path === '/SwitchRole')) {
+      dataSeniorManager.push({
+        title: 'Switch role',
+        path: '/SwitchRole',
+        icon: icon('ic_user'),
+      });
+    }
 
     const dataAdmin = [
       {
@@ -138,11 +161,7 @@ export default function NavSection() {
         path: '/PendingEmployeesITS',
         icon: icon('ic_user'),
       },
-      // {
-      //   title: 'Pending',
-      //   path: '/PendingEmployeesITS',
-      //   icon: icon('ic_user'),
-      // },
+
       {
         title: 'Resigned',
         path: '/ResignedEmployeesITS',
@@ -154,18 +173,18 @@ export default function NavSection() {
         icon: icon('ic_cart'),
       },
     ];
-    if (USERDETAILS?.userProfile === 'BAGIC_ADMIN') {
+    if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ADMIN') {
       setMenuList(dataAdmin);
-    } else if (USERDETAILS?.userProfile === 'BAGIC_ITS') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS') {
       setMenuList(dataSpoc);
-    } else if (USERDETAILS?.userProfile === 'BAGIC_TL') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') {
       setMenuList(dataTeamLead);
-    } else if (USERDETAILS?.userProfile === 'BAGIC_SM') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
       setMenuList(dataSeniorManager);
     } else {
       setMenuList(dataUser);
     }
-  }, []);
+  }, [location, ROLE]);
 
   return (
     <Box>

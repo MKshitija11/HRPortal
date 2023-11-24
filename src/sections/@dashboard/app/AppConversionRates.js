@@ -15,8 +15,8 @@ import { useChart } from '../../../components/chart';
 
 // ----------------------------------------------------------------------
 
-const CHART_HEIGHT = 672;
-const LEGEND_HEIGHT = 77;
+const CHART_HEIGHT = 572;
+const LEGEND_HEIGHT = 72;
 
 const StyledChartWrapper = styled('div')(({ theme }) => ({
   height: CHART_HEIGHT,
@@ -27,7 +27,7 @@ const StyledChartWrapper = styled('div')(({ theme }) => ({
   },
   '& .apexcharts-legend': {
     height: LEGEND_HEIGHT,
-    display: 'none',
+    // display: 'none',
     alignContent: 'center',
     position: 'relative !important',
     borderTop: `solid 1px ${theme.palette.divider}`,
@@ -90,9 +90,6 @@ export default function AppConversionRates({ title, subheader, chartData, ...oth
 
   const activeCount = chartData.map((i) => i.activeCount);
   const resignedCount = chartData.map((i) => i.resignedCount);
-  // const activeCount = chartData.map((i) => i.activeCount);
-  // const partnerName = chartData.map((i) => i.partnerName);
-  // const totalCount = chartData.map((i) => i.total);
 
   const chartOptions = {
     series: [
@@ -278,7 +275,7 @@ export default function AppConversionRates({ title, subheader, chartData, ...oth
           series={chartOptions.series}
           // series={series}
           type="bar"
-          height={450}
+          height={520}
           colors={chartColors}
         />
       </StyledChartWrapper>

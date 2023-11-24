@@ -496,9 +496,9 @@ export default function ViewEmployee({ props }) {
     if (USERDETAILS != null) {
       console.log('USERDETAILS', USERDETAILS);
       setReportingList(REPORTINGDETAILS);
-      setPartnerName(USERDETAILS.partnerName);
-      state.partnerName = USERDETAILS.partnerName;
-      state.createdBy = USERDETAILS.spocEmailId;
+      setPartnerName(USERDETAILS?.[0]?.partnerName);
+      state.partnerName = USERDETAILS?.[0]?.partnerName;
+      state.createdBy = USERDETAILS?.[0]?.spocEmailId;
     }
   }, []);
 

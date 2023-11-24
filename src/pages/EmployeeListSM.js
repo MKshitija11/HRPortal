@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
@@ -16,7 +16,14 @@ import {
   Typography,
   TableContainer,
   TablePagination,
+  Modal,
+  Box,
 } from '@mui/material';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import HandleApi from '../components/CustomComponent/HandleApi';
 
 import Loader from '../components/Loader/Loader';
@@ -28,6 +35,7 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import Configuration from '../utils/Configuration';
+import SwitchRole from './SwitchRole';
 
 // ----------------------------------------------------------------------
 
@@ -72,7 +80,9 @@ function applySortFilter(array, comparator, query) {
 
 export default function EmployeeListSM() {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  console.log('LOCATION', location);
+  const [openModal, setOpenModal] = useState(true);
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -97,10 +107,9 @@ export default function EmployeeListSM() {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
       console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
       const empListManagerReq = {
-        managerId: USERDETAILS.spocEmailId,
+        managerId: USERDETAILS?.[0]?.spocEmailId,
       };
 
       setIsLoading(true);

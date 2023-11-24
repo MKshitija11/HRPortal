@@ -156,7 +156,7 @@ export default function PendingEmployeeListBP() {
   const downloadEmployeeData = () => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     const empListItSpocReq = {
-      itSpocId: USERDETAILS.spocEmailId,
+      itSpocId: USERDETAILS?.[0]?.spocEmailId,
       download: 'Excel',
     };
     Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
@@ -165,7 +165,6 @@ export default function PendingEmployeeListBP() {
       exportToCSV();
     });
   };
-
 
   const exportToCSV = () => {
     const wb = XLSX.utils.book_new();
@@ -185,11 +184,8 @@ export default function PendingEmployeeListBP() {
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
-
       const empListVendorReq = {
-        partnerName: USERDETAILS.partnerName,
+        partnerName: USERDETAILS?.[0]?.partnerName,
         // itSpocId: USERDETAILS.spocEmailId,
         itSpocId: 'NA',
       };

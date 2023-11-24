@@ -156,7 +156,7 @@ export default function RejectedEmployeeListBP() {
   const downloadEmployeeData = () => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     const empListItSpocReq = {
-      itSpocId: USERDETAILS.spocEmailId,
+      itSpocId: USERDETAILS?.[0]?.spocEmailId,
       download: 'Excel',
     };
     Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
@@ -184,11 +184,10 @@ export default function RejectedEmployeeListBP() {
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
+  
 
       const empListVendorReq = {
-        partnerName: USERDETAILS.partnerName,
+        partnerName: USERDETAILS?.[0]?.partnerName,
         // itSpocId: USERDETAILS.spocEmailId,
         itSpocId: 'NA',
       };

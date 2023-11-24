@@ -87,11 +87,10 @@ export default function EmployeeListADM() {
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
+ 
 
       const empListItSpocReq = {
-        itSpocId: USERDETAILS.spocEmailId,
+        itSpocId: USERDETAILS?.[0]?.spocEmailId,
       };
 
       Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {

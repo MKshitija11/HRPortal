@@ -34,12 +34,11 @@ export default function AccountPopover() {
     let USERDETAILS = '';
     USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-      // console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
-      // console.log('DETAILS', USERDETAILS);
-      setDisplayName(USERDETAILS.spocName);
-      setEmail(USERDETAILS.spocEmailId);
-      setMobile(USERDETAILS.spocMobileNo);
+      console.log('USERDETAILS from account popover', USERDETAILS);
+
+      setDisplayName(USERDETAILS?.[0]?.spocName);
+      setEmail(USERDETAILS?.[0]?.spocEmailId);
+      setMobile(USERDETAILS?.[0]?.spocMobileNo);
       let url = '../../assets/images/avatars/avatar_dynaNum.jpg';
       url = url.replace('dynaNum', Math.floor(Math.random() * (24 - 1 + 1)) + 1);
       setPhotoUrl(url);
@@ -57,6 +56,8 @@ export default function AccountPopover() {
   };
 
   const handleRedirect = () => {
+    localStorage.clear();
+    sessionStorage.clear();
     navigate('/login');
   };
 
@@ -82,11 +83,12 @@ export default function AccountPopover() {
       >
         <Iconify icon="material-symbols:person" color="white" width={40} height={40} />
       </IconButton>
+      {console.log('username', displayName)}
       <Typography
         variant="h6"
         sx={{
           // color: (theme) => alpha(theme.palette.grey[800], 0.8),
-          color: 'white'
+          color: 'white',
         }}
       >
         {displayName}
@@ -112,7 +114,7 @@ export default function AccountPopover() {
         }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant="subtitle2" noWrap >
+          <Typography variant="subtitle2" noWrap>
             {displayName}
           </Typography>
 

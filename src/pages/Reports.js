@@ -104,9 +104,6 @@ export default function EmployeeListBP() {
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
-
       // let dynaPartnerName = '';
       // let dynaStatusName = '';
       // try {
@@ -146,7 +143,7 @@ export default function EmployeeListBP() {
       // };
       // console.log('empListVendorReq', location);
       const empListItSpocReq = {
-        itSpocId: USERDETAILS.spocEmailId,
+        itSpocId: USERDETAILS?.[0]?.spocEmailId,
       };
       setIsLoading(true);
       Configuration.getEmpListItSpoc(empListItSpocReq)
@@ -171,7 +168,7 @@ export default function EmployeeListBP() {
             const users = applySortFilter(pendingAndActiveEmployees, getComparator(order, orderBy), filterName);
 
             setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0);
- 
+
             // setIsNotFound(!users.length && !!filterName);
             setFilteredUsers(users);
             setTimeout(() => {
@@ -303,7 +300,7 @@ export default function EmployeeListBP() {
   const downloadEmployeeData = () => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     const empListItSpocReq = {
-      itSpocId: USERDETAILS.spocEmailId,
+      itSpocId: USERDETAILS?.[0]?.spocEmailId,
       download: 'Excel',
     };
     Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {

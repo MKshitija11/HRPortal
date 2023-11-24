@@ -739,10 +739,10 @@ export default function ViewEmployee() {
 
       setReportingList(REPORTINGDETAILS);
 
-      setPartnerName(USERDETAILS.partnerName);
-      setUserProfile(USERDETAILS.userProfile);
-      state.partnerName = USERDETAILS.partnerName;
-      state.createdBy = USERDETAILS.spocEmailId;
+      setPartnerName(USERDETAILS?.[0]?.partnerName);
+      setUserProfile(USERDETAILS?.[0]?.userProfile);
+      state.partnerName = USERDETAILS?.[0]?.partnerName;
+      state.createdBy = USERDETAILS?.[0]?.spocEmailId;
 
       const mainVerticalReq = {
         key: 'MAIN_VERTICAL',

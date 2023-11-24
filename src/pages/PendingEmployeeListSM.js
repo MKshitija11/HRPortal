@@ -97,10 +97,9 @@ export default function PendingEmployeeListSM() {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
       console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
       const empListManagerReq = {
-        managerId: USERDETAILS.spocEmailId,
+        managerId: USERDETAILS?.[0]?.spocEmailId,
       };
 
       setIsLoading(true);

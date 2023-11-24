@@ -745,13 +745,13 @@ export default function ViewEmployee() {
 
       setReportingList(REPORTINGDETAILS);
 
-      setPartnerName(USERDETAILS.partnerName);
-      setUserProfile(USERDETAILS.userProfile);
+      setPartnerName(USERDETAILS?.[0].partnerName);
+      setUserProfile(USERDETAILS?.[0].userProfile);
 
       setState({
         ...state,
         // partnerName: USERDETAILS.partnerName,
-        createdBy: USERDETAILS.spocEmailId,
+        createdBy: USERDETAILS?.[0].spocEmailId,
       });
 
       const mainVerticalReq = {
@@ -763,7 +763,7 @@ export default function ViewEmployee() {
         setVerticalMainList(mainVerticalRes);
         state.mainVerticalList = mainVerticalRes.data;
       });
-      state.createdBy = USERDETAILS.spocEmailId;
+      state.createdBy = USERDETAILS?.[0].spocEmailId;
     }
     // eslint-disable-next-line
   }, []);

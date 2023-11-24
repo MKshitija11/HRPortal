@@ -385,7 +385,6 @@ export default function EmployeeList() {
       console.log('USERDETAILS', USERDETAILS);
       console.log('REPORTINGDETAILS', REPORTINGDETAILS);
       console.log('FUNCTIONSDETAILS', FUNCTIONSDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
 
       setReportingList(REPORTINGDETAILS);
 
@@ -396,9 +395,9 @@ export default function EmployeeList() {
 
       console.log('mainVerticalReq', mainVerticalReq);
 
-      setPartnerName(USERDETAILS.partnerName);
-      state.partnerName = USERDETAILS.partnerName;
-      state.createdBy = USERDETAILS.spocEmailId;
+      setPartnerName(USERDETAILS?.[0]?.partnerName);
+      state.partnerName = USERDETAILS?.[0]?.partnerName;
+      state.createdBy = USERDETAILS?.[0]?.spocEmailId;
     }
   }, []);
 

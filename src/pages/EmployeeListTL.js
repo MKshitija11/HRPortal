@@ -96,11 +96,8 @@ export default function EmployeeListTL() {
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-      console.log('USERDETAILS.partnerName', USERDETAILS.partnerName);
-
       const getEmpListTLReq = {
-        teamLeadId: USERDETAILS.spocEmailId,
+        teamLeadId: USERDETAILS?.[0]?.spocEmailId,
       };
 
       setIsLoading(true);

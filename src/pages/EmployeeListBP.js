@@ -97,7 +97,7 @@ export default function EmployeeListBP() {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
       const empListVendorReq = {
-        partnerName: USERDETAILS.partnerName,
+        partnerName: USERDETAILS?.[0]?.partnerName,
         itSpocId: 'NA',
       };
 
@@ -232,7 +232,7 @@ export default function EmployeeListBP() {
   const downloadEmployeeData = () => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     const empListItSpocReq = {
-      itSpocId: USERDETAILS.spocEmailId,
+      itSpocId: USERDETAILS?.[0]?.spocEmailId,
       download: 'Excel',
     };
     Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {

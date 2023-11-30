@@ -18,6 +18,7 @@ import {
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import addMonths from 'date-fns/addMonths';
+import { subMonths } from 'date-fns';
 import format from 'date-fns/format';
 // components
 import Loader from '../components/Loader/Loader';
@@ -466,7 +467,7 @@ export default function ViewEmployee() {
       state.replacementEcode = 'NA';
       setState({
         ...state,
-        replacementEcode: "NA",
+        replacementEcode: 'NA',
         newReplacement: evt.target.value,
       });
     } else {
@@ -475,7 +476,7 @@ export default function ViewEmployee() {
       state.replacementEcode = '';
       setState({
         ...state,
-        replacementEcode: "",
+        replacementEcode: '',
         newReplacement: evt.target.value,
       });
     }
@@ -542,9 +543,9 @@ export default function ViewEmployee() {
     if (document.employeeForm.personalEmail.value === '') {
       return failFocus(document.employeeForm.personalEmail);
     }
-    if (document.employeeForm.officialEmail.value === '') {
-      return failFocus(document.employeeForm.officialEmail);
-    }
+    // if (document.employeeForm.officialEmail.value === '') {
+    //   return failFocus(document.employeeForm.officialEmail);
+    // }
     if (document.employeeForm.skillSet.value === '') {
       return failFocus(document.employeeForm.skillSet);
     }
@@ -613,9 +614,9 @@ export default function ViewEmployee() {
     if (document.employeeForm.gender.value === '') {
       return failFocus(document.employeeForm.gender);
     }
-    if (document.employeeForm.dateOfBirth.value === '') {
-      return failFocus(document.employeeForm.dateOfBirth);
-    }
+    // if (document.employeeForm.dateOfBirth.value === '') {
+    //   return failFocus(document.employeeForm.dateOfBirth);
+    // }
     if (document.employeeForm.experience.value === '') {
       return failFocus(document.employeeForm.experience);
     }
@@ -799,7 +800,7 @@ export default function ViewEmployee() {
         personalEmail: EMP_DETAILS.personalEmail,
         mobileNumber: EMP_DETAILS.mobileNumber,
         whatsappNumber: EMP_DETAILS.whatsappNumber,
-        joiningDate: EMP_DETAILS.joiningDate,
+        joiningDate: EMP_DETAILS.joiningDate.toString().split('T')[0],
         replacementEcode: EMP_DETAILS.replacementEcode,
         verticalMain: EMP_DETAILS.verticalMain,
         verticalSub: EMP_DETAILS.verticalSub,
@@ -874,6 +875,7 @@ export default function ViewEmployee() {
     lob: state.lob || '',
   };
 
+  console.log("state joining date", state.joiningDate.toString().split('T')[0]);
   const validationSchema = Yup.object({
     employeeFirstName: Yup.string()
       .required('First name is required')
@@ -894,13 +896,13 @@ export default function ViewEmployee() {
       })
       .required('Whatsapp Number is required'),
     personalEmail: Yup.string()
-      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address')
+      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@]/, 'Invalid email address')
       .email('Invalid email address')
       .required('Personal email is required'),
-    officialEmail: Yup.string()
-      .email('Invalid official email')
-      .required('Official email is required')
-      .notOneOf([Yup.ref('personalEmail'), null], 'Official email must be different from personal email'),
+    // officialEmail: Yup.string()
+    //   .email('Invalid official email')
+    //   .required('Official email is required')
+    //   .notOneOf([Yup.ref('personalEmail'), null], 'Official email must be different from personal email'),
     employeeId: Yup.string().required('Employee code is required'),
     joiningDate: Yup.string().required('Required'),
 
@@ -922,7 +924,7 @@ export default function ViewEmployee() {
     maximusOpus: Yup.string().required('Please Select'),
     gender: Yup.string().required('Please Select'),
     experience: Yup.string().required('Please Select'),
-    dateOfBirth: Yup.string().required('Date of Birth Required'),
+    // dateOfBirth: Yup.string().required('Date of Birth Required'),
     totalExperience: Yup.string().required('Total Experience required'),
     skillSet: Yup.string().required('Skill set are required'),
     lob: Yup.string().required('Please Select'),
@@ -1288,7 +1290,7 @@ export default function ViewEmployee() {
                             fullWidth
                             id="personalEmail"
                             placeholder="abc@gmail.com"
-                            label="Personal Email"
+                            label="Partner Official Email"
                             name="personalEmail"
                             autoComplete="off"
                             type="email"
@@ -1310,10 +1312,11 @@ export default function ViewEmployee() {
                           <TextField
                             InputLabelProps={{ shrink: true }}
                             variant="outlined"
-                            required
+                            // required
                             fullWidth
                             name="officialEmail"
-                            label="Official Email"
+                            label="Bagic Official Email"
+                            placeholder="abc@gmail.com"
                             id="officialEmail"
                             autoComplete="off"
                             type="email"
@@ -1323,8 +1326,8 @@ export default function ViewEmployee() {
                               handleChangeEvent(evt);
                             }}
                             onBlur={handleBlur}
-                            error={touched.officialEmail ? errors.officialEmail : ''}
-                            helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
+                            // error={touched.officialEmail ? errors.officialEmail : ''}
+                            // helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
                             // inputProps={{
                             //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
@@ -1369,7 +1372,7 @@ export default function ViewEmployee() {
                             autoComplete="off"
                             name="dateOfBirth"
                             variant="outlined"
-                            required
+                            // required
                             fullWidth
                             type="date"
                             id="dateOfBirth"
@@ -1380,8 +1383,8 @@ export default function ViewEmployee() {
                               handleChangeEvent(evt);
                             }}
                             onBlur={handleBlur}
-                            error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
-                            helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
+                            // error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
+                            // helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
                             // inputProps={{
                             //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
@@ -1467,7 +1470,8 @@ export default function ViewEmployee() {
                             error={touched.joiningDate ? errors.joiningDate : ''}
                             helperText={touched.joiningDate ? formik.errors.joiningDate : ''}
                             inputProps={{
-                              min: new Date().toISOString().split('T')[0],
+                              // min: new Date().toISOString().split('T')[0],
+                              min: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
                               max: format(addMonths(new Date(), 3), 'yyyy-MM-dd'),
                               // readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
                               // style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
@@ -1823,7 +1827,7 @@ export default function ViewEmployee() {
                             select={values.verticalMain === ''}
                             label="Main Vertical"
                             fullWidth
-                            requireds
+                            required
                             value={values.verticalMain}
                             onChange={(evt) => {
                               handleChange(evt);
@@ -2093,9 +2097,11 @@ export default function ViewEmployee() {
             </Formik>
           )}
           {showAlertMessage ? (
-            <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center', mt: 2 }}>
-              Note: Please provide values for mandatory fields
-            </Typography>
+            <Stack mt={2}>
+              <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center'}}>
+                Note: Please provide values for mandatory fields
+              </Typography>
+            </Stack>
           ) : null}
         </Card>
       </Container>

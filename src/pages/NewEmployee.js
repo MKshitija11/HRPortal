@@ -24,6 +24,7 @@ import * as Yup from 'yup';
 // components
 import FlatList from 'flatlist-react';
 import addMonths from 'date-fns/addMonths';
+import { subMonths } from 'date-fns';
 import format from 'date-fns/format';
 
 import Iconify from '../components/iconify';
@@ -285,9 +286,9 @@ export default function EmployeeList() {
     if (document.employeeForm.personalEmail.value === '') {
       return failFocus(document.employeeForm.personalEmail);
     }
-    if (document.employeeForm.officialEmail.value === '') {
-      return failFocus(document.employeeForm.officialEmail);
-    }
+    // if (document.employeeForm.officialEmail.value === '') {
+    //   return failFocus(document.employeeForm.officialEmail);
+    // }
     if (document.employeeForm.skillSet.value === '') {
       return failFocus(document.employeeForm.skillSet);
     }
@@ -337,9 +338,9 @@ export default function EmployeeList() {
     if (document.employeeForm.gender.value === '') {
       return failFocus(document.employeeForm.gender);
     }
-    if (document.employeeForm.dateOfBirth.value === '') {
-      return failFocus(document.employeeForm.dateOfBirth);
-    }
+    // if (document.employeeForm.dateOfBirth.value === '') {
+    //   return failFocus(document.employeeForm.dateOfBirth);
+    // }
     if (document.employeeForm.experience.value === '') {
       return failFocus(document.employeeForm.experience);
     }
@@ -362,9 +363,7 @@ export default function EmployeeList() {
 
       Configuration.saveEmployeeData(employeeFormData).then((employeeFormRes) => {
         console.log('employeeFormRes::', employeeFormRes.data);
-
         setReferenceNumber(employeeFormRes.data.id);
-
         if (employeeFormRes) {
           setOpenSuccessModal(true);
         }
@@ -408,7 +407,7 @@ export default function EmployeeList() {
     mobileNumber: state.mobileNumber,
     whatsappNumber: state.whatsappNumber || '',
     personalEmail: state.personalEmail,
-    officialEmail: state.officialEmail,
+    officialEmail: state.officialEmail || '',
     employeeId: state.employeeId,
     joiningDate: state.joiningDate,
     newReplacement: state.newReplacement,
@@ -450,13 +449,13 @@ export default function EmployeeList() {
       })
       .required('Whatsapp Number is required'),
     personalEmail: Yup.string()
-      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address')
+      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@]/, 'Invalid email address')
       .email('Invalid email address')
       .required('Personal email is required'),
-    officialEmail: Yup.string()
-      .email('Invalid official email')
-      .required('Official email is required')
-      .notOneOf([Yup.ref('personalEmail'), null], 'Official email must be different from personal email'),
+    // officialEmail: Yup.string()
+    //   .email('Invalid official email')
+    //   .required('Official email is required')
+    //   .notOneOf([Yup.ref('personalEmail'), null], 'Official email must be different from personal email'),
     employeeId: Yup.string().required('Employee code is required'),
     joiningDate: Yup.string().required('Date Required'),
 
@@ -472,7 +471,7 @@ export default function EmployeeList() {
       .required('Monthly Billing rate is required'),
     gender: Yup.string().required('Please Select'),
     experience: Yup.string().required('Please Select'),
-    dateOfBirth: Yup.string().required('Date of Birth Required'),
+    // dateOfBirth: Yup.string().required('Date of Birth Required'),
     totalExperience: Yup.string().required('Total Experience required'),
     skillSet: Yup.string().required('Skill set are required'),
   });
@@ -819,7 +818,7 @@ export default function EmployeeList() {
                         fullWidth
                         id="personalEmail"
                         placeholder="abc@gmail.com"
-                        label="Personal Email"
+                        label="Partner Official Email"
                         value={values.personalEmail}
                         onChange={(evt) => {
                           handleChange(evt);
@@ -836,18 +835,18 @@ export default function EmployeeList() {
                         autoComplete="off"
                         name="officialEmail"
                         variant="outlined"
-                        required
+                        // required
                         fullWidth
                         id="officialEmail"
-                        label="Official Email"
+                        label="Bagic Official Email"
                         value={values.officialEmail}
                         onChange={(evt) => {
                           handleChange(evt);
                           handleChangeEvent(evt);
                         }}
                         onBlur={handleBlur}
-                        error={formik.touched.officialEmail && Boolean(formik.errors.officialEmail)}
-                        helperText={formik.touched.officialEmail && formik.errors.officialEmail}
+                        // error={formik.touched.officialEmail && Boolean(formik.errors.officialEmail)}
+                        // helperText={formik.touched.officialEmail && formik.errors.officialEmail}
                       />
                     </Grid>
 
@@ -888,7 +887,7 @@ export default function EmployeeList() {
                         autoComplete="off"
                         name="dateOfBirth"
                         variant="outlined"
-                        required
+                        // required
                         fullWidth
                         type="date"
                         id="dateOfBirth"
@@ -899,8 +898,8 @@ export default function EmployeeList() {
                           handleChangeEvent(evt);
                         }}
                         onBlur={handleBlur}
-                        error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
-                        helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
+                        // error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
+                        // helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
                       />
                     </Grid>
                   </Grid>
@@ -963,7 +962,9 @@ export default function EmployeeList() {
                         id="joiningDate"
                         label="Date of Joining"
                         inputProps={{
-                          min: new Date().toISOString().split('T')[0],
+                          // min: new Date().toISOString().split('T')[0],
+                          // const c = subMonths(date, 3);
+                          min: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
                           max: format(addMonths(new Date(), 3), 'yyyy-MM-dd'),
                         }}
                         value={values.joiningDate}

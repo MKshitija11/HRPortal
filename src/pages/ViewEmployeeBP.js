@@ -24,6 +24,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
 import * as Yup from 'yup';
 import addMonths from 'date-fns/addMonths';
+import { subMonths } from 'date-fns';
 import format from 'date-fns/format';
 // components
 import Loader from '../components/Loader/Loader';
@@ -310,7 +311,7 @@ export default function ViewEmployee({ props }) {
       state.replacementEcode = 'NA';
       setState({
         ...state,
-        replacementEcode: "NA",
+        replacementEcode: 'NA',
         newReplacement: evt.target.value,
       });
     } else {
@@ -319,7 +320,7 @@ export default function ViewEmployee({ props }) {
       state.replacementEcode = '';
       setState({
         ...state,
-        replacementEcode: "",
+        replacementEcode: '',
         newReplacement: evt.target.value,
       });
     }
@@ -355,9 +356,9 @@ export default function ViewEmployee({ props }) {
     if (document.employeeForm.personalEmail.value === '') {
       return failFocus(document.employeeForm.personalEmail);
     }
-    if (document.employeeForm.officialEmail.value === '') {
-      return failFocus(document.employeeForm.officialEmail);
-    }
+    // if (document.employeeForm.officialEmail.value === '') {
+    //   return failFocus(document.employeeForm.officialEmail);
+    // }
     if (document.employeeForm.skillSet.value === '') {
       return failFocus(document.employeeForm.skillSet);
     }
@@ -404,9 +405,9 @@ export default function ViewEmployee({ props }) {
     if (document.employeeForm.gender.value === '') {
       return failFocus(document.employeeForm.gender);
     }
-    if (document.employeeForm.dateOfBirth.value === '') {
-      return failFocus(document.employeeForm.dateOfBirth);
-    }
+    // if (document.employeeForm.dateOfBirth.value === '') {
+    //   return failFocus(document.employeeForm.dateOfBirth);
+    // }
     if (document.employeeForm.experience.value === '') {
       return failFocus(document.employeeForm.experience);
     }
@@ -435,7 +436,7 @@ export default function ViewEmployee({ props }) {
       });
     } else {
       // setFailedModal(true);
-      setShowAlertMessage(true)
+      setShowAlertMessage(true);
     }
   };
 
@@ -466,21 +467,23 @@ export default function ViewEmployee({ props }) {
 
       console.log('Data', employeeFormData);
       setIsLoading(true);
-      Configuration.updateEmployeeData(employeeFormData).then((employeeFormRes) => {
-        console.log('employeeFormRes::', employeeFormRes.data);
-        if (employeeFormRes.data) {
-          setTimeout(() => {
-            setIsLoading(false);
-            setOpenSuccessModal(true);
-          }, 500);
-        }
-      }) .catch((error) => {
-        setIsLoading(false);
-        alert('Something went wrong');
-      });
+      Configuration.updateEmployeeData(employeeFormData)
+        .then((employeeFormRes) => {
+          console.log('employeeFormRes::', employeeFormRes.data);
+          if (employeeFormRes.data) {
+            setTimeout(() => {
+              setIsLoading(false);
+              setOpenSuccessModal(true);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       // setFailedModal(true);
-      setShowAlertMessage(true)
+      setShowAlertMessage(true);
     }
   };
 
@@ -508,84 +511,88 @@ export default function ViewEmployee({ props }) {
     };
 
     setIsLoading(true);
-    Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
-      console.log('employeeFormRes::', viewEmployeeRes.data);
-      const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
-      const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
+    Configuration.viewEmployeeData(viewEmployeeReq)
+      .then((viewEmployeeRes) => {
+        console.log('employeeFormRes::', viewEmployeeRes.data);
+        const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
+        const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
 
-      setEmpData(EMP_DETAILS);
-      const tempData = {
-        ...state,
-        newReplacement: EMP_DETAILS.newReplacement,
-        id: EMP_DETAILS.id,
-        employeeId: EMP_DETAILS.employeeId,
-        employeeStatus: EMP_DETAILS.employeeStatus,
-        supportDevelopment: EMP_DETAILS.supportDevelopment,
-        evaluationPeriod: EMP_DETAILS.evaluationPeriod,
-        projectType: EMP_DETAILS.projectType,
-        maximusOpus: EMP_DETAILS.maximusOpus,
-        billingSlab: EMP_DETAILS.billingSlab,
-        invoiceType: EMP_DETAILS.invoiceType,
-        reportingTeamLead: EMP_DETAILS.reportingTeamLead,
-        reportingManager: EMP_DETAILS.reportingManager,
-        functionDesc: EMP_DETAILS.functionDesc,
-        employeeFirstName: EMP_DETAILS.employeeFirstName,
-        employeeLastName: EMP_DETAILS.employeeLastName,
-        officialEmail: EMP_DETAILS.officialEmail,
-        personalEmail: EMP_DETAILS.personalEmail,
-        mobileNumber: EMP_DETAILS.mobileNumber,
-        whatsappNumber: EMP_DETAILS.whatsappNumber,
-        joiningDate: EMP_DETAILS.joiningDate,
-        replacementEcode: EMP_DETAILS.replacementEcode,
-        skillSet: EMP_DETAILS.skillSet,
-        // lob: EMP_DETAILS.lob,
-        gender: EMP_DETAILS.gender,
-        dateOfBirth: EMP_DETAILS.dateOfBirth,
-        totalExperience: EMP_DETAILS.totalExperience,
-        experience: EMP_DETAILS.experience,
-        lwd: EMP_DETAILS.lwd,
-        resignationDate: EMP_DETAILS.resignationDate,
-        employeeFullName: EMP_DETAILS.employeeFullName,
-      };
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
+        setEmpData(EMP_DETAILS);
+        const tempData = {
+          ...state,
+          newReplacement: EMP_DETAILS.newReplacement,
+          id: EMP_DETAILS.id,
+          employeeId: EMP_DETAILS.employeeId,
+          employeeStatus: EMP_DETAILS.employeeStatus,
+          supportDevelopment: EMP_DETAILS.supportDevelopment,
+          evaluationPeriod: EMP_DETAILS.evaluationPeriod,
+          projectType: EMP_DETAILS.projectType,
+          maximusOpus: EMP_DETAILS.maximusOpus,
+          billingSlab: EMP_DETAILS.billingSlab,
+          invoiceType: EMP_DETAILS.invoiceType,
+          reportingTeamLead: EMP_DETAILS.reportingTeamLead,
+          reportingManager: EMP_DETAILS.reportingManager,
+          functionDesc: EMP_DETAILS.functionDesc,
+          employeeFirstName: EMP_DETAILS.employeeFirstName,
+          employeeLastName: EMP_DETAILS.employeeLastName,
+          officialEmail: EMP_DETAILS.officialEmail,
+          personalEmail: EMP_DETAILS.personalEmail,
+          mobileNumber: EMP_DETAILS.mobileNumber,
+          whatsappNumber: EMP_DETAILS.whatsappNumber,
+          joiningDate: EMP_DETAILS.joiningDate.toString().split('T')[0],
 
-      const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
-      console.log(
-        'API SENIOR MANAGER===',
-        REPORTINGDETAILS.find((o) => o.managerEmail === state.reportingManager)?.managerName
-      );
+          replacementEcode: EMP_DETAILS.replacementEcode,
+          skillSet: EMP_DETAILS.skillSet,
+          // lob: EMP_DETAILS.lob,
+          gender: EMP_DETAILS.gender,
+          dateOfBirth: EMP_DETAILS.dateOfBirth,
+          totalExperience: EMP_DETAILS.totalExperience,
+          experience: EMP_DETAILS.experience,
+          lwd: EMP_DETAILS.lwd,
+          resignationDate: EMP_DETAILS.resignationDate,
+          employeeFullName: EMP_DETAILS.employeeFullName,
+        };
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
 
-      const getTLBySMListReq = {
-        managerEmail: EMP_DETAILS.reportingManager,
-      };
-
-      console.log('API GET TL BY SM REQ===', getTLBySMListReq);
-
-      Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
-        console.log('API GET TL BY SM RES===', getTLBySMListRes?.data);
-
+        const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
         console.log(
-          'TEAM LEAD',
-          getTLBySMListRes?.data.find(
+          'API SENIOR MANAGER===',
+          REPORTINGDETAILS.find((o) => o.managerEmail === state.reportingManager)?.managerName
+        );
+
+        const getTLBySMListReq = {
+          managerEmail: EMP_DETAILS.reportingManager,
+        };
+
+        console.log('API GET TL BY SM REQ===', getTLBySMListReq);
+
+        Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
+          console.log('API GET TL BY SM RES===', getTLBySMListRes?.data);
+
+          console.log(
+            'TEAM LEAD',
+            getTLBySMListRes?.data.find(
+              (o) =>
+                o.managerEmail === EMP_DETAILS.reportingManager && o.teamLeadEmail === EMP_DETAILS.reportingTeamLead
+            )?.teamLeadName
+          );
+
+          const TLObj = getTLBySMListRes?.data.find(
             (o) => o.managerEmail === EMP_DETAILS.reportingManager && o.teamLeadEmail === EMP_DETAILS.reportingTeamLead
-          )?.teamLeadName
-        );
+          );
 
-        const TLObj = getTLBySMListRes?.data.find(
-          (o) => o.managerEmail === EMP_DETAILS.reportingManager && o.teamLeadEmail === EMP_DETAILS.reportingTeamLead
-        );
-
-        state.tlList = getTLBySMListRes?.data;
-        setTeamLeadBySMList(state.tlList);
-        tempData.reportingTeamLead = TLObj;
-        setState(tempData);
+          state.tlList = getTLBySMListRes?.data;
+          setTeamLeadBySMList(state.tlList);
+          tempData.reportingTeamLead = TLObj;
+          setState(tempData);
+        });
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        alert('Something went wrong');
       });
-    }) .catch((error) => {
-      setIsLoading(false);
-      alert('Something went wrong');
-    });
   }, []);
 
   const initialValues = {
@@ -636,14 +643,14 @@ export default function ViewEmployee({ props }) {
         excludeEmptyString: false,
       })
       .required('Whatsapp Number is required'),
-      personalEmail: Yup.string()
-      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@](gmail.com|hotmail.com|yahoo.com)/, 'Invalid email address' )
-         .email('Invalid email address')
-         .required('Personal email is required'),
-    officialEmail: Yup.string()
-      .email('Invalid official email')
-      .required('Official email is required')
-      .notOneOf([Yup.ref('personalEmail'), null], 'Official email must be different from personal email'),
+    personalEmail: Yup.string()
+      .matches(/^[a-zA-Z0-9]{0,}([.]?[a-zA-Z0-9]{1,})[@]/, 'Invalid email address')
+      .email('Invalid email address')
+      .required('Personal email is required'),
+    // officialEmail: Yup.string()
+    //   .email('Invalid official email')
+    //   .required('Official email is required')
+    //   .notOneOf([Yup.ref('personalEmail'), null], 'Official email must be different from personal email'),
     employeeId: Yup.string().required('Employee code is required'),
     joiningDate: Yup.string().required('Required'),
     newReplacement: Yup.string().nullable().required('Please Select'),
@@ -658,7 +665,7 @@ export default function ViewEmployee({ props }) {
     replacementEcode: Yup.string().required('Employee code required'),
     gender: Yup.string().required('Please Select'),
     experience: Yup.string().required('Please Select'),
-    dateOfBirth: Yup.string().required('Date of Birth Required'),
+    // dateOfBirth: Yup.string().required('Date of Birth Required'),
     totalExperience: Yup.string().required('Total Experience required'),
     skillSet: Yup.string().required('Skill set are required'),
     lob: Yup.string().required('Please Select'),
@@ -719,7 +726,7 @@ export default function ViewEmployee({ props }) {
                 <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
                   Details of <b>{empData.employeeFullName}</b> has been Updated successfully
                 </Typography>
-              )  : null}
+              ) : null}
 
               <Grid
                 container
@@ -744,7 +751,7 @@ export default function ViewEmployee({ props }) {
                       OK
                     </Button>
                   </Stack>
-                )  : (
+                ) : (
                   <>
                     <Stack justifyContent="center">
                       <Button
@@ -1057,7 +1064,7 @@ export default function ViewEmployee({ props }) {
                                     ? 'grey'
                                     : 'black',
                               },
-                              maxLength: "10"
+                              maxLength: '10',
                             }}
                           />
                         </Grid>
@@ -1070,7 +1077,7 @@ export default function ViewEmployee({ props }) {
                             fullWidth
                             id="personalEmail"
                             placeholder="abc@gmail.com"
-                            label="Personal Email"
+                            label="Partner Official Email"
                             name="personalEmail"
                             autoComplete="off"
                             type="email"
@@ -1107,11 +1114,12 @@ export default function ViewEmployee({ props }) {
                           <TextField
                             InputLabelProps={{ shrink: true }}
                             variant="outlined"
-                            required
+                            // required
                             fullWidth
                             name="officialEmail"
-                            label="Official Email"
+                            label="Bagic Official Email"
                             id="officialEmail"
+                            placeholder="abc@gmail.com"
                             autoComplete="off"
                             type="email"
                             value={values.officialEmail}
@@ -1120,8 +1128,8 @@ export default function ViewEmployee({ props }) {
                               handleChangeEvent(evt);
                             }}
                             onBlur={handleBlur}
-                            error={touched.officialEmail ? errors.officialEmail : ''}
-                            helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
+                            // error={touched.officialEmail ? errors.officialEmail : ''}
+                            // helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
                             // }
                             inputProps={{
                               readOnly:
@@ -1191,7 +1199,7 @@ export default function ViewEmployee({ props }) {
                             autoComplete="off"
                             name="dateOfBirth"
                             variant="outlined"
-                            required
+                            // required
                             fullWidth
                             type="date"
                             id="dateOfBirth"
@@ -1219,8 +1227,8 @@ export default function ViewEmployee({ props }) {
                               },
                             }}
                             onBlur={handleBlur}
-                            error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
-                            helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
+                            // error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
+                            // helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
                           />
                         </Grid>
                       </Grid>
@@ -1327,7 +1335,8 @@ export default function ViewEmployee({ props }) {
                             helperText={touched.joiningDate ? formik.errors.joiningDate : ''}
                             // }
                             inputProps={{
-                              min: new Date().toISOString().split('T')[0],
+                              // min: new Date().toISOString().split('T')[0],
+                              min: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
                               max: format(addMonths(new Date(), 3), 'yyyy-MM-dd'),
                               readOnly:
                                 state.employeeStatus === 'Pending For TL Review' ||
@@ -1893,8 +1902,8 @@ export default function ViewEmployee({ props }) {
               }}
             </Formik>
           )}
-            {showAlertMessage ? (
-            <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center', mt:2 }}>
+          {showAlertMessage ? (
+            <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center', mt: 2 }}>
               Note: Please provide values for mandatory fields
             </Typography>
           ) : null}

@@ -149,4 +149,25 @@ export default {
     console.log('data->', RequestSeniorManager);
     return axios.post(`${this.BASE_URL}getDashBoardForSM`, RequestSeniorManager);
   },
+
+//   return axios.get(`${this.BASE_URL}getAllAssets`,
+//   {
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Auth': `Bearer ${token}`,
+//     },
+//     data,
+//   }
+// );
+
+  getDashBoardForPartner() {
+    console.log('function->', 'getDashBoardForPartner');
+    console.log('url->>>>', `${this.BASE_URL}getDashBoardForPartner`);
+    // const data = {};
+    return axios.get(`${this.BASE_URL}getDashBoardForPartner`, {
+      headers: {
+        'x-api-key' : 'dMl4O7HULk2Nr0aW7Pu8g1jJSHIlUlat9BQZBeZq'
+      }
+    });
+  },
 };

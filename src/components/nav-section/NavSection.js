@@ -18,14 +18,15 @@ export default function NavSection() {
   const [switchRole, setSwitchRole] = useState(false);
   const ROLE = sessionStorage.getItem('ROLE');
   // const ROLE = 'BAGIC_SM';
-
+  const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
   useEffect(() => {
     const loginRequest = {
-      // username: 'mandar.pathak@bajajallianz.co.in',
-      // username: 'ravi.kumar044@bajajallianz.co.in',
-      username: 'pooja.rebba@bajajallianz.co.in',
+      // // username: 'mandar.pathak@bajajallianz.co.in',
+      // // username: 'ravi.kumar044@bajajallianz.co.in',
+      // username: 'pooja.rebba@bajajallianz.co.in',
 
-      password: 'password',
+      // password: 'password',
+      username: USERDETAILS?.[0]?.spocUsername
     };
 
     Configuration.login(loginRequest).then((LoginResponse) => {
@@ -89,17 +90,20 @@ export default function NavSection() {
       {
         title: 'Active',
         // path: '/EmployeesTL',
-        path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
+        // path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
+        path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : ROLE === 'BAGIC_SM' ? '/EmployeesSM' : '/EmployeesTL',
         icon: icon('ic_user'),
       },
       {
         title: 'Pending',
-        path: ROLE === 'BAGIC_TL' ? `/EmployeesListTL` : '/EmployeesListSM',
+        // path: ROLE === 'BAGIC_TL' ? `/EmployeesListTL` : '/EmployeesListSM',
+        path: ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : '/EmployeesListTL',
         icon: icon('ic_user'),
       },
       {
         title: 'Resigned',
-        path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
+        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
+        path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : ROLE === 'BAGIC_SM' ? '/ResignedEmployeesListSM' : '/ResignedEmployeesListTL',
         icon: icon('ic_user'),
       },
     ];
@@ -114,18 +118,24 @@ export default function NavSection() {
       {
         title: 'Active',
         // path: '/EmployeesSM',
-        path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
+        // path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
+        // path: ROLE === 'BAGIC_SM' ? '/EmployeesSM' : '/EmployeesTL',
+        path: ROLE === 'BAGIC_SM' ? '/EmployeesSM' : ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
         icon: icon('ic_user'),
       },
       {
         title: 'Pending',
-        path: ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : '/EmployeesListSM',
+        // path: ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : '/EmployeesListSM',
+        // path: ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : '/EmployeesListTL',
+        path: ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : '/EmployeesListSM',
         // path: `/EmployeesListSM`,
         icon: icon('ic_user'),
       },
       {
         title: 'Resigned',
-        path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
+        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
+        // path: ROLE === 'BAGIC_SM' ? '/ResignedEmployeesListSM' : '/ResignedEmployeesListTL',
+        path: ROLE === 'BAGIC_SM' ? '/ResignedEmployeesListSM' : ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
         // path: `/ResignedEmployeesListSM`,
         icon: icon('ic_user'),
       },

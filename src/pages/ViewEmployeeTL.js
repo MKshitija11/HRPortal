@@ -800,7 +800,8 @@ export default function ViewEmployee() {
         personalEmail: EMP_DETAILS.personalEmail,
         mobileNumber: EMP_DETAILS.mobileNumber,
         whatsappNumber: EMP_DETAILS.whatsappNumber,
-        joiningDate: EMP_DETAILS.joiningDate.toString().split('T')[0],
+        // joiningDate: EMP_DETAILS.joiningDate.toString().split('T')[0],
+        joiningDate: EMP_DETAILS.joiningDate,
         replacementEcode: EMP_DETAILS.replacementEcode,
         verticalMain: EMP_DETAILS.verticalMain,
         verticalSub: EMP_DETAILS.verticalSub,
@@ -851,7 +852,7 @@ export default function ViewEmployee() {
     officialEmail: state.officialEmail || '',
     partnerName: partnerName || '',
     employeeId: state.employeeId || '',
-    joiningDate: state.joiningDate || '',
+    joiningDate: (state.joiningDate === null ? state.joiningDate : state.joiningDate.toString().split('T')[0]) || '',
     newReplacement: state.newReplacement || '',
     replacementEcode: state.replacementEcode || '',
     supportDevelopment: state.supportDevelopment || '',
@@ -875,7 +876,7 @@ export default function ViewEmployee() {
     lob: state.lob || '',
   };
 
-  console.log("state joining date", state.joiningDate.toString().split('T')[0]);
+  console.log('state joining date', initialValues.joiningDate);
   const validationSchema = Yup.object({
     employeeFirstName: Yup.string()
       .required('First name is required')

@@ -71,6 +71,7 @@ export default function ViewEmployee() {
     lob: '',
     skillSet: '',
     tlList: [],
+    designation: '',
   });
 
   const [userProfile, setUserProfile] = useState();
@@ -250,6 +251,46 @@ export default function ViewEmployee() {
     },
   ];
 
+  const designationList = [
+    { value: 'Software Engineer', label: 'Software Engineer' },
+    { value: 'IT Support', label: 'IT Support' },
+    { value: 'Software Developer', label: 'Software Developer' },
+    { value: 'Fuctional Tester', label: 'Fuctional Tester' },
+    { value: 'Test Engineer', label: 'Test Engineer' },
+    { value: 'Systems Support Lead', label: 'Systems Support Lead' },
+    { value: 'Developer', label: 'Developer' },
+    { value: 'QA Engineer', label: 'QA Engineer' },
+    { value: 'Security Tester', label: 'Security Tester' },
+    { value: 'Technical Associate', label: 'Technical Associate' },
+    { value: 'Project Engineer', label: 'Project Engineer' },
+    { value: 'System Engineer', label: 'System Engineer' },
+    { value: 'Project Leader', label: 'Project Leader' },
+    { value: 'Senior Software Engineer', label: 'Senior Software Engineer' },
+    { value: 'IT Engineer', label: 'IT Engineer' },
+    { value: 'Senior Developer', label: 'Senior Developer' },
+    { value: 'Systems Support Engineer', label: 'Systems Support Engineer' },
+    { value: 'Programmer', label: 'Programmer' },
+    { value: 'Technical Lead', label: 'Technical Lead' },
+    { value: 'Senior Programmer', label: 'Senior Programmer' },
+    { value: 'L2 Support', label: 'L2 Support' },
+    { value: 'L3 Support', label: 'L3 Support' },
+    { value: 'Seniour Software Engineer', label: 'Seniour Software Engineer' },
+    { value: 'Team Leader', label: 'Team Leader' },
+    { value: 'L2 Application Support Engineer', label: 'L2 Application Support Engineer' },
+    { value: 'Data Engineer', label: 'Data Engineer' },
+    { value: 'Application Support', label: 'Application Support' },
+    { value: 'Perfomance Tester', label: 'Perfomance Tester' },
+    { value: 'Network Administrator', label: 'Network Administrator' },
+    { value: 'Technical Engineer', label: 'Technical Engineer' },
+    { value: 'Cloud Engineer', label: 'Cloud Engineer' },
+    { value: 'Engineer', label: 'Engineer' },
+    { value: 'MIS Executive', label: 'MIS Executive' },
+    { value: 'Security Consultant', label: 'Security Consultant' },
+    { value: 'Junior Developer', label: 'Junior Developer' },
+    { value: 'Senior Software Developer', label: 'Senior Software Developer' },
+    { value: 'Automation Test Engineer', label: 'Automation Test Engineer' },
+  ];
+
   const handleChangeWaSwitch = (evt) => {
     if (evt.target.checked) {
       document.getElementById('whatsappNumber').value = state.mobileNumber;
@@ -346,14 +387,14 @@ export default function ViewEmployee() {
       document.employeeForm.replacementEcode.value = 'NA';
       setState({
         ...state,
-        replacementEcode: "NA",
+        replacementEcode: 'NA',
         newReplacement: evt.target.value,
       });
     } else {
       document.employeeForm.replacementEcode.value = '';
       setState({
         ...state,
-        replacementEcode: "",
+        replacementEcode: '',
         newReplacement: evt.target.value,
       });
     }
@@ -516,6 +557,9 @@ export default function ViewEmployee() {
     if (document.employeeForm.skillSet.value === '') {
       return failFocus(document.employeeForm.skillSet);
     }
+    if (document.employeeForm.designation.value === '') {
+      return failFocus(document.employeeForm.designation);
+    }
     return true;
   };
 
@@ -585,7 +629,8 @@ export default function ViewEmployee() {
           personalEmail: EMP_DETAILS.personalEmail,
           mobileNumber: EMP_DETAILS.mobileNumber,
           whatsappNumber: EMP_DETAILS.whatsappNumber,
-          joiningDate: EMP_DETAILS.joiningDate.toString().split('T')[0],
+          // joiningDate: EMP_DETAILS.joiningDate.toString().split('T')[0],
+          joiningDate: EMP_DETAILS.joiningDate,
           replacementEcode: EMP_DETAILS.replacementEcode,
           verticalMain: EMP_DETAILS.verticalMain,
           verticalSub: EMP_DETAILS.verticalSub,
@@ -598,6 +643,7 @@ export default function ViewEmployee() {
           totalExperience: EMP_DETAILS.totalExperience,
           reportingItSpoc: EMP_DETAILS.reportingItSpoc,
           employeeFullName: EMP_DETAILS.employeeFullName,
+          designation: EMP_DETAILS.designation,
         };
         setPartnerName(EMP_DETAILS.partnerName);
         if (state.employeeStatus !== 'Pending For IT Spoc Review') {
@@ -606,7 +652,7 @@ export default function ViewEmployee() {
         setTimeout(() => {
           setIsLoading(false);
         }, 500);
-
+        console.log('from emp details', EMP_DETAILS.designation);
         const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
 
         const getTLBySMListReq = {
@@ -739,7 +785,9 @@ export default function ViewEmployee() {
     officialEmail: state.officialEmail || '',
     partnerName: state.partnerName || '',
     employeeId: state.employeeId || '',
-    joiningDate: state.joiningDate || '',
+    // joiningDate: state.joiningDate || '',
+    joiningDate: (state.joiningDate === null ? state.joiningDate : state.joiningDate.toString().split('T')[0]) || '',
+
     newReplacement: state.newReplacement || '',
     replacementEcode: state.replacementEcode || '',
     supportDevelopment: state.supportDevelopment || '',
@@ -762,6 +810,7 @@ export default function ViewEmployee() {
     totalExperience: state.totalExperience || '',
     lob: state.lob || '',
     skillSet: state.skillSet || '',
+    designation: state.designation || '',
   };
 
   const validationSchema = Yup.object({
@@ -819,6 +868,7 @@ export default function ViewEmployee() {
     totalExperience: Yup.string().required('Total Experience required'),
     lob: Yup.string().required('Please Select'),
     skillSet: Yup.string().required('Skill set are required'),
+    designation: Yup.string().required('Please Select'),
   });
 
   return (
@@ -947,7 +997,7 @@ export default function ViewEmployee() {
                                   onClick={() => {
                                     setOpenSuccessModal(false);
                                     setRejectedConfirmationModal(false);
-                                    setUpdateActiveEmp(false)
+                                    setUpdateActiveEmp(false);
                                     navigate('/EmployeesITS');
                                   }}
                                   sx={{ mt: 2 }}
@@ -1678,6 +1728,32 @@ export default function ViewEmployee() {
                             error={formik.touched.skillSet && Boolean(formik.errors.skillSet)}
                             helperText={formik.touched.skillSet && formik.errors.skillSet}
                           />
+                        </Grid>
+
+                        <Grid item xs={12} sm={4}>
+                          <TextField
+                            labelId="demo-select-small"
+                            id="designation"
+                            name="designation"
+                            select
+                            label="Designation"
+                            fullWidth
+                            required
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            value={values.designation}
+                            onBlur={handleBlur}
+                            error={touched.designation ? errors.designation : ''}
+                            helperText={touched.designation ? formik.errors.designation : ''}
+                          >
+                            {designationList.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
                         </Grid>
                       </Grid>
                       <br />

@@ -54,7 +54,7 @@ export default function UserListHead({ order, orderBy, headLabel, onRequestSort 
           </TableCell>
         ))} */}
         {headLabel.map((headCell) => (
-          <TableCell key={headCell.id} sx={{ backgroundColor: '#E3E5E894', color: '#6C63FF' }}>
+          <TableCell key={headCell.id} sx={{ backgroundColor: '#F7F7F8', color: '#0072BC' }}>
             <TableSortLabel>{headCell.label}</TableSortLabel>
           </TableCell>
         ))}

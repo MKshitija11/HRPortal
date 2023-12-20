@@ -66,24 +66,29 @@ export default function NavSection() {
       {
         title: 'Active',
         path: `${redirectUrl}`,
-        icon: icon('ic_user'),
+        icon: icon('ic_activeUser'),
         employeeCount: '',
       },
       {
         title: 'Pending',
         path: '/PendingEmployeesBP',
-        icon: icon('ic_user'),
+        icon: icon('ic_pending'),
       },
       {
         title: 'Rejected',
         path: '/RejectedEmployeesBP',
-        icon: icon('ic_user'),
+        icon: icon('ic_rejectedUser'),
       },
       {
         title: 'Resigned',
         path: '/ResignedEmployeesBP',
-        icon: icon('ic_user'),
+        icon: icon('ic_resignedUser'),
       },
+      // {
+      //   title: 'TimeSheet',
+      //   path: '/TimeSheet',
+      //   icon: icon('ic_timesheet'),
+      // },
     ];
 
     const dataTeamLead = [
@@ -92,19 +97,25 @@ export default function NavSection() {
         // path: '/EmployeesTL',
         // path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
         path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : ROLE === 'BAGIC_SM' ? '/EmployeesSM' : '/EmployeesTL',
-        icon: icon('ic_user'),
+        icon: icon('ic_activeUser'),
       },
       {
         title: 'Pending',
         // path: ROLE === 'BAGIC_TL' ? `/EmployeesListTL` : '/EmployeesListSM',
         path: ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : '/EmployeesListTL',
-        icon: icon('ic_user'),
+        icon: icon('ic_pending'),
       },
       {
         title: 'Resigned',
         // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
         path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : ROLE === 'BAGIC_SM' ? '/ResignedEmployeesListSM' : '/ResignedEmployeesListTL',
-        icon: icon('ic_user'),
+        icon: icon('ic_resignedUser'),
+      },
+      {
+        title: 'Employee Managment',
+        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
+        path: ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : '/EmpManagmentTL',
+        icon: icon('ic_resignedUser'),
       },
     ];
     if (ROLE && !dataTeamLead.find((role) => role.path === '/SwitchRole')) {
@@ -121,7 +132,7 @@ export default function NavSection() {
         // path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
         // path: ROLE === 'BAGIC_SM' ? '/EmployeesSM' : '/EmployeesTL',
         path: ROLE === 'BAGIC_SM' ? '/EmployeesSM' : ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
-        icon: icon('ic_user'),
+        icon: icon('ic_activeUser'),
       },
       {
         title: 'Pending',
@@ -129,7 +140,7 @@ export default function NavSection() {
         // path: ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : '/EmployeesListTL',
         path: ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : '/EmployeesListSM',
         // path: `/EmployeesListSM`,
-        icon: icon('ic_user'),
+        icon: icon('ic_pending'),
       },
       {
         title: 'Resigned',
@@ -137,14 +148,20 @@ export default function NavSection() {
         // path: ROLE === 'BAGIC_SM' ? '/ResignedEmployeesListSM' : '/ResignedEmployeesListTL',
         path: ROLE === 'BAGIC_SM' ? '/ResignedEmployeesListSM' : ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
         // path: `/ResignedEmployeesListSM`,
-        icon: icon('ic_user'),
+        icon: icon('ic_resignedUser'),
+      },
+      {
+        title: 'Employee Managment',
+        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
+        path: ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : '/EmpManagmentSM',
+        icon: icon('ic_resignedUser'),
       },
     ];
     if (ROLE && !dataSeniorManager.find((role) => role.path === '/SwitchRole')) {
       dataSeniorManager.push({
         title: 'Switch role',
         path: '/SwitchRole',
-        icon: icon('ic_user'),
+        icon: icon('ic_activeUser'),
       });
     }
 
@@ -164,18 +181,18 @@ export default function NavSection() {
       {
         title: 'Active',
         path: `${redirectUrl}`,
-        icon: icon('ic_user'),
+        icon: icon('ic_activeUser'),
       },
       {
         title: 'Pending',
         path: '/PendingEmployeesITS',
-        icon: icon('ic_user'),
+        icon: icon('ic_pending'),
       },
 
       {
         title: 'Resigned',
         path: '/ResignedEmployeesITS',
-        icon: icon('ic_user'),
+        icon: icon('ic_resignedUser'),
       },
       {
         title: 'Reports',

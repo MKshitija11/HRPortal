@@ -33,6 +33,10 @@ import ResignedEmployeeListBP from './pages/ResignedEmployeeListBP';
 import ResignedEmployeeListITS from './pages/ResignedEmployeeListITS';
 import ResignedEmployeeListTL from './pages/ResignedEmployeeListTL';
 import SwitchRole from './pages/SwitchRole';
+import TimeSheet from './pages/Timesheet';
+// import EmpManagmentTL from './pages/EmpManagmentTLjs';
+import EmpManagmentTL from './pages/EmpManagmentTL'
+import EmpManagmentSM from './pages/EmpManagementSM';
 
 // ----------------------------------------------------------------------
 
@@ -67,6 +71,10 @@ export default function Router() {
 
         { path: 'Loader', element: <Loader /> },
         { path: 'HandleApi', element: <HandleApi /> },
+        { path: 'TimeSheet', element: <TimeSheet /> },
+        { path: 'EmpManagmentTL', element: <EmpManagmentTL /> },
+        { path: 'EmpManagmentSM', element: <EmpManagmentSM /> },
+
       ],
     },
     {
@@ -145,6 +153,18 @@ export default function Router() {
     {
       path: 'SwitchRole',
       element: <SwitchRole />,
+    },
+    {
+      path: 'TimeSheet',
+      element: <TimeSheet />,
+    },
+    {
+      path: 'EmpManagmentTL',
+      element: <EmpManagmentTL />,
+    },
+    {
+      path: 'EmpManagmentSM',
+      element: <EmpManagmentSM />,
     },
     // for simple layout element , there is no path specified bt has index attribute That specifies this route as the default route for the parent route, which is /.
     {

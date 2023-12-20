@@ -92,6 +92,7 @@ export default function ViewEmployee() {
   const [isLoading, setIsLoading] = useState(false);
   const [showAlertMessage, setShowAlertMessage] = useState(false);
   const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
+  const [approvalResponse, setApprovalResponse] = useState()
   const evaluationPeriodList = [
     {
       value: '15 Days',
@@ -607,6 +608,7 @@ export default function ViewEmployee() {
         const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
         const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
         setEmpData(EMP_DETAILS);
+        // console.log("EMP DETAILS", EMP);
 
         const tempData = {
           ...state,
@@ -708,6 +710,7 @@ export default function ViewEmployee() {
           .then((employeeFormRes) => {
             console.log('employeeFormRes::', employeeFormRes.data);
             if (employeeFormRes) {
+              setApprovalResponse(employeeFormRes.data)
               setTimeout(() => {
                 setIsLoading(false);
                 setOpenSuccessModal(true);
@@ -786,8 +789,8 @@ export default function ViewEmployee() {
     partnerName: state.partnerName || '',
     employeeId: state.employeeId || '',
     // joiningDate: state.joiningDate || '',
-    joiningDate: (state.joiningDate === null ? state.joiningDate : state.joiningDate.toString().split('T')[0]) || '',
-
+    // joiningDate: (state.joiningDate === null ? state.joiningDate : state.joiningDate.toString().split('T')[0]) || '',
+    joiningDate: state.joiningDate ? state.joiningDate.toString().split('T')[0] : '',
     newReplacement: state.newReplacement || '',
     replacementEcode: state.replacementEcode || '',
     supportDevelopment: state.supportDevelopment || '',
@@ -870,6 +873,179 @@ export default function ViewEmployee() {
     skillSet: Yup.string().required('Skill set are required'),
     designation: Yup.string().required('Please Select'),
   });
+
+  const handleOnBoardingTicket = () => {
+    const  onBoardingRequest = {
+      requestType: "GET_TICKET",
+    integrationLogId: "unique_id_for_each_request",
+    iteration: 0,
+    ticket: {
+      project: {
+        projectName: "Employee On/Offboarding"
+      },
+      service: {
+        id: "83"
+      },
+      title:"Test Ticket for UAT",
+      submittedBy: {
+        username: "sanket.gavhane"
+      },
+      category: {
+        id: "319"
+      },
+      subCategory: {
+        id:"1105"
+      },
+      location: {
+        name: "Marvel"
+      },
+      department:{
+        name: "IT"
+      },
+      priority:{
+        name: "P3"
+      },
+      urgency: {
+        name: "Low"
+      },
+      impact:{
+        name: "Low"
+      },
+      probDescription: "Test Ticket for UAT employee onboarding",
+      ccMailId: "",
+      alternativeEmail: "",
+      submittedThrough: 0,
+      source: {
+        name: "Web"
+      },
+      additionalParams: {
+        updated: false,
+        attribute76: {
+          updated: false,
+          data: "",
+          fieldid: "330"
+        },
+        attribute77: {
+          updated: false,
+          // data: "firstname",
+          data: approvalResponse.employeeFirstName,
+          fieldid: "331"
+        },
+        attribute78: {
+          updated: false,
+          // data: "lastname",
+          data: approvalResponse.employeeLastName,
+          fieldid: "332"
+        },
+        attribute79: {
+          updated: false,
+          // data: "employeecode",
+          data: approvalResponse.employeeId,
+          fieldid: "333"
+        },
+        attribute80: {
+          updated: false,
+          data: "1019",
+          fieldid: "334"
+        },
+        attribute81: {
+          updated: false,
+          // data: "mobilenumber",
+          data: approvalResponse.mobileNumber,
+          fieldid: "335"
+        },
+        attribute82: {
+          updated: false,
+          // data: "joiningDate",
+          data: approvalResponse.joiningDate,
+          fieldid: "336"
+        },
+        attribute83: {
+          updated: false,
+          data: "bagic_reporting_auth_empcode",
+          fieldid: "337"
+        },
+        attribute84: {
+          updated: false,
+          // data: "bagic_reporting_auth_email",
+          data:approvalResponse.reportingTeamLead,
+          fieldid: "338"
+        },
+        attribute85: {
+          updated: false,
+          // data: "vendor comapany name (partner name)",
+          data: approvalResponse.partnerName,
+          fieldid: "339"
+        },
+        attribute86: {
+          updated: false,
+          data: "senior manager email",
+          fieldid: "340"
+        },
+        attribute87: {
+          updated: false,
+          // data: "designation",
+          data: approvalResponse.designation,
+          fieldid: "341"
+        },
+        // Domain Id required
+        attribute23: {
+          updated: false,
+          data: "No",
+          fieldid: "246"
+        },
+        // email Id required
+        attribute24: {
+          updated: false,
+          data: "No",
+          fieldid: "247"
+        },
+        attribute122: {
+          updated: false,
+          data: "icewrap",
+          fieldid: "289"
+        },
+        // firewall access required 
+        attribute64: {
+          updated: false,
+          data: "No",
+          fieldid: "317"
+        },
+        // source ip
+        attribute65: {
+          updated: false,
+          data: "10.1.1.1",
+          fieldid: "318"
+        },
+        // destination ip
+        attribute66: {
+          updated: false,
+          data: "10.2.2.2",
+          fieldid: "319"
+        },
+        // port
+        attribute67: {
+          updated: false,
+          data: "8080",
+          fieldid: "320"
+        },
+        // pc allocation
+        attribute73: {
+          updated: false,
+          data: "Laptop",
+          fieldid: "327"
+        },
+        // softwares installed
+        attribute75: {
+          updated: false,
+          data: "Notepad++",
+          fieldid: "329"
+        },
+      },
+      rpaEvent: "false"
+    }
+    }
+  }
 
   return (
     <>

@@ -891,7 +891,6 @@ export default function ViewEmployee() {
     // joiningDate: state.joiningDate || '',
     // joiningDate: (state.joiningDate === null ? state.joiningDate : state.joiningDate.toString().split('T')[0]) || '',
     joiningDate: state.joiningDate ? state.joiningDate.toString().split('T')[0] : '',
-
     newReplacement: state.newReplacement || '',
     replacementEcode: state.replacementEcode || '',
     supportDevelopment: state.supportDevelopment || '',
@@ -2186,7 +2185,7 @@ export default function ViewEmployee() {
           )}
           {showAlertMessage ? (
             <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center', mt: 2 }}>
-              Note: Please provide vales for mandatory fields
+              Note: Please provide values for mandatory fields
             </Typography>
           ) : null}
         </Card>

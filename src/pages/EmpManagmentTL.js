@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Card, Stack } from '@mui/material';
+import { Container, Typography, Card, Stack, CardHeader } from '@mui/material';
 import ReactApexChart from 'react-apexcharts';
 import { styled, useTheme } from '@mui/material/styles';
 import Configuration from '../utils/Configuration';
 import { fNumber } from '../utils/formatNumber';
 import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
+import { useChart } from '../components/chart';
 
-const CHART_HEIGHT = 400;
+const CHART_HEIGHT = 372;
 const LEGEND_HEIGHT = 72;
 
 const StyledChartWrapper = styled('div')(({ theme }) => ({
@@ -19,10 +20,8 @@ const StyledChartWrapper = styled('div')(({ theme }) => ({
   },
   '& .apexcharts-legend': {
     height: LEGEND_HEIGHT,
-    // display: 'none',
     alignContent: 'center',
     position: 'relative !important',
-    borderTop: `solid 1px ${theme.palette.divider}`,
     top: `calc(${CHART_HEIGHT - LEGEND_HEIGHT}px) !important`,
   },
 }));
@@ -34,8 +33,6 @@ export default function EmpManagmentTL() {
   const [sortedArray, setSortedArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // const colors = ['#FFFF33', '#EC01C5', '#0121EC' ]
-  const colors = ['#FEB801', '#F57F4D', '#0090C4', '#27BFBE'];
   const chartColors = [
     '#3B00ED',
     '#9C27B0',
@@ -69,8 +66,9 @@ export default function EmpManagmentTL() {
               setIsLoading(true);
             }, 500);
 
-            const arr = empListTLRes.data;
-
+            console.log("active emp list", empListTLRes.data.filter((emp) => emp.employeeStatus === 'Active'));
+            const arr = empListTLRes.data.filter((emp) => emp.employeeStatus === 'Active');
+            
             const dataArr = function findOcc(arr, key) {
               const arr2 = [];
               arr.forEach((x) => {
@@ -115,7 +113,7 @@ export default function EmpManagmentTL() {
   console.log('ARRAY partnerName...>>', partnerName);
   console.log('ARRAY partnerCount...>>', partnerCount);
 
-  const chartOptions = {
+  const chartOptions = useChart({
     colors: chartColors,
     labels: partnerName,
     legend: { floating: true, horizontalAlign: 'center' },
@@ -181,87 +179,11 @@ export default function EmpManagmentTL() {
       min: -30,
       max: 30,
     },
-  };
+  });
 
-  // const chartOptions = {
-  //   series: [
-  //     {
-  //       name: 'count',
-  //       data: partnerCount,
-  //     },
-  //   ],
-  //   options: {
-  //     chart: {
-  //       type: 'bar',
-  //       height: 350,
-  //       animations: {
-  //         enabled: true,
-  //         easing: 'easeinout',
-  //         speed: 500,
-  //         animatedGradually: {
-  //           enabled: true,
-  //           delay: 150,
-  //         },
-  //         dynamicAnimation: {
-  //           enabled: true,
-  //           spedd: 350,
-  //         },
-  //       },
-  //     },
-  //     stroke: {
-  //       width: 1,
-  //       colors: ['#fff'],
-  //     },
-  //     plotOptions: {
-  //       bar: {
-  //         distributed: true,
-  //         borderRadius: 4,
-  //         barHeight: '40%',
-  //         horizontal: true,
-  //         dataLabels: {
-  //           total: {
-  //             enabled: true,
-  //             offsetX: 0,
-  //             style: {
-  //               fontSize: '13px',
-  //               fontWeight: 900,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //     colors: [
-  //       '#33b2df',
-  //       '#546E7A',
-  //       '#d4526e',
-  //       '#13d8aa',
-  //       '#A5978B',
-  //       '#2b908f',
-  //       '#f9a3a4',
-  //       '#90ee7e',
-  //       '#f48024',
-  //       '#69d2e7',
-  //       // '#FEB801',
-  //       // '#F57F4D',
-  //       // '#0090C4',
-  //       // '#27BFBE',
-  //     ],
-
-  //     dataLabels: {
-  //       enabled: true,
-  //       markers: {
-  //         colors: ['#F44336', '#E91E63', '#9C27B0'],
-  //       },
-  //     },
-  //     xaxis: {
-  //       categories: partnerName,
-  //     },
-  //   },
-  // };
   return (
     <>
       <Container>
-        {console.log('Array length', sortedArray.length)}
         <Stack>
           <Card
             container
@@ -277,6 +199,18 @@ export default function EmpManagmentTL() {
               </Stack>
             ) : (
               <StyledChartWrapper dir="ltr">
+                <Typography
+                  style={{
+                    margin: 0,
+                    fontWeight: '700',
+                    lineHeight: '1.5',
+                    fontSize: '1.0625rem',
+                    fontFamily: 'Roboto,sans-serif',
+                    // display: block;
+                  }}
+                >
+                  Employee Dashboard
+                </Typography>
                 {sortedArray.length === 0 ? (
                   <Stack alignItems="center" justifyContent="center" marginY="20%" alignContent="center">
                     <Iconify icon="eva:alert-triangle-outline" color="red" width={60} height={60} />
@@ -293,20 +227,23 @@ export default function EmpManagmentTL() {
                   //   height={520}
                   //   colors={colors}
                   // />
-
-                  <ReactApexChart
-                  sx={{
-                    border: '1px solid lightgrey',
-                    borderRadius: '8px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    horizontalAlign: true
-                  }}
-                    type="donut"
-                    height={350}
-                    series={partnerCount}
-                    options={chartOptions}
-                  />
+                  <>
+                    {/* <Typography style={{fontSize: 22}}>Employee List</Typography> */}
+                    <ReactApexChart
+                      sx={{
+                        border: '1px solid lightgrey',
+                        borderRadius: '8px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        top: 20,
+                        // horizontalAlign: true,
+                      }}
+                      type="donut"
+                      height={300}
+                      series={partnerCount}
+                      options={chartOptions}
+                    />
+                  </>
                 )}
               </StyledChartWrapper>
             )}

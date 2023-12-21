@@ -6,6 +6,7 @@ import Configuration from '../utils/Configuration';
 import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
 import { fNumber } from '../utils/formatNumber';
+
 // components
 import { useChart } from '../components/chart';
 
@@ -58,20 +59,20 @@ export default function EmpManagmentSM() {
       };
       setIsLoading(true);
       Configuration.getEmpListManager(empListManagerReq)
-        .then((empListTLRes) => {
-          if (empListTLRes.data.error) {
+        .then((empListSMRes) => {
+          if (empListSMRes.data.error) {
             console.log('error');
             //   setErrorMessage(true);
             setTimeout(() => {
               setIsLoading(false);
             }, 500);
           } else {
-            console.log('Repsonse.data from else ', empListTLRes.data);
+            console.log('Repsonse.data from else ', empListSMRes.data);
             setTimeout(() => {
               setIsLoading(true);
             }, 500);
 
-            const arr = empListTLRes.data;
+            const arr = empListSMRes.data.filter((emp) => emp.employeeStatus === 'Active');
 
             const dataArr = function findOcc(arr, key) {
               const arr2 = [];
@@ -123,80 +124,8 @@ export default function EmpManagmentSM() {
   //   series: [
   //     {
   //       name: 'count',
-  //       data: partnerCount,
-  //     },
-  //   ],
-  //   options: {
-  //     chart: {
-  //       type: 'bar',
-  //       height: 150,
-  //       animations: {
-  //         enabled: true,
-  //         easing: 'easeinout',
-  //         speed: 500,
-  //         animatedGradually: {
-  //           enabled: true,
-  //           delay: 150,
-  //         },
-  //         dynamicAnimation: {
-  //           enabled: true,
-  //           spedd: 350,
-  //         },
-  //       },
-  //     },
-  //     stroke: {
-  //       width: 1,
-  //       colors: ['#fff'],
-  //     },
-  //     plotOptions: {
-  //       bar: {
-  //           distributed: true,
-  //         borderRadius: 4,
-  //         horizontal: false,
-  //         barHeight: '40%',
-  //           barWidth: '10%',
-  //         dataLabels: {
-  //           total: {
-  //             enabled: true,
-  //             offsetX: 0,
-  //             style: {
-  //               fontSize: '13px',
-  //               fontWeight: 900,
-  //             },
 
-  //           },
-  //         },
-  //       },
-  //     },
-  //     dataLabels: {
-  //       enabled: true,
-  //       markers: {
-  //           colors: ['#F44336', '#E91E63', '#9C27B0'],
-  //       },
-  //     },
-  //     colors: [
-  //       '#33b2df',
-  //       '#546E7A',
-  //       '#d4526e',
-  //       '#13d8aa',
-  //       '#A5978B',
-  //       '#2b908f',
-  //       '#f9a3a4',
-  //       '#90ee7e',
-  //       '#f48024',
-  //       '#69d2e7',
-  //       // '#FEB801',
-  //       // '#F57F4D',
-  //       // '#0090C4',
-  //       // '#27BFBE',
-  //     ],
-  //     xaxis: {
-  //       categories: partnerName,
-  //     },
-  //   },
-  // };
-
-  const chartOptions = {
+  const chartOptions = useChart({
     colors: chartColors,
     labels: partnerName,
     legend: { floating: true, horizontalAlign: 'center' },
@@ -258,7 +187,7 @@ export default function EmpManagmentSM() {
         },
       },
     },
-  };
+  });
 
   return (
     <>

@@ -112,10 +112,10 @@ export default function NavSection() {
         icon: icon('ic_resignedUser'),
       },
       {
-        title: 'Employee Managment',
+        title: 'Employee Mgmt.',
         // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
         path: ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : '/EmpManagmentTL',
-        icon: icon('ic_resignedUser'),
+        icon: icon('ic_emp_mgmt'),
       },
     ];
     if (ROLE && !dataTeamLead.find((role) => role.path === '/SwitchRole')) {
@@ -151,10 +151,10 @@ export default function NavSection() {
         icon: icon('ic_resignedUser'),
       },
       {
-        title: 'Employee Managment',
+        title: 'Employee Mgmt.',
         // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
         path: ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : '/EmpManagmentSM',
-        icon: icon('ic_resignedUser'),
+        icon: icon('ic_emp_mgmt'),
       },
     ];
     if (ROLE && !dataSeniorManager.find((role) => role.path === '/SwitchRole')) {

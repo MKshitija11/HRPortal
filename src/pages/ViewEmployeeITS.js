@@ -71,7 +71,7 @@ export default function ViewEmployee() {
     lob: '',
     skillSet: '',
     tlList: [],
-    designation: '',
+    // designation: '',
   });
 
   const [userProfile, setUserProfile] = useState();
@@ -558,9 +558,9 @@ export default function ViewEmployee() {
     if (document.employeeForm.skillSet.value === '') {
       return failFocus(document.employeeForm.skillSet);
     }
-    if (document.employeeForm.designation.value === '') {
-      return failFocus(document.employeeForm.designation);
-    }
+    // if (document.employeeForm.designation.value === '') {
+    //   return failFocus(document.employeeForm.designation);
+    // }
     return true;
   };
 
@@ -645,7 +645,7 @@ export default function ViewEmployee() {
           totalExperience: EMP_DETAILS.totalExperience,
           reportingItSpoc: EMP_DETAILS.reportingItSpoc,
           employeeFullName: EMP_DETAILS.employeeFullName,
-          designation: EMP_DETAILS.designation,
+          // designation: EMP_DETAILS.designation,
         };
         setPartnerName(EMP_DETAILS.partnerName);
         if (state.employeeStatus !== 'Pending For IT Spoc Review') {
@@ -654,7 +654,7 @@ export default function ViewEmployee() {
         setTimeout(() => {
           setIsLoading(false);
         }, 500);
-        console.log('from emp details', EMP_DETAILS.designation);
+        // console.log('from emp details', EMP_DETAILS.designation);
         const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
 
         const getTLBySMListReq = {
@@ -813,7 +813,7 @@ export default function ViewEmployee() {
     totalExperience: state.totalExperience || '',
     lob: state.lob || '',
     skillSet: state.skillSet || '',
-    designation: state.designation || '',
+    // designation: state.designation || '',
   };
 
   const validationSchema = Yup.object({
@@ -871,7 +871,7 @@ export default function ViewEmployee() {
     totalExperience: Yup.string().required('Total Experience required'),
     lob: Yup.string().required('Please Select'),
     skillSet: Yup.string().required('Skill set are required'),
-    designation: Yup.string().required('Please Select'),
+    // designation: Yup.string().required('Please Select'),
   });
 
   const handleOnBoardingTicket = () => {
@@ -1906,7 +1906,7 @@ export default function ViewEmployee() {
                           />
                         </Grid>
 
-                        <Grid item xs={12} sm={4}>
+                        {/* <Grid item xs={12} sm={4}>
                           <TextField
                             labelId="demo-select-small"
                             id="designation"
@@ -1930,7 +1930,7 @@ export default function ViewEmployee() {
                               </MenuItem>
                             ))}
                           </TextField>
-                        </Grid>
+                        </Grid> */}
                       </Grid>
                       <br />
 

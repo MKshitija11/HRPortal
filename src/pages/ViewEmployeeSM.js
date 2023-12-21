@@ -72,7 +72,7 @@ export default function ViewEmployee() {
     lob: '',
     skillSet: '',
     tlList: [],
-    designation: '',
+    // designation: '',
   });
   const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
@@ -653,9 +653,9 @@ export default function ViewEmployee() {
     if (document.employeeForm.skillSet.value === '') {
       return failFocus(document.employeeForm.skillSet);
     }
-    if (document.employeeForm.designation.value === '') {
-      return failFocus(document.employeeForm.designation);
-    }
+    // if (document.employeeForm.designation.value === '') {
+    //   return failFocus(document.employeeForm.designation);
+    // }
     return true;
   };
 
@@ -912,7 +912,7 @@ export default function ViewEmployee() {
     totalExperience: state.totalExperience || '',
     lob: state.lob || '',
     skillSet: state.skillSet || '',
-    designation: state.designation || '',
+    // designation: state.designation || '',
   };
   console.log('INITIAL VALUES', initialValues.joiningDate);
 
@@ -972,7 +972,7 @@ export default function ViewEmployee() {
       .required('Monthly Billing rate is required'),
     lob: Yup.string().required('Please Select'),
     skillSet: Yup.string().required('Skill set are required'),
-    designation: Yup.string().required('Please Select'),
+    // designation: Yup.string().required('Please Select'),
   });
 
   return (
@@ -1758,7 +1758,7 @@ export default function ViewEmployee() {
                           />
                         </Grid>
 
-                        <Grid item xs={12} sm={4}>
+                        {/* <Grid item xs={12} sm={4}>
                           <TextField
                             labelId="demo-select-small"
                             id="designation"
@@ -1786,7 +1786,7 @@ export default function ViewEmployee() {
                               </MenuItem>
                             ))}
                           </TextField>
-                        </Grid>
+                        </Grid> */}
                       </Grid>
                       <br />
 

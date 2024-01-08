@@ -73,6 +73,7 @@ export default function ViewEmployee() {
     skillSet: '',
     tlList: [],
     // designation: '',
+    webUserId: ''
   });
   const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
@@ -742,7 +743,8 @@ export default function ViewEmployee() {
     console.log('JSON:employeeFormData::', employeeFormData);
     if (validForm()) {
       setIsLoading(true);
-      // console.log('JSON:employeeFormData update employee::', employeeFormData);
+      console.log('JSON:employeeFormData::', employeeFormData);
+      console.log('JSON:employeeFormData update employee::', employeeFormData);
       Configuration.updateEmployeeData(employeeFormData)
         .then((employeeFormRes) => {
           if (employeeFormRes) {
@@ -848,6 +850,7 @@ export default function ViewEmployee() {
         dateOfBirth: EMP_DETAILS.dateOfBirth,
         reportingItSpoc: EMP_DETAILS.reportingItSpoc,
         employeeFullName: EMP_DETAILS.employeeFullName,
+        webUserId: EMP_DETAILS.webUserId,
       };
       console.log('JOINING DATE', typeof state.joiningDate);
       setPartnerName(EMP_DETAILS.partnerName);
@@ -913,6 +916,7 @@ export default function ViewEmployee() {
     lob: state.lob || '',
     skillSet: state.skillSet || '',
     // designation: state.designation || '',
+    webUserId: state.webUserId || ''
   };
   console.log('INITIAL VALUES', initialValues.joiningDate);
 
@@ -1463,6 +1467,33 @@ export default function ViewEmployee() {
                             // inputProps={{
                             //   readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
                             //   style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                            // }}
+                          />
+                        </Grid>
+
+                        <Grid item xs={4}>
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            variant="outlined"
+                            // required
+                            fullWidth
+                            name="webUserId"
+                            label="User Web Id (For TimeSheet Data)"
+                            placeholder="abc@its.bajajallianz.com"
+                            id="webUserId"
+                            autoComplete="off"
+                            type="email"
+                            value={values.webUserId}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            onBlur={handleBlur}
+                            // error={touched.officialEmail ? errors.officialEmail : ''}
+                            // helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
+                            // inputProps={{
+                            //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                            //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                             // }}
                           />
                         </Grid>

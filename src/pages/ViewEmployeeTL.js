@@ -68,6 +68,7 @@ export default function ViewEmployee() {
     skillSet: '',
     lob: '',
     tlList: [],
+    webUserId: ''
   });
 
   const [userProfile, setUserProfile] = useState();
@@ -543,6 +544,7 @@ export default function ViewEmployee() {
     if (document.employeeForm.personalEmail.value === '') {
       return failFocus(document.employeeForm.personalEmail);
     }
+
     // if (document.employeeForm.officialEmail.value === '') {
     //   return failFocus(document.employeeForm.officialEmail);
     // }
@@ -813,6 +815,7 @@ export default function ViewEmployee() {
         gender: EMP_DETAILS.gender,
         dateOfBirth: EMP_DETAILS.dateOfBirth,
         employeeFullName: EMP_DETAILS.employeeFullName,
+        webUserId: EMP_DETAILS.webUserId,
       };
       setPartnerName(EMP_DETAILS.partnerName);
 
@@ -875,6 +878,7 @@ export default function ViewEmployee() {
     totalExperience: state.totalExperience || '',
     skillSet: state.skillSet || '',
     lob: state.lob || '',
+    webUserId: state.webUserId || ''
   };
 
   console.log('state joining date', initialValues.joiningDate);
@@ -1425,6 +1429,34 @@ export default function ViewEmployee() {
                             // }}
                           />
                         </Grid>
+
+                        <Grid item xs={4}>
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            variant="outlined"
+                            // required
+                            fullWidth
+                            name="webUserId"
+                            label="User Web Id (For TimeSheet Data)"
+                            placeholder="abc@its.bajajallianz.com"
+                            id="webUserId"
+                            autoComplete="off"
+                            type="email"
+                            value={values.webUserId}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            onBlur={handleBlur}
+                            // error={touched.officialEmail ? errors.officialEmail : ''}
+                            // helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
+                            // inputProps={{
+                            //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                            //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                            // }}
+                          />
+                        </Grid>
+
 
                         <Grid item xs={12} sm={4}>
                           <input type="hidden" value={state.id} id="id" name="id" />

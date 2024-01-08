@@ -65,6 +65,7 @@ export default function ViewEmployee({ props }) {
     maximusOpus: '',
     functionDesc: '',
     departmentDesc: '',
+    webUserId: '',
   });
   const [openModal, setOpenModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -551,6 +552,7 @@ export default function ViewEmployee({ props }) {
           lwd: EMP_DETAILS.lwd,
           resignationDate: EMP_DETAILS.resignationDate,
           employeeFullName: EMP_DETAILS.employeeFullName,
+          webUserId: EMP_DETAILS.webUserId,
         };
         setTimeout(() => {
           setIsLoading(false);
@@ -623,6 +625,7 @@ export default function ViewEmployee({ props }) {
     employeeStatus: state.employeeStatus || '',
     lwd: state.lwd || '',
     resignationDate: state.resignationDate || '',
+    webUserId: state.webUserId || ''
   };
   console.log('API INITIAL VALUEs', initialValues.reportingTeamLead);
 
@@ -1276,6 +1279,33 @@ export default function ViewEmployee({ props }) {
                                     : 'black',
                               },
                             }}
+                          />
+                        </Grid>
+
+                        <Grid item xs={4}>
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            variant="outlined"
+                            // required
+                            fullWidth
+                            name="webUserId"
+                            label="User Web Id (For TimeSheet Data)"
+                            placeholder="abc@its.bajajallianz.com"
+                            id="webUserId"
+                            autoComplete="off"
+                            type="email"
+                            value={values.webUserId}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            onBlur={handleBlur}
+                            // error={touched.officialEmail ? errors.officialEmail : ''}
+                            // helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
+                            // inputProps={{
+                            //   readOnly: state.employeeStatus === 'Pending For TL Review' ? true : null,
+                            //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
+                            // }}
                           />
                         </Grid>
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Card, Stack, CardHeader } from '@mui/material';
 import ReactApexChart from 'react-apexcharts';
+import { useNavigate } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Configuration from '../utils/Configuration';
 import { fNumber } from '../utils/formatNumber';
@@ -28,6 +29,7 @@ const StyledChartWrapper = styled('div')(({ theme }) => ({
 
 export default function EmpManagmentTL() {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [partnerCount, setPartnerCount] = useState();
   const [partnerName, setPartnerName] = useState();
   const [sortedArray, setSortedArray] = useState([]);
@@ -66,9 +68,12 @@ export default function EmpManagmentTL() {
               setIsLoading(true);
             }, 500);
 
-            console.log("active emp list", empListTLRes.data.filter((emp) => emp.employeeStatus === 'Active'));
+            console.log(
+              'active emp list',
+              empListTLRes.data.filter((emp) => emp.employeeStatus === 'Active')
+            );
             const arr = empListTLRes.data.filter((emp) => emp.employeeStatus === 'Active');
-            
+
             const dataArr = function findOcc(arr, key) {
               const arr2 = [];
               arr.forEach((x) => {
@@ -110,6 +115,18 @@ export default function EmpManagmentTL() {
     }
   }, []);
 
+  const handleClickedData = (OBstatus, chartName, chartData) => {
+    console.log('OBSTATUS>>>>> 1', OBstatus);
+    console.log('OBSTATUS>>>>> 2', chartName);
+    console.log('OBSTATUS>>>>> 3', chartData);
+
+    navigate('/EmployeesTL', {
+      state: {
+        filterByPartnerName: chartData
+      } 
+    })
+  }
+
   console.log('ARRAY partnerName...>>', partnerName);
   console.log('ARRAY partnerCount...>>', partnerCount);
 
@@ -133,12 +150,10 @@ export default function EmpManagmentTL() {
         title: {
           formatter: (seriesName) => `${seriesName}`,
         },
-        // return config.series[opts.seriesIndex]
       },
     },
     plotOptions: {
       pie: {
-        // horizontal: true,
         donut: {
           labels: {
             show: true,
@@ -174,6 +189,15 @@ export default function EmpManagmentTL() {
           speed: 350,
         },
       },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          handleClickedData (
+            config.w.config.series[config.seriesIndex].name,
+            partnerName,
+            partnerName[config.dataPointIndex]
+          )
+        }
+      }
     },
     yaxis: {
       min: -30,
@@ -219,16 +243,7 @@ export default function EmpManagmentTL() {
                     </Typography>
                   </Stack>
                 ) : (
-                  // <ReactApexChart
-                  //   options={chartOptions.options}
-                  //   series={chartOptions.series}
-                  //   // series={series}
-                  //   type="bar"
-                  //   height={520}
-                  //   colors={colors}
-                  // />
                   <>
-                    {/* <Typography style={{fontSize: 22}}>Employee List</Typography> */}
                     <ReactApexChart
                       sx={{
                         border: '1px solid lightgrey',
@@ -236,7 +251,6 @@ export default function EmpManagmentTL() {
                         alignItems: 'center',
                         justifyContent: 'center',
                         top: 20,
-                        // horizontalAlign: true,
                       }}
                       type="donut"
                       height={300}

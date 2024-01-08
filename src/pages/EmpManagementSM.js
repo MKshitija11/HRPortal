@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Typography, Card, Stack } from '@mui/material';
 import ReactApexChart from 'react-apexcharts';
 import { styled, useTheme } from '@mui/material/styles';
+import {useNavigate} from 'react-router-dom';
 import Configuration from '../utils/Configuration';
 import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
@@ -32,6 +33,7 @@ const StyledChartWrapper = styled('div')(({ theme }) => ({
 
 export default function EmpManagmentSM() {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [partnerCount, setPartnerCount] = useState();
   const [partnerName, setPartnerName] = useState();
@@ -120,10 +122,17 @@ export default function EmpManagmentSM() {
     }
   }, []);
 
-  // const chartOptions = {
-  //   series: [
-  //     {
-  //       name: 'count',
+  const handleClickedData = (OBstatus, chartName, chartData) => {
+    console.log('OBSTATUS>>>>> 1', OBstatus);
+    console.log('OBSTATUS>>>>> 2', chartName);
+    console.log('OBSTATUS>>>>> 3', chartData);
+
+    navigate('/EmployeesSM', {
+      state: {
+        filterByPartnerName: chartData
+      } 
+    })
+  }
 
   const chartOptions = useChart({
     colors: chartColors,
@@ -186,6 +195,15 @@ export default function EmpManagmentSM() {
           speed: 350,
         },
       },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          handleClickedData (
+            config.w.config.series[config.seriesIndex].name,
+            partnerName,
+            partnerName[config.dataPointIndex]
+          )
+        }
+      }
     },
   });
 

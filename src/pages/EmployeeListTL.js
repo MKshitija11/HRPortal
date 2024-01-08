@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
@@ -71,6 +71,7 @@ function applySortFilter(array, comparator, query) {
 
 export default function EmployeeListTL() {
   const navigate = useNavigate();
+  const location = useLocation()
 
   const [page, setPage] = useState(0);
 
@@ -92,6 +93,8 @@ export default function EmployeeListTL() {
   const [emptyRows, setEmptyRows] = useState();
   const [activeEmployees, setActiveEmployees] = useState([]);
   // const [isNotFound, setIsNotFound] = useState(false);
+
+  console.log("LOCATION", location);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -121,9 +124,21 @@ export default function EmployeeListTL() {
             // const isNotFound = !filteredUsers.length && !!filterName;
             setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListTLRes.data.length) : 0);
             const filteredUsers = applySortFilter(empListTLRes.data, getComparator(order, orderBy), filterName);
-            setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            // setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
             // setIsNotFound(filteredUsers.length && !!filterName);
 
+   
+            if (location.state?.filterByPartnerName) {
+              setActiveEmployees(
+                filteredUsers.filter(
+                  (employees) =>
+                    employees.partnerName === location.state.filterByPartnerName &&
+                    employees.employeeStatus === 'Active'
+                )
+              );
+            } else {
+              setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            }
             setTimeout(() => {
               setIsLoading(false);
             }, 500);

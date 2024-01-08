@@ -116,21 +116,6 @@ export default function EmployeeListHR() {
             setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
             const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
 
-            // setIsNotFound(!filteredUsers.length && !!filterName);
-            // const pendingAndActiveEmployees = empListItSpocRes.data.filter(
-            //   (employees) => employees.partnerName === 'Clover Infotech'
-            // );
-
-            // if (!location.state?.filterByPartner) {
-            //   setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-            // } else {
-            //   setActiveEmployees(
-            //     filteredUsers.filter(
-            //       (employees) =>
-            //         employees.partnerName === location.state.partnerNameChart && employees.employeeStatus === 'Active'
-            //     )
-            //   );
-            // }
             if (location.state?.filterByPartner) {
               setActiveEmployees(
                 filteredUsers.filter(

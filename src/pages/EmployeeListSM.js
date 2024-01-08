@@ -133,7 +133,18 @@ export default function EmployeeListSM() {
             // const isNotFound = !filteredUsers.length && !!filterName;
             setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListManagerRes.data.length) : 0);
             const filteredUsers = applySortFilter(empListManagerRes.data, getComparator(order, orderBy), filterName);
-            setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            // setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            if (location.state?.filterByPartnerName) {
+              setActiveEmployees(
+                filteredUsers.filter(
+                  (employees) =>
+                    employees.partnerName === location.state.filterByPartnerName &&
+                    employees.employeeStatus === 'Active'
+                )
+              );
+            } else {
+              setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+            }
 
             setTimeout(() => {
               setIsLoading(false);

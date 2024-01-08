@@ -1,0 +1,23 @@
+.post{
+  background-color: #eee;
+  margin: 2rem;
+  padding: 1rem;
+}
+.pagination{
+  margin: 1rem auto;
+  list-style: none;
+  display: flex;
+  justify-content: space-evenly;
+  width: 20%;
+}
+.pagination-active{
+  /* border: 1px solid red; */
+  /* border-radius: 20%; */
+  padding: 0 4px;
+  outline: none;
+  background-color: cornflowerblue;
+  font-weight: bold;
+}
+.previous-label {
+  font-size: 20;
+}

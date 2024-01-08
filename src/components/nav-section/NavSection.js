@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink as RouterLink, useLocation } from 'react-router-dom';
 // @mui
-import { Box, List, ListItemText } from '@mui/material';
+import { Box, List, ListItemText, Typography } from '@mui/material';
 //
 import { StyledNavItem, StyledNavItemIcon } from './styles';
 import SvgColor from '../svg-color';
@@ -62,6 +62,15 @@ export default function NavSection() {
       redirectUrl = '/EmployeesITS';
     }
 
+    const userLogin = [
+      {
+        title: 'Active',
+        path: `${redirectUrl}`,
+        icon: icon('ic_activeUser'),
+        employeeCount: '',
+      },
+    ]
+
     const dataUser = [
       {
         title: 'Active',
@@ -116,6 +125,11 @@ export default function NavSection() {
         // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
         path: ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : '/EmpManagmentTL',
         icon: icon('ic_emp_mgmt'),
+      },
+      {
+        title: 'TimeSheet',
+        path: '/TimeSheet',
+        icon: icon('ic_timesheet'),
       },
     ];
     if (ROLE && !dataTeamLead.find((role) => role.path === '/SwitchRole')) {
@@ -208,8 +222,12 @@ export default function NavSection() {
       setMenuList(dataTeamLead);
     } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
       setMenuList(dataSeniorManager);
-    } else {
-      setMenuList(dataUser);
+    } 
+    else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
+      setMenuList(dataUser)
+    }
+    else {
+      setMenuList(userLogin);
     }
   }, [location, ROLE]);
 
@@ -240,6 +258,7 @@ export default function NavSection() {
         ))}
       </List>
     </Box>
+  
   );
 }
 

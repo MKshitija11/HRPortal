@@ -2,8 +2,11 @@ import axios from 'axios';
 
 export default {
   // BASE_URL: "http://10.39.48.255:8888/HrsmApplication/",   // DEVELOPMENT
-  BASE_URL: 'https://api.bagicuat.bajajallianz.com/BagicHRSM/', // UAT
-  // BASE_URL: 'https://webapi.bajajallianz.com/BagicHRSM/', // PROD
+  // BASE_URL: 'https://api.bagicuat.bajajallianz.com/BagicHRSM/', // UAT
+  BASE_URL: 'https://webapi.bajajallianz.com/BagicHRSM/', // PROD
+  // BASE_URL: 'http://10.39.48.255:8888/BagicHRSM/',
+  TIMESHEET_URL: 'https://webservicesdev.bajajallianz.com/BagicWapPrime/pdfApi/userConfigure',
+  // TIMESHEET_URL: 'http://10.39.48.141:8085/BagicWapPrime/pdfApi/userConfigure',
 
   login(loginReq) {
     console.log('function->', 'login');
@@ -150,15 +153,15 @@ export default {
     return axios.post(`${this.BASE_URL}getDashBoardForSM`, RequestSeniorManager);
   },
 
-//   return axios.get(`${this.BASE_URL}getAllAssets`,
-//   {
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Auth': `Bearer ${token}`,
-//     },
-//     data,
-//   }
-// );
+  //   return axios.get(`${this.BASE_URL}getAllAssets`,
+  //   {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Auth': `Bearer ${token}`,
+  //     },
+  //     data,
+  //   }
+  // );
 
   getDashBoardForPartner() {
     console.log('function->', 'getDashBoardForPartner');
@@ -166,8 +169,38 @@ export default {
     // const data = {};
     return axios.get(`${this.BASE_URL}getDashBoardForPartner`, {
       headers: {
-        'x-api-key' : 'dMl4O7HULk2Nr0aW7Pu8g1jJSHIlUlat9BQZBeZq'
-      }
+        'x-api-key': 'dMl4O7HULk2Nr0aW7Pu8g1jJSHIlUlat9BQZBeZq',
+      },
     });
   },
+  generateOnBoardingTicket() {
+    return axios.get(`http://sapphireuat.bajajallianz.com/SapphireIMS/api/ticket/create`, {
+      headers: {
+        key: '036d2095-6803-485a-933e-5a0b256d50ee',
+        token: '73738cb1-42a4-491b-9445-b46112799310',
+      },
+    });
+  },
+
+  partnerLogin(loginReq) {
+    console.log('function->', 'login');
+    console.log('url->', `${this.BASE_URL}login`);
+    console.log('request->', loginReq);
+
+    return axios.post(`${this.BASE_URL}partnerLogin`, loginReq);
+  },
+
+  signUp(signUpReq) {
+    console.log('function->', 'signup');
+    console.log('url -> ', `${this.BASE_URL}signUp`);
+    console.log('request', signUpReq);
+    return axios.post(`${this.BASE_URL}signUp`, signUpReq);
+  },
+
+  getTimeSheetDetails(atsReq) {
+    console.log('function->', 'getTimeSheetDetails');
+    console.log('url -> ', `${this.TIMESHEET_URL}`);
+    console.log('request', atsReq);
+    return axios.post(`${this.TIMESHEET_URL}`, atsReq);
+  }
 };

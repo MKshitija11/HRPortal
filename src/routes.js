@@ -37,6 +37,8 @@ import TimeSheet from './pages/Timesheet';
 // import EmpManagmentTL from './pages/EmpManagmentTLjs';
 import EmpManagmentTL from './pages/EmpManagmentTL'
 import EmpManagmentSM from './pages/EmpManagementSM';
+import UserLoginPage from './pages/UserLoginPage';
+import EmployeeTimesheetDetails from './pages/EmployeeTimesheetDetails';
 
 // ----------------------------------------------------------------------
 
@@ -47,6 +49,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/Login" />, index: true },
+        {element: <Navigate to="/UserLoginPage" />, index: true},
         { path: 'Dashboard', element: <DashboardAppPage /> },
         { path: 'Reports', element: <Reports /> },
         { path: 'EmployeesBP', element: <EmployeeListBP /> },
@@ -74,6 +77,8 @@ export default function Router() {
         { path: 'TimeSheet', element: <TimeSheet /> },
         { path: 'EmpManagmentTL', element: <EmpManagmentTL /> },
         { path: 'EmpManagmentSM', element: <EmpManagmentSM /> },
+        {path: 'UserLoginPage', element: <UserLoginPage />},
+        {path: 'EmployeeTimesheetDetails', element: <EmployeeTimesheetDetails />}
 
       ],
     },
@@ -151,6 +156,10 @@ export default function Router() {
       element: <LoginPage />,
     },
     {
+      path: 'UserLoginPage',
+      element: <UserLoginPage />,
+    },
+    {
       path: 'SwitchRole',
       element: <SwitchRole />,
     },
@@ -166,6 +175,8 @@ export default function Router() {
       path: 'EmpManagmentSM',
       element: <EmpManagmentSM />,
     },
+    {path: 'UserLoginPage', element: <UserLoginPage />},
+    {path: 'EmployeeTimesheetDetails', element: <EmployeeTimesheetDetails />},
     // for simple layout element , there is no path specified bt has index attribute That specifies this route as the default route for the parent route, which is /.
     {
       element: <SimpleLayout />,

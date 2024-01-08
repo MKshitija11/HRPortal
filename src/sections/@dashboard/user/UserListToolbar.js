@@ -68,7 +68,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
         />
       )}
 
-      <Typography variant="h4">Employees ({employeeList.length})</Typography>
+      <Typography variant="h4" sx={{color:'#0072BC'}}>Employees ({employeeList.length})</Typography>
       {/* {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>

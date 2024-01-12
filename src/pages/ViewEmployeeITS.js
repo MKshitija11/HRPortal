@@ -71,6 +71,8 @@ export default function ViewEmployee() {
     lob: '',
     skillSet: '',
     tlList: [],
+    reportingItSpoc: '',
+    projectType: '',
     // designation: '',
   });
 
@@ -645,6 +647,8 @@ export default function ViewEmployee() {
           totalExperience: EMP_DETAILS.totalExperience,
           reportingItSpoc: EMP_DETAILS.reportingItSpoc,
           employeeFullName: EMP_DETAILS.employeeFullName,
+          reportingAvpVpSvp: EMP_DETAILS.reportingAvpVpSvp,
+          projectType: EMP_DETAILS.projectType,
           // designation: EMP_DETAILS.designation,
         };
         setPartnerName(EMP_DETAILS.partnerName);
@@ -1733,12 +1737,30 @@ export default function ViewEmployee() {
                             <input type="hidden" id="itSpocFlag" name="itSpocFlag" value="Approved" />
                           )}
                           <FormControl fullWidth>
-                            <input
-                              type="hidden"
-                              id="reportingItSpoc"
-                              name="reportingItSpoc"
-                              value="pooja.rebba@bajajallianz.co.in"
-                            />
+                          <input
+                            type="hidden"
+                            id="reportingItSpoc"
+                            name="reportingItSpoc"
+                            value={state.reportingItSpoc}
+                          />
+                          <input
+                            type="hidden"
+                            id="reportingAvpVpSvp"
+                            name="reportingAvpVpSvp"
+                            value={state.reportingAvpVpSvp}
+                          />
+                           <input
+                            type="hidden"
+                            id="projectType"
+                            name="projectType"
+                            value={state.projectType}
+                          />
+                           <input
+                            type="hidden"
+                            id="invoiceType"
+                            name="invoiceType"
+                            value={state.invoiceType}
+                          />
                             <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
                             {/* <input type="hidden" id="employeeStatus" name="employeeStatus" /> */}
 

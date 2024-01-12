@@ -66,6 +66,10 @@ export default function ViewEmployee({ props }) {
     functionDesc: '',
     departmentDesc: '',
     webUserId: '',
+    reportingItSpoc: '',
+    reportingAvpVpSvp: '',
+    projectType: '',
+    invoiceType: '',
   });
   const [openModal, setOpenModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
@@ -464,7 +468,7 @@ export default function ViewEmployee({ props }) {
       }
       employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
       console.log('employeeFormData::', employeeFormData);
-      console.log('JSON:employeeFormData ::', JSON.stringify(employeeFormData));
+      console.log('JSON:employeeFormData from update ::', JSON.stringify(employeeFormData));
 
       console.log('Data', employeeFormData);
       setIsLoading(true);
@@ -517,7 +521,7 @@ export default function ViewEmployee({ props }) {
         console.log('employeeFormRes::', viewEmployeeRes.data);
         const EMP_DETAILS_STR = JSON.stringify(viewEmployeeRes.data);
         const EMP_DETAILS = JSON.parse(EMP_DETAILS_STR);
-
+        console.log('EMP_DETAILS.....', EMP_DETAILS);
         setEmpData(EMP_DETAILS);
         const tempData = {
           ...state,
@@ -527,10 +531,8 @@ export default function ViewEmployee({ props }) {
           employeeStatus: EMP_DETAILS.employeeStatus,
           supportDevelopment: EMP_DETAILS.supportDevelopment,
           evaluationPeriod: EMP_DETAILS.evaluationPeriod,
-          projectType: EMP_DETAILS.projectType,
           maximusOpus: EMP_DETAILS.maximusOpus,
           billingSlab: EMP_DETAILS.billingSlab,
-          invoiceType: EMP_DETAILS.invoiceType,
           reportingTeamLead: EMP_DETAILS.reportingTeamLead,
           reportingManager: EMP_DETAILS.reportingManager,
           functionDesc: EMP_DETAILS.functionDesc,
@@ -553,6 +555,10 @@ export default function ViewEmployee({ props }) {
           resignationDate: EMP_DETAILS.resignationDate,
           employeeFullName: EMP_DETAILS.employeeFullName,
           webUserId: EMP_DETAILS.webUserId,
+          reportingItSpoc: EMP_DETAILS.reportingItSpoc,
+          reportingAvpVpSvp: EMP_DETAILS.reportingAvpVpSvp,
+          projectType: EMP_DETAILS.projectType,
+          invoiceType: EMP_DETAILS.invoiceType,
         };
         setTimeout(() => {
           setIsLoading(false);
@@ -595,8 +601,9 @@ export default function ViewEmployee({ props }) {
         setIsLoading(false);
         alert('Something went wrong');
       });
-  }, []);
-
+    }, []);
+    
+    console.log("TEMP DATA", state);
   const initialValues = {
     employeeFirstName: state.employeeFirstName || '',
     employeeLastName: state.employeeLastName || '',
@@ -608,7 +615,7 @@ export default function ViewEmployee({ props }) {
     employeeId: state.employeeId || '',
     // joiningDate: state.joiningDate || '',
     // joiningDate: (state.joiningDate === null ? state.joiningDate : state.joiningDate.toString().split('T')[0]) || '',
-    joiningDate: state.joiningDate ?  state.joiningDate.toString().split('T')[0] : '',
+    joiningDate: state.joiningDate ? state.joiningDate.toString().split('T')[0] : '',
     newReplacement: state.newReplacement || '',
     replacementEcode: state.replacementEcode || '',
     supportDevelopment: state.supportDevelopment || '',
@@ -625,7 +632,11 @@ export default function ViewEmployee({ props }) {
     employeeStatus: state.employeeStatus || '',
     lwd: state.lwd || '',
     resignationDate: state.resignationDate || '',
-    webUserId: state.webUserId || ''
+    webUserId: state.webUserId || '',
+    reportingAvpVpSvp: state.reportingAvpVpSvp || '',
+    reportingItSpoc: state.reportingItSpoc || '',
+    projectType: state.projectType || '',
+    invoiceType: state.invoiceType || ''
   };
   console.log('API INITIAL VALUEs', initialValues.reportingTeamLead);
 
@@ -1490,9 +1501,31 @@ export default function ViewEmployee({ props }) {
                         </Grid>
 
                         <Grid item xs={12} sm={4}>
-                          <input type="hidden" id="reportingItSpoc" name="reportingItSpoc" value="" />
                           <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
-
+                          <input
+                            type="hidden"
+                            id="reportingItSpoc"
+                            name="reportingItSpoc"
+                            value={state.reportingItSpoc}
+                          />
+                          <input
+                            type="hidden"
+                            id="reportingAvpVpSvp"
+                            name="reportingAvpVpSvp"
+                            value={state.reportingAvpVpSvp}
+                          />
+                           <input
+                            type="hidden"
+                            id="projectType"
+                            name="projectType"
+                            value={state.projectType}
+                          />
+                           <input
+                            type="hidden"
+                            id="invoiceType"
+                            name="invoiceType"
+                            value={state.invoiceType}
+                          />
                           <input type="hidden" id="maximusOpus" name="maximusOpus" value="NA" />
                           <input type="hidden" id="functionDesc" name="functionDesc" value="NA" />
                           <input type="hidden" id="departmentDesc" name="departmentDesc" value="NA" />

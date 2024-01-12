@@ -68,7 +68,9 @@ export default function ViewEmployee() {
     skillSet: '',
     lob: '',
     tlList: [],
-    webUserId: ''
+    webUserId: '',
+    reportingItSpoc: '',
+    projectType: '',
   });
 
   const [userProfile, setUserProfile] = useState();
@@ -816,6 +818,9 @@ export default function ViewEmployee() {
         dateOfBirth: EMP_DETAILS.dateOfBirth,
         employeeFullName: EMP_DETAILS.employeeFullName,
         webUserId: EMP_DETAILS.webUserId,
+        reportingItSpoc: EMP_DETAILS.reportingItSpoc,
+        reportingAvpVpSvp: EMP_DETAILS.reportingAvpVpSvp,
+        projectType: EMP_DETAILS.projectType,
       };
       setPartnerName(EMP_DETAILS.partnerName);
 
@@ -878,7 +883,10 @@ export default function ViewEmployee() {
     totalExperience: state.totalExperience || '',
     skillSet: state.skillSet || '',
     lob: state.lob || '',
-    webUserId: state.webUserId || ''
+    webUserId: state.webUserId || '',
+    reportingAvpVpSvp: state.reportingAvpVpSvp || '',
+    reportingItSpoc: state.reportingItSpoc || '',
+    projectType: state.projectType || '',
   };
 
   console.log('state joining date', initialValues.joiningDate);
@@ -1438,12 +1446,12 @@ export default function ViewEmployee() {
                             fullWidth
                             name="webUserId"
                             // label="User Web Id (For TimeSheet Data)"
-                          label={
-                            <span>
-                              <span>User Web Id</span>
-                              <span style={{color: '#F28C28'}}> (For TimeSheet data)</span>
-                            </span>
-                          }
+                            label={
+                              <span>
+                                <span>User Web Id</span>
+                                <span style={{ color: '#F28C28' }}> (For TimeSheet data)</span>
+                              </span>
+                            }
                             placeholder="abc@its.bajajallianz.com"
                             id="webUserId"
                             autoComplete="off"
@@ -1454,7 +1462,7 @@ export default function ViewEmployee() {
                               handleChangeEvent(evt);
                             }}
                             // sx={{  color: 'red'}}
-                          
+
                             onBlur={handleBlur}
                             // error={touched.officialEmail ? errors.officialEmail : ''}
                             // helperText={touched.officialEmail ? formik.errors.officialEmail : ''}
@@ -1464,7 +1472,6 @@ export default function ViewEmployee() {
                             // }}
                           />
                         </Grid>
-
 
                         <Grid item xs={12} sm={4}>
                           <input type="hidden" value={state.id} id="id" name="id" />
@@ -1614,12 +1621,21 @@ export default function ViewEmployee() {
                           ) : (
                             <input type="hidden" id="tlApprovalFlag" name="tlApprovalFlag" value="Approved" />
                           )}
+
                           <input
                             type="hidden"
                             id="reportingItSpoc"
                             name="reportingItSpoc"
-                            value="pooja.rebba@bajajallianz.co.in"
+                            value={state.reportingItSpoc}
                           />
+                          <input
+                            type="hidden"
+                            id="reportingAvpVpSvp"
+                            name="reportingAvpVpSvp"
+                            value={state.reportingAvpVpSvp}
+                          />
+                          <input type="hidden" id="projectType" name="projectType" value={state.projectType} />
+                          <input type="hidden" id="invoiceType" name="invoiceType" value={state.invoiceType} />
                           <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
 
                           {/* <input type="hidden" id="employeeStatus" name="employeeStatus" /> */}
@@ -2140,7 +2156,7 @@ export default function ViewEmployee() {
           )}
           {showAlertMessage ? (
             <Stack mt={2}>
-              <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center'}}>
+              <Typography style={{ color: 'red', fontSize: 13, textAlign: 'center' }}>
                 Note: Please provide values for mandatory fields
               </Typography>
             </Stack>

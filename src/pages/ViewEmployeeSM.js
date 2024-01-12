@@ -73,7 +73,8 @@ export default function ViewEmployee() {
     skillSet: '',
     tlList: [],
     // designation: '',
-    webUserId: ''
+    webUserId: '',
+    projectType: '',
   });
   const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
@@ -851,6 +852,8 @@ export default function ViewEmployee() {
         reportingItSpoc: EMP_DETAILS.reportingItSpoc,
         employeeFullName: EMP_DETAILS.employeeFullName,
         webUserId: EMP_DETAILS.webUserId,
+        reportingAvpVpSvp: EMP_DETAILS.reportingAvpVpSvp,
+        projectType: EMP_DETAILS.projectType,
       };
       console.log('JOINING DATE', typeof state.joiningDate);
       setPartnerName(EMP_DETAILS.partnerName);
@@ -916,7 +919,7 @@ export default function ViewEmployee() {
     lob: state.lob || '',
     skillSet: state.skillSet || '',
     // designation: state.designation || '',
-    webUserId: state.webUserId || ''
+    webUserId: state.webUserId || '',
   };
   console.log('INITIAL VALUES', initialValues.joiningDate);
 
@@ -1650,8 +1653,16 @@ export default function ViewEmployee() {
                               type="hidden"
                               id="reportingItSpoc"
                               name="reportingItSpoc"
-                              value="pooja.rebba@bajajallianz.co.in"
+                              value={state.reportingItSpoc}
                             />
+                            <input
+                              type="hidden"
+                              id="reportingAvpVpSvp"
+                              name="reportingAvpVpSvp"
+                              value={state.reportingAvpVpSvp}
+                            />
+                            <input type="hidden" id="projectType" name="projectType" value={state.projectType} />
+                            <input type="hidden" id="invoiceType" name="invoiceType" value={state.invoiceType} />
                             <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
 
                             {/* <input type="hidden" id="employeeStatus" name="employeeStatus" /> */}

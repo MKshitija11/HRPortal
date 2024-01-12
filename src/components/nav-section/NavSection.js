@@ -15,7 +15,7 @@ export default function NavSection() {
   const [menuList = [], setMenuList] = useState();
   const [employeeList = [], setEmployeeList] = useState();
   const location = useLocation();
-  const [switchRole, setSwitchRole] = useState(false);
+
   const ROLE = sessionStorage.getItem('ROLE');
   // const ROLE = 'BAGIC_SM';
   const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -26,7 +26,7 @@ export default function NavSection() {
       // username: 'pooja.rebba@bajajallianz.co.in',
 
       // password: 'password',
-      username: USERDETAILS?.[0]?.spocUsername
+      username: USERDETAILS?.[0]?.spocUsername,
     };
 
     Configuration.login(loginRequest).then((LoginResponse) => {
@@ -55,11 +55,11 @@ export default function NavSection() {
     } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
       redirectUrl = '/EmployeesBP';
     } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') {
-      redirectUrl = '/EmployeesTL';
+      redirectUrl = '/EmpManagmentTL';
     } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
-      redirectUrl = '/EmployeesSM';
+      redirectUrl = '/EmpManagmentSM';
     } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS') {
-      redirectUrl = '/EmployeesITS';
+      redirectUrl = '/Dashboard';
     }
 
     const userLogin = [
@@ -69,7 +69,7 @@ export default function NavSection() {
         icon: icon('ic_activeUser'),
         employeeCount: '',
       },
-    ]
+    ];
 
     const dataUser = [
       {
@@ -102,6 +102,12 @@ export default function NavSection() {
 
     const dataTeamLead = [
       {
+        title: 'Dashboard',
+        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
+        path: ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : '/EmpManagmentTL',
+        icon: icon('ic_emp_mgmt'),
+      },
+      {
         title: 'Active',
         // path: '/EmployeesTL',
         // path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
@@ -117,20 +123,20 @@ export default function NavSection() {
       {
         title: 'Resigned',
         // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
-        path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : ROLE === 'BAGIC_SM' ? '/ResignedEmployeesListSM' : '/ResignedEmployeesListTL',
+        path:
+          ROLE === 'BAGIC_TL'
+            ? '/ResignedEmployeesListTL'
+            : ROLE === 'BAGIC_SM'
+            ? '/ResignedEmployeesListSM'
+            : '/ResignedEmployeesListTL',
         icon: icon('ic_resignedUser'),
       },
-      {
-        title: 'Employee Mgmt.',
-        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
-        path: ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : '/EmpManagmentTL',
-        icon: icon('ic_emp_mgmt'),
-      },
-      {
-        title: 'TimeSheet',
-        path: '/TimeSheet',
-        icon: icon('ic_timesheet'),
-      },
+
+      // {
+      //   title: 'TimeSheet',
+      //   path: '/TimeSheet',
+      //   icon: icon('ic_timesheet'),
+      // },
     ];
     if (ROLE && !dataTeamLead.find((role) => role.path === '/SwitchRole')) {
       dataTeamLead.push({
@@ -141,35 +147,41 @@ export default function NavSection() {
     }
     const dataSeniorManager = [
       {
+        title: 'Dashboard',
+        path: ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : '/EmpManagmentSM',
+        icon: icon('ic_emp_mgmt'),
+      },
+      {
         title: 'Active',
-        // path: '/EmployeesSM',
-        // path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
-        // path: ROLE === 'BAGIC_SM' ? '/EmployeesSM' : '/EmployeesTL',
+
         path: ROLE === 'BAGIC_SM' ? '/EmployeesSM' : ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
         icon: icon('ic_activeUser'),
       },
       {
         title: 'Pending',
-        // path: ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : '/EmployeesListSM',
-        // path: ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : '/EmployeesListTL',
+
         path: ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : '/EmployeesListSM',
-        // path: `/EmployeesListSM`,
         icon: icon('ic_pending'),
       },
       {
         title: 'Resigned',
-        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
-        // path: ROLE === 'BAGIC_SM' ? '/ResignedEmployeesListSM' : '/ResignedEmployeesListTL',
-        path: ROLE === 'BAGIC_SM' ? '/ResignedEmployeesListSM' : ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
+
+        path:
+          ROLE === 'BAGIC_SM'
+            ? '/ResignedEmployeesListSM'
+            : ROLE === 'BAGIC_TL'
+            ? '/ResignedEmployeesListTL'
+            : '/ResignedEmployeesListSM',
         // path: `/ResignedEmployeesListSM`,
         icon: icon('ic_resignedUser'),
       },
-      {
-        title: 'Employee Mgmt.',
-        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
-        path: ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : '/EmpManagmentSM',
-        icon: icon('ic_emp_mgmt'),
-      },
+
+      // {
+      //   title: 'TimeSheet',
+      //   path: '/TimeSheet',
+
+      //   icon: icon('ic_timesheet'),
+      // },
     ];
     if (ROLE && !dataSeniorManager.find((role) => role.path === '/SwitchRole')) {
       dataSeniorManager.push({
@@ -194,7 +206,7 @@ export default function NavSection() {
       },
       {
         title: 'Active',
-        path: `${redirectUrl}`,
+        path: '/EmployeesITS',
         icon: icon('ic_activeUser'),
       },
       {
@@ -222,11 +234,9 @@ export default function NavSection() {
       setMenuList(dataTeamLead);
     } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
       setMenuList(dataSeniorManager);
-    } 
-    else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
-      setMenuList(dataUser)
-    }
-    else {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
+      setMenuList(dataUser);
+    } else {
       setMenuList(userLogin);
     }
   }, [location, ROLE]);
@@ -258,7 +268,6 @@ export default function NavSection() {
         ))}
       </List>
     </Box>
-  
   );
 }
 

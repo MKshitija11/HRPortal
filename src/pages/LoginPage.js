@@ -1,14 +1,18 @@
 import { Helmet } from 'react-helmet-async';
+import React, { useState, useEffect } from 'react';
+import * as Msal from 'msal';
+import { useMsal } from '@azure/msal-react';
+
+import { useLocation, useNavigate } from 'react-router-dom';
+
 // @mui
 import { styled } from '@mui/material/styles';
 import { Container, Typography, Box, Grid } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
-// components
-import Logo from '../components/logo';
-// import Iconify from '../components/iconify';
-// sections
+
 import { LoginForm } from '../sections/auth/login';
+import UserLoginPage from './UserLoginPage';
 
 // ----------------------------------------------------------------------
 
@@ -47,8 +51,27 @@ import { LoginForm } from '../sections/auth/login';
 
 // ----------------------------------------------------------------------
 
+const msalConfig = {
+  auth: {
+    clientId: 'd6398271-9fe8-4c3b-b928-1fb7dcb413bf',
+    authority: 'https://login.microsoftonline.com/46e36785-1a8f-46f4-9641-40872ab8ee0f/',
+
+    // production redirect uri
+    redirectUri: 'https://ithrportal.bajajallianz.com',
+
+    // local redirect uri
+    // redirectUri: 'http://localhost:3000/',
+  },
+};
+const msalInstance = new Msal.UserAgentApplication(msalConfig);
+
 export default function LoginPage() {
   // const mdUp = useResponsive("up", "md");
+  const { instance } = useMsal();
+  const [userLogin, setUserLogin] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate()
+  console.log('LOCATION', location);
 
   const myStyle = {
     display: 'flex',
@@ -75,6 +98,59 @@ export default function LoginPage() {
     justifyContent: 'center',
   };
 
+  useEffect(() => {
+    BagicSso();
+    console.log('inside useEffect from login page>>');
+  }, []);
+
+  const BagicSso = (e) => {
+    const loginRequest = {
+      scopes: ['user.read'],
+    };
+    console.log('start', loginRequest);
+    try {
+      msalInstance
+        .loginPopup(loginRequest)
+        .then((response) => {
+          console.log('response', response);
+          // console.log('email', response.idToken.claims
+          // );
+          response.idToken.claims.email = response.idToken.claims.preferred_username;
+          const userNameSso = response.idToken.claims.preferred_username.toLowerCase();
+          console.log('userNameSso', userNameSso);
+
+          const newUsername = userNameSso.split('@');
+          console.log('Updated username', newUsername);
+          const splitedUsername = newUsername[0];
+          const appendedTxt = '@bajajallianz.co.in';
+          const updatedUsername = `${splitedUsername}${appendedTxt}`;
+          console.log('Updated username ===', `${splitedUsername}${appendedTxt}`);
+
+          const login = {
+            username: updatedUsername,
+          };
+
+          localStorage.setItem('userName', userNameSso);
+          localStorage.setItem('userName', userNameSso);
+        })
+        .catch((err) => {
+          console.log('err', err);
+          // if bagic sso fails
+          setUserLogin(true);
+          console.log('from first catch from login page>>>>>>>>>>>>');
+          // navigate('/login',{ state: { userLogin: true } })
+          // navigate('/UserLoginPage')
+        });
+    } catch (err) {
+      console.log('catch err', err);
+    }
+  };
+
+  const handleUserLogin = () => {
+    // eslint-disable-next-line no-unused-expressions
+    <UserLoginPage/> 
+  }
+
   return (
     <div
       style={{
@@ -90,16 +166,10 @@ export default function LoginPage() {
       }}
     >
       <img src={'/assets/images/covers/BackgroundImage.jpg'} alt="text" style={myStyle} />
-      {/* <Grid container>
-        <Grid item xs={12} sm={6} style={{ backgroundColor: 'blue' }}>
-          <Typography>Hi</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} style={{ backgroundColor: 'white' }}>
-          <Typography>Hi</Typography>
-        </Grid>
-      </Grid> */}
+
       <div style={textBlock}>
-        <LoginForm />
+       
+        {userLogin ? <UserLoginPage /> : <LoginForm />}
       </div>
     </div>
   );

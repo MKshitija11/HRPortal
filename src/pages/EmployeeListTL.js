@@ -71,7 +71,7 @@ function applySortFilter(array, comparator, query) {
 
 export default function EmployeeListTL() {
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
 
   const [page, setPage] = useState(0);
 
@@ -94,7 +94,7 @@ export default function EmployeeListTL() {
   const [activeEmployees, setActiveEmployees] = useState([]);
   // const [isNotFound, setIsNotFound] = useState(false);
 
-  console.log("LOCATION", location);
+  console.log('LOCATION', location);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));

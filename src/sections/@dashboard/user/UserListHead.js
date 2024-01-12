@@ -23,13 +23,27 @@ UserListHead.propTypes = {
   onRequestSort: PropTypes.func,
 };
 
-export default function UserListHead({ order, orderBy, headLabel, onRequestSort }) {
+const newLocal = '100%';
+
+const timeSheetStyling = {
+  alignItems: 'center',
+  textAlign: 'center',
+  margin: 'auto',
+  display: 'table',
+  // border: '1px solid red',
+  width: newLocal,
+};
+
+
+
+export default function UserListHead({ order, orderBy, headLabel, onRequestSort, isTimeSheet }) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
-
+  // console.log('TIMESHEET>>>>>>>>>>', isTimeSheet);
+  // const newLocal = '100%';
   return (
-    <TableHead style={{position: 'sticky', top: 0, background: 'grey'}}>
+    <TableHead style={{ position: 'sticky', top: 0, background: 'grey' }}>
       <TableRow>
         {/* {headLabel.map((headCell) => (
           <TableCell
@@ -54,8 +68,13 @@ export default function UserListHead({ order, orderBy, headLabel, onRequestSort 
           </TableCell>
         ))} */}
         {headLabel.map((headCell) => (
-          <TableCell key={headCell.id} sx={{ backgroundColor: '#F7F7F8', color: '#0072BC' }}>
-            <TableSortLabel>{headCell.label}</TableSortLabel>
+          <TableCell
+            key={headCell.id}
+            sx={{ backgroundColor: '#F7F7F8', color: '#0072BC' }}
+          >
+            <TableSortLabel hideSortIcon style={isTimeSheet ? timeSheetStyling : null}>
+              {headCell.label}
+            </TableSortLabel>
           </TableCell>
         ))}
       </TableRow>

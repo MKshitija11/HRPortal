@@ -100,10 +100,10 @@ export default function LoginForm() {
             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_PARTNER') {
               navigate('/EmployeesBP');
             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_TL') {
-              navigate('/EmployeesTL');
+              navigate('/EmpManagmentTL');
             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_SM') {
               console.log('INSIDE LENGTH BAGIC SM');
-              navigate('/EmployeesSM');
+              navigate('/EmpManagmentSM');
             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ITS') {
               navigate('/EmployeesITS');
             }

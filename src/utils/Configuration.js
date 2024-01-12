@@ -5,7 +5,8 @@ export default {
   // BASE_URL: 'https://api.bagicuat.bajajallianz.com/BagicHRSM/', // UAT
   BASE_URL: 'https://webapi.bajajallianz.com/BagicHRSM/', // PROD
   // BASE_URL: 'http://10.39.48.255:8888/BagicHRSM/',
-  TIMESHEET_URL: 'https://webservicesdev.bajajallianz.com/BagicWapPrime/pdfApi/userConfigure',
+  // TIMESHEET_URL: 'https://webservicesdev.bajajallianz.com/BagicWapPrime/pdfApi/userConfigure',
+  TIMESHEET_URL: 'https://webservicesdev.bajajallianz.com/BagicVisitorAppWs/userTimeSheet',
   // TIMESHEET_URL: 'http://10.39.48.141:8085/BagicWapPrime/pdfApi/userConfigure',
 
   login(loginReq) {

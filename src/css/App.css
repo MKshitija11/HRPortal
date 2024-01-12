@@ -1,23 +1,38 @@
-.post{
+.post {
   background-color: #eee;
   margin: 2rem;
   padding: 1rem;
 }
-.pagination{
-  margin: 1rem auto;
+.pagination {
+  margin: 5rem auto;
   list-style: none;
   display: flex;
   justify-content: space-evenly;
   width: 20%;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
 }
-.pagination-active{
-  /* border: 1px solid red; */
-  /* border-radius: 20%; */
-  padding: 0 4px;
+.pagination .pagination-active {
+  /* padding: 8 12px; */
+  padding: 10px;
   outline: none;
   background-color: cornflowerblue;
   font-weight: bold;
+  border-radius: 15px;
+  cursor: pointer;
+  color: '#0072BC';
 }
-.previous-label {
-  font-size: 20;
+
+.pagination .next,
+.pagination .previous {
+  color: #0072bc;
+  font-weight: 500;
+  cursor: pointer;
+  padding:5
+}
+
+.pagination .page {
+  margin-right: 5px;
+  margin-left: 5px
 }

@@ -67,21 +67,25 @@ export default function AccountPopover() {
         onClick={open ? handleClose : handleOpen}
         sx={{
           p: 0,
-          ...(open && {
-            '&:before': {
-              zIndex: 1,
-              content: "''",
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              position: 'absolute',
-              bgcolor: (theme) => alpha(theme.palette.grey[600], 0.8),
-              flexDirection: 'column',
-            },
-          }),
+          // ...(open && {
+          //   '&:before': {
+          //     zIndex: 1,
+          //     content: "''",
+          //     width: '100%',
+          //     height: '100%',
+          //     borderRadius: '50%',
+          //     position: 'absolute',
+          //     bgcolor: (theme) => alpha(theme.palette.grey[600], 0.4),
+          //     flexDirection: 'column',
+          //   },
+          // }),
         }}
       >
-        <Iconify icon="material-symbols:person" color="white" width={40} height={40} />
+        {open ? (
+          <Iconify icon="material-symbols:person" color="white" width={20} height={20} />
+        ) : (
+          <Iconify icon="material-symbols:person" color="white" width={40} height={40} />
+        )}
       </IconButton>
       {console.log('username', displayName)}
       <Typography

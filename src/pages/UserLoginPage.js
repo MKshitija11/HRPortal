@@ -22,6 +22,18 @@ import Configuration from '../utils/Configuration';
 import Iconify from '../components/iconify';
 import Constants from '../Constants/Constants';
 
+// -----------------------------------------------------------
+const container = {
+  position: 'relative',
+  textAlign: 'center',
+  zIndex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  bottom: 40,
+};
+
+// --------------------------------------------------------------
+
 export default function UserLoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,7 +48,6 @@ export default function UserLoginPage() {
   const [openSsuccessSignUpModal, setOpenSuccessSignUpModal] = useState(false);
   const [failureMessage, setFailureMessage] = useState();
   const [showFailureModal, setShowFailureModal] = useState(false);
-  const [resetForm, setResetForm] = useState(false);
   const [state, setState] = useState({
     spocPassword: '',
     spocConfirmPassword: '',
@@ -62,56 +73,10 @@ export default function UserLoginPage() {
       partnerName: '',
       spocMobileNumber: '',
       spocName: '',
-      // userProfile: '',
       spocEmailId: '',
-      // activeYn: 'Y',
-      // spocUsername: '',
-      // username: '',
-      // password: '',
     });
   };
 
-  const failFocus = (autoFocusObj) => {
-    autoFocusObj.focus();
-    return false;
-  };
-
-  const validForm = () => {
-    const employeeFormObj = new FormData(document.getElementById('signUpForm'));
-    const employeeFormData = Object.fromEntries(employeeFormObj.entries());
-
-    console.log('JSON:employeeFormData valid form ::', JSON.stringify(employeeFormData));
-
-    setState({
-      ...state,
-      spocUsername: employeeFormData.spocEmailId,
-      userProfile: employeeFormData.userProfile,
-    });
-    document.getElementById('spocUsername').value = state.spocEmailId;
-    document.getElementById('userProfile').value = state.userProfile;
-    console.log('from valid form', state.spocUsername, state.userProfile);
-
-    if (document.employeeFormData.spocName.value === '') {
-      return failFocus(document.employeeFormData.spocName);
-    }
-    if (document.employeeFormData.spocMobileNo.value === '') {
-      return failFocus(document.employeeFormData.spocMobileNo);
-    }
-    if (document.employeeFormData.spocEmailId.value === '') {
-      return failFocus(document.employeeFormData.spocEmailId);
-    }
-    if (document.employeeFormData.partnerName.value === '') {
-      return failFocus(document.employeeFormData.partnerName);
-    }
-    if (document.employeeFormData.spocPassword.value === '') {
-      return failFocus(document.employeeFormData.spocPassword);
-    }
-    if (document.employeeFormData.spocConfirmPassword.value === '') {
-      return failFocus(document.employeeFormData.spocConfirmPassword);
-    }
-
-    return true;
-  };
   const handleClick = () => {
     document.getElementById('spocUsername').value = state.spocEmailId;
     document.getElementById('userProfile').value = state.userProfile;
@@ -125,7 +90,7 @@ export default function UserLoginPage() {
     });
 
     console.log('Employee Form Data', employeeFormData);
-    // if (validForm()) {
+
     Configuration.signUp(employeeFormData)
       .then((signUpRes) => {
         console.log('Employee Form Data :: ', signUpRes.data.errorCode === '1');
@@ -133,20 +98,17 @@ export default function UserLoginPage() {
           console.log('inside if');
           setShowFailureModal(true);
           setFailureMessage(signUpRes.data.errorDesc);
-          // formik.resetForm();
           handleReset();
         } else {
           console.log('inside else');
           setOpenSignUp(false);
           setOpenSuccessSignUpModal(true);
-          // setOpenLogin(true);
         }
       })
       .catch((error) => {
         console.log('ERROR', error);
         alert('Something went wrong!! Please try after sometime');
       });
-    // }
   };
 
   const handleClickForLogin = () => {
@@ -221,7 +183,6 @@ export default function UserLoginPage() {
       ...state,
       [evt.target.name]: evt.target.value,
     });
-    console.log('Event target value', evt.target.value);
   };
 
   const initialValues = {
@@ -310,8 +271,6 @@ export default function UserLoginPage() {
               </Typography>
             ) : openSsuccessSignUpModal ? (
               <Typography id="modal-modal-description" sx={{ mt: 1, textAlign: 'center' }}>
-                {/* Partner has been successfully registered
-                 */}
                 Thankyou! Your Partner signup was successful. Please Login to continue!
               </Typography>
             ) : showFailureModal ? (
@@ -351,371 +310,409 @@ export default function UserLoginPage() {
           </Box>
         </Modal>
       </Stack>
-      {openLogin ? (
-        <>
-          <Formik
-            initialValues={initialValuesForLogin}
-            validationSchema={validationSchemaForLogin}
-            // onSubmit={(values) => console.log('VALUES', values)}
-          >
-            {(formik) => {
-              const { values, handleChange, handleSubmit, errors, touched, handleBlur, isValid, dirty } = formik;
-              return (
-                <form onSubmit={handleSubmit} spacing={2} method="POST" id="partnerLogin" name="partnerLogin">
-                  <Stack spacing={2}>
-                    <img
-                      src={'/assets/images/covers/HRLogo.svg'}
-                      alt="text"
-                      style={{
-                        height: '80%',
-                        width: '80%',
-                        paddingLeft: '10%',
-                        display: 'flex',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'round',
-                        backgroundAttachment: 'fixed',
-                        margin: 'auto',
-                        position: 'relative',
-                      }}
-                    />
-                    <Collapse in={open}>
-                      <Alert severity="warning" variant="filled">
-                        {errorMessage}
-                      </Alert>
-                    </Collapse>
-                    <TextField
-                      required
-                      autoComplete="off"
-                      l
-                      name="username"
-                      id="username"
-                      label="Email Id"
-                      value={values.username}
-                      onChange={(evt) => {
-                        handleChange(evt);
-                        handleChangeEvent(evt);
-                      }}
-                      sx={{
-                        width: 300,
-                        backgroundColor: 'white',
-                      }}
-                      onBlur={handleBlur}
-                      error={formik.touched.username && Boolean(formik.errors.username)}
-                      helperText={formik.touched.username && formik.errors.username}
-                    />
+      <Stack style={{ paddingBottom: 10, bottom: 20 }}>
+        {openLogin ? (
+          <>
+            <Formik initialValues={initialValuesForLogin} validationSchema={validationSchemaForLogin}>
+              {(formik) => {
+                const { values, handleChange, handleSubmit, errors, touched, handleBlur, isValid, dirty } = formik;
+                return (
+                  <form onSubmit={handleSubmit} spacing={2} method="POST" id="partnerLogin" name="partnerLogin">
+                    <Stack style={container}>
+                      <Stack
+                        spacing={2}
+                        style={{
+                          width: '100%',
+                          height: 'auto',
+                          background: 'white',
+                          borderRadius: '8px',
 
-                    <TextField
-                      sx={{
-                        width: 300,
-                        backgroundColor: 'white',
-                      }}
-                      autoComplete="current-password"
-                      variant="outlined"
-                      id="password"
-                      name="password"
-                      label="Password"
-                      // type="password"
-                      required
-                      onBlur={handleBlur}
-                      value={values.password}
-                      onChange={(evt) => {
-                        handleChange(evt);
-                        handleChangeEvent(evt);
-                      }}
-                      error={formik.touched.password && Boolean(formik.errors.password)}
-                      helperText={formik.touched.password && formik.errors.password}
-                      type={showPassword ? 'text' : 'password'}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                              <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Stack>
-                  <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" mt={1}>
-                    <Link
-                      variant="subtitle2"
-                      underline="always"
-                      onClick={() => {
-                        setForgotPasswordModal(true);
-                      }}
-                    >
-                      {''}Forgot Password
-                    </Link>
-                  </Stack>
-                  <Stack direction="row" alignItems="center" justifyContent="center">
-                    <Typography>Dont have an account?</Typography>
-                    <Link
-                      variant="subtitle2"
-                      underline="hover"
-                      onClick={() => {
-                        setOpenSignUp(true);
-                        setOpenLogin(false);
-                      }}
-                    >
-                      {''}SignUp
-                    </Link>
-                  </Stack>
-
-                  <Stack direction="row" alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
-                    <LoadingButton
-                      // fullWidth
-                      size="large"
-                      type="submit"
-                      variant="contained"
-                      disabled={!(dirty && isValid)}
-                      onClick={handleClickForLogin}
-                    >
-                      Login
-                    </LoadingButton>
-                  </Stack>
-                </form>
-              );
-            }}
-          </Formik>
-        </>
-      ) : null}
-      {openSignUp ? (
-        <>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={(values) => console.log('VALUES SIGNUP', values)}
-          >
-            {(formik) => {
-              const { values, handleChange, handleSubmit, errors, touched, handleBlur, isValid, dirty } = formik;
-              return (
-                <form onSubmit={handleSubmit} spacing={2} method="POST" id="signUpForm" name="signUpForm">
-                  {/* {console.log('VALUES SIGNUP', formik.values)} */}
-
-                  <Stack spacing={2} alignItems="center" justifyContent="center">
-                    <img
-                      src={'/assets/images/covers/HRLogo.svg'}
-                      alt="text"
-                      style={{
-                        height: '60%',
-                        width: '60%',
-                        paddingLeft: '10%',
-                        display: 'flex',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'round',
-                        backgroundAttachment: 'fixed',
-                        margin: 'auto',
-                        position: 'relative',
-                      }}
-                    />
-                    <Collapse in={open}>
-                      <Alert severity="warning" variant="filled">
-                        {errorMessage}
-                      </Alert>
-                    </Collapse>
-                    <Stack direction="row" spacing={2}>
-                      <TextField
-                        autoComplete="off"
-                        name="spocName"
-                        variant="outlined"
-                        required
-                        id="spocName"
-                        label="Full Name"
-                        value={values.spocName}
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          handleChangeEvent(evt);
+                          bgcolor: 'background.paper',
+                          border: '8px solid transparent',
+                          boxShadow: '0px 0px 7px 7px lightgrey',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}
-                        onBlur={handleBlur}
-                        sx={{
-                          width: 200,
-                          backgroundColor: 'white',
-                        }}
-                        error={touched.spocName && Boolean(errors.spocName)}
-                        helperText={touched.spocName && errors.spocName}
-                      />
-
-                      <TextField
-                        autoComplete="off"
-                        name="spocMobileNo"
-                        variant="outlined"
-                        type="tel"
-                        required
-                        id="spocMobileNo"
-                        label="Mobile Number"
-                        value={values.spocMobileNo}
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          handleChangeEvent(evt);
-                        }}
-                        inputProps={{
-                          maxLength: '10',
-                        }}
-                        sx={{
-                          width: 200,
-                          backgroundColor: 'white',
-                        }}
-                        onBlur={handleBlur}
-                        error={formik.touched.spocMobileNo && Boolean(formik.errors.spocMobileNo)}
-                        helperText={formik.touched.spocMobileNo && formik.errors.spocMobileNo}
-                      />
-                    </Stack>
-
-                    {/* email */}
-                    <Stack direction="row" spacing={2}>
-                      <TextField
-                        autoComplete="off"
-                        variant="outlined"
-                        required
-                        name="spocEmailId"
-                        id="spocEmailId"
-                        label="Email Id"
-                        placeholder="abc@gmail.com"
-                        value={values.spocEmailId}
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          handleChangeEvent(evt);
-                          // handleChangeForEmail(evt);
-                        }}
-                        sx={{
-                          width: 200,
-                          backgroundColor: 'white',
-                        }}
-                        onBlur={handleBlur}
-                        error={formik.touched.spocEmailId && Boolean(formik.errors.spocEmailId)}
-                        helperText={formik.touched.spocEmailId && formik.errors.spocEmailId}
-                      />
-                      <TextField
-                        autoComplete="off"
-                        variant="outlined"
-                        required
-                        select
-                        name="partnerName"
-                        id="partnerName"
-                        label="Vendor"
-                        value={values.partnerName}
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          handleChangeEvent(evt);
-                        }}
-                        sx={{
-                          width: 200,
-                          backgroundColor: 'white',
-                        }}
-                        onBlur={handleBlur}
-                        error={formik.touched.partnerName && Boolean(formik.errors.partnerName)}
-                        helperText={formik.touched.partnerName && formik.errors.partnerName}
                       >
-                        {Constants.vendorList.map((option) => (
-                          <MenuItem key={option.value} value={option.label}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
+                        <img
+                          src={'/assets/images/covers/HRLogo.svg'}
+                          alt="text"
+                          style={{
+                            height: '40%',
+                            width: '40%',
+                            // paddingLeft: '10%',
+                            display: 'flex',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'round',
+                            backgroundAttachment: 'fixed',
+                            margin: 'auto',
+                            position: 'relative',
+                          }}
+                        />
+                        <Collapse in={open}>
+                          <Alert severity="warning" variant="filled">
+                            {errorMessage}
+                          </Alert>
+                        </Collapse>
+                        <TextField
+                          required
+                          autoComplete="off"
+                          l
+                          name="username"
+                          id="username"
+                          label="Email Id"
+                          value={values.username}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          sx={{
+                            width: 300,
+                            backgroundColor: 'white',
+                          }}
+                          onBlur={handleBlur}
+                          error={formik.touched.username && Boolean(formik.errors.username)}
+                          helperText={formik.touched.username && formik.errors.username}
+                        />
+
+                        <TextField
+                          sx={{
+                            width: 300,
+                            backgroundColor: 'white',
+                          }}
+                          autoComplete="current-password"
+                          variant="outlined"
+                          id="password"
+                          name="password"
+                          label="Password"
+                          // type="password"
+                          required
+                          onBlur={handleBlur}
+                          value={values.password}
+                          onChange={(evt) => {
+                            handleChange(evt);
+                            handleChangeEvent(evt);
+                          }}
+                          error={formik.touched.password && Boolean(formik.errors.password)}
+                          helperText={formik.touched.password && formik.errors.password}
+                          type={showPassword ? 'text' : 'password'}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+
+                        {/* <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" mt={1}>
+                          <Link
+                            variant="subtitle2"
+                            underline="always"
+                            onClick={() => {
+                              setForgotPasswordModal(true);
+                            }}
+                          >
+                            {''}Forgot Password
+                          </Link>
+                        </Stack> */}
+                        <Stack direction="row" alignItems="center" justifyContent="center">
+                          <Typography>Don't have an account?</Typography>
+                          <Link
+                            variant="subtitle2"
+                            underline="hover"
+                            onClick={() => {
+                              setOpenSignUp(true);
+                              setOpenLogin(false);
+                            }}
+                            style={{ textDecoration: 'underline' }}
+                          >
+                            {''}SignUp
+                          </Link>
+                        </Stack>
+
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          justifyContent="center"
+                          spacing={5}
+                          sx={{ my: 2, mb: 2 }}
+                        >
+                          <LoadingButton
+                            // fullWidth
+                            size="large"
+                            type="submit"
+                            variant="contained"
+                            disabled={!(dirty && isValid)}
+                            onClick={handleClickForLogin}
+                          >
+                            Login
+                          </LoadingButton>
+                        </Stack>
+                      </Stack>
                     </Stack>
+                  </form>
+                );
+              }}
+            </Formik>
+          </>
+        ) : null}
+        {openSignUp ? (
+          <>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={(values) => console.log('VALUES SIGNUP', values)}
+            >
+              {(formik) => {
+                const { values, handleChange, handleSubmit, errors, touched, handleBlur, isValid, dirty } = formik;
+                return (
+                  <form onSubmit={handleSubmit} spacing={2} method="POST" id="signUpForm" name="signUpForm">
+                    <Stack style={container}>
+                      <Stack
+                        spacing={2}
+                        alignItems="center"
+                        justifyContent="center"
+                        style={{
+                          width: 'auto',
+                          height: 'auto',
+                          background: 'white',
+                          borderRadius: '8px',
+                          bgcolor: 'background.paper',
+                          border: '8px solid transparent',
+                          boxShadow: '0px 0px 7px 7px lightgrey',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          top: 20,
+                        }}
+                      >
+                        <img
+                          src={'/assets/images/covers/HRLogo.svg'}
+                          alt="text"
+                          style={{
+                            height: '40%',
+                            width: '40%',
+                            // paddingLeft: '10%',
+                            display: 'flex',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'round',
+                            backgroundAttachment: 'fixed',
+                            // margin: 'auto',
+                            position: 'relative',
+                          }}
+                        />
+                        <Collapse in={open}>
+                          <Alert severity="warning" variant="filled">
+                            {errorMessage}
+                          </Alert>
+                        </Collapse>
+                        <Stack direction="row" spacing={2}>
+                          <TextField
+                            autoComplete="off"
+                            name="spocName"
+                            variant="outlined"
+                            required
+                            id="spocName"
+                            label="Full Name"
+                            value={values.spocName}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            onBlur={handleBlur}
+                            sx={{
+                              width: 200,
+                              backgroundColor: 'white',
+                            }}
+                            error={touched.spocName && Boolean(errors.spocName)}
+                            helperText={touched.spocName && errors.spocName}
+                          />
 
-                    <Stack direction="row" spacing={2}>
-                      <TextField
-                        autoComplete="off"
-                        variant="outlined"
-                        required
-                        name="spocPassword"
-                        id="spocPassword"
-                        label="Password"
-                        sx={{
-                          width: 200,
-                          backgroundColor: 'white',
-                        }}
-                        value={values.spocPassword}
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          handleChangeEvent(evt);
-                        }}
-                        onBlur={handleBlur}
-                        error={formik.touched.spocPassword && Boolean(formik.errors.spocPassword)}
-                        helperText={formik.touched.spocPassword && formik.errors.spocPassword}
-                        type={showPassword ? 'text' : 'password'}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
+                          <TextField
+                            autoComplete="off"
+                            name="spocMobileNo"
+                            variant="outlined"
+                            type="tel"
+                            required
+                            id="spocMobileNo"
+                            label="Mobile Number"
+                            value={values.spocMobileNo}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            inputProps={{
+                              maxLength: '10',
+                            }}
+                            sx={{
+                              width: 200,
+                              backgroundColor: 'white',
+                            }}
+                            onBlur={handleBlur}
+                            error={formik.touched.spocMobileNo && Boolean(formik.errors.spocMobileNo)}
+                            helperText={formik.touched.spocMobileNo && formik.errors.spocMobileNo}
+                          />
+                        </Stack>
 
-                      <TextField
-                        autoComplete="off"
-                        variant="outlined"
-                        required
-                        name="spocConfirmPassword"
-                        id="spocConfirmPassword"
-                        label="Confirm Password"
-                        sx={{
-                          width: 200,
-                          backgroundColor: 'white',
-                        }}
-                        value={values.spocConfirmPassword}
-                        onChange={(evt) => {
-                          handleChange(evt);
-                          handleChangeEvent(evt);
-                        }}
-                        onBlur={handleBlur}
-                        error={formik.touched.spocConfirmPassword && Boolean(formik.errors.spocConfirmPassword)}
-                        helperText={formik.touched.spocConfirmPassword && formik.errors.spocConfirmPassword}
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
-                                <Iconify icon={showConfirmPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
+                        {/* email */}
+                        <Stack direction="row" spacing={2}>
+                          <TextField
+                            autoComplete="off"
+                            variant="outlined"
+                            required
+                            name="spocEmailId"
+                            id="spocEmailId"
+                            label="Email Id"
+                            placeholder="abc@gmail.com"
+                            value={values.spocEmailId}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                              // handleChangeForEmail(evt);
+                            }}
+                            sx={{
+                              width: 200,
+                              backgroundColor: 'white',
+                            }}
+                            onBlur={handleBlur}
+                            error={formik.touched.spocEmailId && Boolean(formik.errors.spocEmailId)}
+                            helperText={formik.touched.spocEmailId && formik.errors.spocEmailId}
+                          />
+                          <TextField
+                            autoComplete="off"
+                            variant="outlined"
+                            required
+                            select
+                            name="partnerName"
+                            id="partnerName"
+                            label="Vendor"
+                            value={values.partnerName}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            sx={{
+                              width: 200,
+                              backgroundColor: 'white',
+                            }}
+                            onBlur={handleBlur}
+                            error={formik.touched.partnerName && Boolean(formik.errors.partnerName)}
+                            helperText={formik.touched.partnerName && formik.errors.partnerName}
+                          >
+                            {Constants.vendorList.map((option) => (
+                              <MenuItem key={option.value} value={option.label}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </Stack>
+
+                        <Stack direction="row" spacing={2}>
+                          <TextField
+                            autoComplete="off"
+                            variant="outlined"
+                            required
+                            name="spocPassword"
+                            id="spocPassword"
+                            label="Password"
+                            sx={{
+                              width: 200,
+                              backgroundColor: 'white',
+                            }}
+                            value={values.spocPassword}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            onBlur={handleBlur}
+                            error={formik.touched.spocPassword && Boolean(formik.errors.spocPassword)}
+                            helperText={formik.touched.spocPassword && formik.errors.spocPassword}
+                            type={showPassword ? 'text' : 'password'}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+
+                          <TextField
+                            autoComplete="off"
+                            variant="outlined"
+                            required
+                            name="spocConfirmPassword"
+                            id="spocConfirmPassword"
+                            label="Confirm Password"
+                            sx={{
+                              width: 200,
+                              backgroundColor: 'white',
+                            }}
+                            value={values.spocConfirmPassword}
+                            onChange={(evt) => {
+                              handleChange(evt);
+                              handleChangeEvent(evt);
+                            }}
+                            onBlur={handleBlur}
+                            error={formik.touched.spocConfirmPassword && Boolean(formik.errors.spocConfirmPassword)}
+                            helperText={formik.touched.spocConfirmPassword && formik.errors.spocConfirmPassword}
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+                                    <Iconify icon={showConfirmPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        </Stack>
+
+                        <input type="hidden" id="activeYn" name="activeYn" value="Y" />
+                        <input type="hidden" id="spocUsername" name="spocUsername" value={values.spocUsername} />
+                        <input type="hidden" id="userProfile" name="userProfile" value={values.userProfile} />
+                        <Stack direction="row" alignItems="center" justifyContent="center">
+                          <Typography>Already have an account?</Typography>
+                          <Link
+                            variant="subtitle2"
+                            underline="hover"
+                            onClick={() => {
+                              setOpenSignUp(false);
+                              setOpenLogin(true);
+                            }}
+                            style={{ textDecoration: 'underline' }}
+                          >
+                            Login
+                          </Link>
+                        </Stack>
+                        <Stack direction="row" alignItems="center" justifyContent="center">
+                          <LoadingButton
+                            fullWidth
+                            size="large"
+                            type="submit"
+                            variant="contained"
+                            onClick={handleClick}
+                            disabled={!(dirty && isValid)}
+                          >
+                            Sign Up
+                          </LoadingButton>
+                        </Stack>
+                      </Stack>
                     </Stack>
-
-                    <input type="hidden" id="activeYn" name="activeYn" value="Y" />
-                    <input type="hidden" id="spocUsername" name="spocUsername" value={values.spocUsername} />
-                    <input type="hidden" id="userProfile" name="userProfile" value={values.userProfile} />
-                  </Stack>
-
-                  <Stack direction="row" alignItems="center" justifyContent="center" spacing={5} mt={2}>
-                    <LoadingButton
-                      fullWidth
-                      size="large"
-                      type="submit"
-                      variant="contained"
-                      onClick={handleClick}
-                      disabled={!(dirty && isValid)}
-                    >
-                      Sign Up
-                    </LoadingButton>
-                  </Stack>
-                  <Stack direction="row" alignItems="center" justifyContent="center">
-                    <Typography>Already have an account?</Typography>
-                    <Link
-                      variant="subtitle2"
-                      underline="hover"
-                      onClick={() => {
-                        setOpenSignUp(false);
-                        setOpenLogin(true);
-                      }}
-                    >
-                      {''}Login
-                    </Link>
-                  </Stack>
-                </form>
-              );
-            }}
-          </Formik>
-        </>
-      ) : null}
+                  </form>
+                );
+              }}
+            </Formik>
+          </>
+        ) : null}
+      </Stack>
     </>
   );
 }

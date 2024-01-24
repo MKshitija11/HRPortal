@@ -1005,3 +1005,211 @@
 //   );
 // }
 
+// ----------------------------------------New design of landing page -----------------------------------------------
+// export default function LoginForm() {
+//   const theme = useTheme();
+//   const navigate = useNavigate();
+//   // const classes = buttonStyles();
+//   const [open, setOpen] = useState(false);
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [userName, setUsername] = useState('');
+//   const [passWord, setPassword] = useState('');
+//   const [errorMessage, setErrorMessage] = useState('');
+//   const [updatedUser, setUpdatedUser] = useState('');
+//   const [userProfile, setUserProfile] = useState();
+
+//   const handleUsername = (event) => {
+//     setUsername(event.target.value);
+//   };
+
+//   const handlePassword = (event) => {
+//     setPassword(event.target.value);
+//   };
+//   console.log('initial username', updatedUser);
+
+//   const handleClick = () => {
+//     // const newUsername = userName.split("@")
+//     // console.log("Updated username", newUsername)
+//     // const splitedUsername = newUsername[0]
+//     // const appendedTxt = "@bajajallianz.co.in"
+//     // const updatedUsername = `${splitedUsername}${appendedTxt}`
+//     // console.log("Updated username ===", `${splitedUsername}${appendedTxt}`)
+//     // console.log("Updated ====> ", newstr);
+//     // console.log("before username", updatedUser)
+
+//     // if (userName.includes('@bajajallianz')) {
+//     //   console.log('BLOCK If=====>', userName);
+//     //   const newUsername = userName.split('@');
+//     //   console.log('Updated username', newUsername);
+//     //   const splitedUsername = newUsername[0];
+//     //   const appendedTxt = '@bajajallianz.co.in';
+//     //   const updatedUsername = `${splitedUsername}${appendedTxt}`;
+//     //   setUpdatedUser(updatedUsername);
+//     //   console.log('UserName 3====', updatedUsername);
+//     // } else {
+//     //   console.log('BLOCK ELSE=====>', userName);
+//     //   setUpdatedUser(userName);
+//     // }
+//     // console.log("after username", updatedUser)
+
+//     const loginRequest = {
+//       username: 'mandar.pathak@bajajallianz.co.in',
+//       // username: 'dilip.kodwani@bajajallianz.co.in',
+//       // username: 'jaldip.katre@bajajallianz.co.in',
+//       // username: 'ravi.kumar044@bajajallianz.co.in',
+//       // username: 'hrd2@apmosys.com',
+//       // username:'tanmay.mathur01@bajajallianz.co.in',
+//       // username: 'gourisankar.sahu@bajajallianz.co.in',
+//       // username: 'pinki.dutta@bajajallianz.co.in',
+//       // username: 'saratham.am@bajajallianz.co.in',
+//       // username: 'dharmesh.chauhan01@bajajallianz.co.in',
+//       // username: 'pooja.rebba@bajajallianz.co.in',
+//       // username: 'rajhans.gavali@bajajallianz.co.in',
+//       // username: 'rajhans.gavali@cloverinfotech.com',
+//       // username: 'niranjan.rote@bajajallianz.co.in',
+//       // username: 'kshitija.madhekar@pinnacle.com',
+//       // username: 'deepali.kalapure@bajajallianz.co.in',
+//       // username: 'kavya.gogi@bajajallianz.co.in',
+//       password: 'password',
+//     };
+
+//     Configuration.login(loginRequest)
+//       .then((LoginResponse) => {
+//         if (LoginResponse) {
+//           console.log('INSIDE LENGTH  IF ', LoginResponse.data.length);
+//           if (LoginResponse.data.length === 2) {
+//             navigate('/SwitchRole');
+//           } else if (LoginResponse.data.length === 1) {
+//             console.log('INSIDE LENGTH ELSE IF ', LoginResponse.data);
+//             if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ADMIN') {
+//               navigate('/Dashboard');
+//             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_PARTNER') {
+//               navigate('/EmployeesBP');
+//             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_TL') {
+//               navigate('/EmpManagmentTL');
+//             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_SM') {
+//               console.log('INSIDE LENGTH BAGIC SM');
+//               navigate('/EmpManagmentSM');
+//             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ITS') {
+//               navigate('/Dashboard');
+//             }
+//           }
+//           let USERDETAILS = {};
+//           USERDETAILS = JSON.stringify(LoginResponse.data);
+//           if (USERDETAILS != null) {
+//             sessionStorage.setItem('USERDETAILS', USERDETAILS);
+//           }
+
+//           Configuration.getReportingList().then((RAResponse) => {
+//             console.log('LoginForm.getReportingList.LoginResponse', RAResponse.data);
+//             let REPORTINGDETAILS = [];
+//             REPORTINGDETAILS = JSON.stringify(RAResponse.data);
+//             sessionStorage.setItem('REPORTINGDETAILS', REPORTINGDETAILS);
+//           });
+//         } else {
+//           console.log('INSIDE LENGTH ELSE ');
+//           setErrorMessage(LoginResponse.data.errorDesc);
+//           setOpen(true);
+//         }
+//       })
+//       .catch((error) => alert('Something went wrong!!'));
+//   };
+
+//   console.log('UN', updatedUser);
+//   return (
+//     // <div style={imageStyle}>
+//     //   <Stack spacing={3}>
+//     //     <Collapse in={open}>
+//     //       <Alert severity="warning" variant="filled">
+//     //         {errorMessage}
+//     //       </Alert>
+//     //     </Collapse>
+
+//     //   <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+//     //     {/* <Checkbox name="remember" label="Remember me" />
+//     //     <Link variant="subtitle2" underline="hover">
+//     //       Forgot password?
+//     //     </Link> */}
+//     //   </Stack>
+//     //   <Stack direction="row" alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
+//     //     <LoadingButton
+//     //       // fullWidth
+//     //       size="large"
+//     //       type="submit"
+//     //       variant="contained"
+//     //         // onClick={BagicSso}
+//     //       onClick={handleClick}
+//     //     >
+//     //       Domain Login
+//     //     </LoadingButton>
+//     //     </Stack>
+//     //   </Stack>
+//     // </div>
+
+//     // <div style={container}>
+//     //   <img src={HRLogo}  style={{width: '50%', height: '50%'}} />
+//     // </div>
+//     <>
+//       {/* <Stack sx={{ alignItems: 'center', justifyContent: 'center' }}>
+//         <img
+//           src={Card}
+//           style={imageStyle}
+//           alt="text"
+//           // style={{
+//           //   height: '80%',
+//           //   width: '80%',
+//           //   paddingLeft: '3%',
+//           //   display: 'flex',
+//           //   backgroundSize: 'cover',
+//           //   backgroundPosition: 'center',
+//           //   backgroundRepeat: 'round',
+//           //   backgroundAttachment: 'fixed',
+//           //   margin: 'auto',
+//           //   position: 'relative',
+//           // }}
+//         />
+//         <Stack style={text}>
+//           <Typography variant="h4">HR Portal</Typography>
+//         </Stack>
+//         <Stack direction="row" alignItems="center" justifyContent="center" flexDirection={'row'} spacing={2}>
+//         <LoadingButton
+//           size="large"
+//           type="submit"
+//           variant="contained"
+//           // onClick={BagicSso}
+//         >
+//           Domain Login
+//         </LoadingButton>
+//       </Stack>
+//       </Stack> */}
+
+//       {/* <Collapse in={open}>
+//         <Alert severity="warning" variant="filled">
+//           {errorMessage}
+//         </Alert>
+//       </Collapse> */}
+//       <Stack style={container}>
+//         <img src={Card} alt="Snow" style={{ width: '100%', height: '100%' }} />
+//         <Stack style={bottomLeft} mt={3}>
+//           <Typography variant="h4" style={{ fontSize: '20px', color: '#0066C7' }}>
+//             Sign-In to HR Portal
+//           </Typography>
+//           <Stack mt={3}>
+//             <LoadingButton
+//               // fullWidth
+//               size="large"
+//               type="submit"
+//               variant="contained"
+//               // onClick={BagicSso}
+//               onClick={handleClick}
+//             >
+//               Domain Login
+//             </LoadingButton>
+//           </Stack>
+//         </Stack>
+//       </Stack>
+//     </>
+//   );
+// }
+
+

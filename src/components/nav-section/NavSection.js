@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink as RouterLink, useLocation } from 'react-router-dom';
 // @mui
-import { Box, List, ListItemText, Typography } from '@mui/material';
+import { Box, List, ListItemText } from '@mui/material';
 //
 import { StyledNavItem, StyledNavItemIcon } from './styles';
 import SvgColor from '../svg-color';
@@ -13,32 +13,18 @@ const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ 
 let redirectUrl = '';
 export default function NavSection() {
   const [menuList = [], setMenuList] = useState();
-  const [employeeList = [], setEmployeeList] = useState();
   const location = useLocation();
 
   const ROLE = sessionStorage.getItem('ROLE');
-  // const ROLE = 'BAGIC_SM';
   const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
   useEffect(() => {
     const loginRequest = {
-      // // username: 'mandar.pathak@bajajallianz.co.in',
-      // // username: 'ravi.kumar044@bajajallianz.co.in',
-      // username: 'pooja.rebba@bajajallianz.co.in',
-
-      // password: 'password',
       username: USERDETAILS?.[0]?.spocUsername,
     };
 
     Configuration.login(loginRequest).then((LoginResponse) => {
       console.log('LoginForm.login.LoginResponse nav section >>>>', LoginResponse.data);
       console.log('type', typeof LoginResponse.data);
-      // if (LoginResponse.data.length === 2) {
-      //   setSwitchRole(true);
-      //   // sessionStorage.setItem('ROLE', value);
-      //   // if (LoginResponse.data?.[0]?.userProfile === 'BAGIC_SM') {
-      //   //   redirectUrl = '/EmployeesSM';
-      //   // }
-      // }
     });
   });
 
@@ -103,26 +89,21 @@ export default function NavSection() {
     const dataTeamLead = [
       {
         title: 'Dashboard',
-        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
         path: ROLE === 'BAGIC_TL' ? '/EmpManagmentTL' : ROLE === 'BAGIC_SM' ? '/EmpManagmentSM' : '/EmpManagmentTL',
-        icon: icon('ic_emp_mgmt'),
+        icon: icon('ic_analytics'),
       },
       {
         title: 'Active',
-        // path: '/EmployeesTL',
-        // path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : '/EmployeesSM',
         path: ROLE === 'BAGIC_TL' ? '/EmployeesTL' : ROLE === 'BAGIC_SM' ? '/EmployeesSM' : '/EmployeesTL',
         icon: icon('ic_activeUser'),
       },
       {
         title: 'Pending',
-        // path: ROLE === 'BAGIC_TL' ? `/EmployeesListTL` : '/EmployeesListSM',
         path: ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : '/EmployeesListTL',
         icon: icon('ic_pending'),
       },
       {
         title: 'Resigned',
-        // path: ROLE === 'BAGIC_TL' ? '/ResignedEmployeesListTL' : '/ResignedEmployeesListSM',
         path:
           ROLE === 'BAGIC_TL'
             ? '/ResignedEmployeesListTL'
@@ -131,7 +112,6 @@ export default function NavSection() {
             : '/ResignedEmployeesListTL',
         icon: icon('ic_resignedUser'),
       },
-
       // {
       //   title: 'TimeSheet',
       //   path: '/TimeSheet',
@@ -172,10 +152,8 @@ export default function NavSection() {
             : ROLE === 'BAGIC_TL'
             ? '/ResignedEmployeesListTL'
             : '/ResignedEmployeesListSM',
-        // path: `/ResignedEmployeesListSM`,
         icon: icon('ic_resignedUser'),
       },
-
       // {
       //   title: 'TimeSheet',
       //   path: '/TimeSheet',
@@ -270,5 +248,3 @@ export default function NavSection() {
     </Box>
   );
 }
-
-// ----------------------------------------------------------------------

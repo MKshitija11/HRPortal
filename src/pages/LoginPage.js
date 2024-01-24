@@ -2,53 +2,34 @@ import { Helmet } from 'react-helmet-async';
 import React, { useState, useEffect } from 'react';
 import * as Msal from 'msal';
 import { useMsal } from '@azure/msal-react';
-
 import { useLocation, useNavigate } from 'react-router-dom';
-
 // @mui
 import { styled } from '@mui/material/styles';
-import { Container, Typography, Box, Grid } from '@mui/material';
+import { Container} from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
-
+// components
+import Background from '../Images/Background.png';
 import { LoginForm } from '../sections/auth/login';
 import UserLoginPage from './UserLoginPage';
+import EmployeeBoardingProcess from '../Images/EmployeeBoardingProcess.png';
 
 // ----------------------------------------------------------------------
+const StyledRoot = styled('div')(({ theme }) => ({
+  [theme.breakpoints.up('md')]: {
+    display: 'flex',
+  },
+}));
 
-// const StyledRoot = styled("div")(({ theme }) => ({
-//   [theme.breakpoints.up("md")]: {
-//     display: "flex",
-//   },
-// }));
-
-// const StyledSection = styled("div")(({ theme }) => ({
-//   height: '100vh',
-//   width: '100%',
-//   backgroundSize: 'cover',
-//   backgroundPosition: 'center',
-//   backgroundRepeat: 'round',
-//   backgroundAttachment: 'fixed',
-//   margin: 'auto',
-//   position: 'relative',
-//   display: 'flex',
-//   // maxWidth: 800,
-//   flexDirection: "row",
-//   // justifyContent: "center",
-//   // boxShadow: theme.customShadows.card,
-//   // backgroundColor: theme.palette.background.default,
-// }));
-
-// const StyledContent = styled("div")(({ theme }) => ({
-//   maxWidth: 400,
-//   // margin: "auto",
-//   minHeight: "100vh",
-//   display: "flex",
-//   justifyContent: "center",
-//   flexDirection: "column",
-//   // padding: theme.spacing(12, 0),
-// }));
-
+const StyledContent = styled('div')(({ theme }) => ({
+  maxWidth: 400,
+  margin: 'auto',
+  minHeight: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  padding: theme.spacing(12, 0),
+}));
 // ----------------------------------------------------------------------
 
 const msalConfig = {
@@ -58,44 +39,47 @@ const msalConfig = {
 
     // production redirect uri
     redirectUri: 'https://ithrportal.bajajallianz.com',
-
-    // local redirect uri
-    // redirectUri: 'http://localhost:3000/',
   },
 };
 const msalInstance = new Msal.UserAgentApplication(msalConfig);
 
 export default function LoginPage() {
-  // const mdUp = useResponsive("up", "md");
+  const logo = true;
   const { instance } = useMsal();
+
   const [userLogin, setUserLogin] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   console.log('LOCATION', location);
+  window.localStorage.setItem('LOGO', JSON.stringify(logo));
+  const mdUp = useResponsive('up', 'md');
 
-  const myStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-    width: '100%',
-    backgroundImage: "url('/assets/images/covers/BackgroundImage.jpg')",
+  const backgroundStyleTwo = {
+    backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'round',
-    backgroundAttachment: 'fixed',
-    margin: 'auto',
+    width: '100%',
+    height: '100vh',
+    display: 'flex',
+    border: 'none',
+    overflow: 'hidden',
     position: 'relative',
+    zIndex: 2, // Set a higher zIndex to layer on top of backgroundStyle
   };
 
-  const textBlock = {
-    display: 'block',
-    overflow: 'hidden',
+  const backgroundStyle = {
+    width: '100%', // Change to viewport width
+    height: '100%', // Change to viewport height
+    objectFit: 'cover',
     position: 'fixed',
-    alignSelf: 'center',
-    alignItems: 'center',
-    right: '170px',
-    justifyContent: 'center',
+    top: 0,
+    left: 0,
+    zIndex: 1, // Set zIndex for stacking order
+  };
+
+  const imageStyle = {
+    width: '97%',
+    height: '100%',
+    maxHeight: '100%',
   };
 
   useEffect(() => {
@@ -113,14 +97,12 @@ export default function LoginPage() {
         .loginPopup(loginRequest)
         .then((response) => {
           console.log('response', response);
-          // console.log('email', response.idToken.claims
-          // );
           response.idToken.claims.email = response.idToken.claims.preferred_username;
+
           const userNameSso = response.idToken.claims.preferred_username.toLowerCase();
           console.log('userNameSso', userNameSso);
-
           const newUsername = userNameSso.split('@');
-          console.log('Updated username', newUsername);
+
           const splitedUsername = newUsername[0];
           const appendedTxt = '@bajajallianz.co.in';
           const updatedUsername = `${splitedUsername}${appendedTxt}`;
@@ -138,90 +120,55 @@ export default function LoginPage() {
           // if bagic sso fails
           setUserLogin(true);
           console.log('from first catch from login page>>>>>>>>>>>>');
-          // navigate('/login',{ state: { userLogin: true } })
-          // navigate('/UserLoginPage')
         });
     } catch (err) {
       console.log('catch err', err);
     }
   };
 
-  const handleUserLogin = () => {
-    // eslint-disable-next-line no-unused-expressions
-    <UserLoginPage/> 
-  }
+  // return (
+  //   <div
+  //     style={{
+  //       height: '100vh',
+  //       width: '100%',
+  //       backgroundSize: 'cover',
+  //       backgroundPosition: 'center',
+  //       backgroundRepeat: 'round',
+  //       backgroundAttachment: 'fixed',
+  //       margin: 'auto',
+  //       position: 'relative',
+  //       display: 'flex',
+  //     }}
+  //   >
+  //     <img src={'/assets/images/covers/BackgroundImage.jpg'} alt="text" style={myStyle} />
+
+  //     <div style={textBlock}>
+  //       {/* <LoginForm /> */}
+  //       {userLogin ? <UserLoginPage /> : <LoginForm />}
+  //     </div>
+  //   </div>
+  // );
 
   return (
-    <div
-      style={{
-        height: '100vh',
-        width: '100%',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'round',
-        backgroundAttachment: 'fixed',
-        margin: 'auto',
-        position: 'relative',
-        display: 'flex',
-      }}
-    >
-      <img src={'/assets/images/covers/BackgroundImage.jpg'} alt="text" style={myStyle} />
+    <>
+      <Helmet>
+        <title>HR Portal | Login</title>
+      </Helmet>
+      <StyledRoot>
+        {mdUp && (
+          <div className="loginForm" style={backgroundStyleTwo}>
+            <img src={EmployeeBoardingProcess} alt="Your SVG" style={imageStyle} />
+          </div>
+        )}
 
-      <div style={textBlock}>
-       
-        {userLogin ? <UserLoginPage /> : <LoginForm />}
-      </div>
-    </div>
+        <Container maxWidth="sm">
+          <StyledContent>
+            <img src={Background} alt="Pattern" style={backgroundStyle} />
+            {/* <LoginForm /> */}
+            {userLogin ? <UserLoginPage /> : <LoginForm />}
+          </StyledContent>
+        </Container>
+      </StyledRoot>
+    </>
   );
-
-  // return (
-  //   <>
-  //     <Helmet>
-  //       <title> Login | Bagic Partners</title>
-  //     </Helmet>
-
-  //     <StyledRoot>
-  //       {mdUp && (
-  //         <StyledSection
-  //           sx={{
-  //             paddingLeft: "25px",
-  //           }}
-  //         >
-  //           <br />
-  //           <img
-  //             src={"/assets/images/covers/BackgroundImage.jpg"}
-  //             alt="text"
-  //             style={myStyle}
-  //           />
-  //           <div>
-  //             <Typography
-  //               variant="h4"
-  //               gutterBottom
-  //               sx={{ px: 20, mt: 10, mb: 5, color: "#0072bc" }}
-  //             >
-  //               Sign in
-  //             </Typography>
-
-  //             <LoginForm />
-  //           </div>
-
-  //         </StyledSection>
-  //       )}
-
-  //       {/* <Container maxWidth="sm">
-  //         <StyledContent>
-  //           <Typography
-  //             variant="h4"
-  //             gutterBottom
-  //             sx={{ px: 20, mt: 10, mb: 5, color: "#0072bc" }}
-  //           >
-  //             Sign in
-  //           </Typography>
-
-  //           <LoginForm />
-  //         </StyledContent>
-  //       </Container> */}
-  //     </StyledRoot>
-  //   </>
-  // );
 }

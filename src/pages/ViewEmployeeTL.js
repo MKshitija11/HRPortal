@@ -14,6 +14,9 @@ import {
   Switch,
   Modal,
   Box,
+  Select,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -759,20 +762,32 @@ export default function ViewEmployee() {
         createdBy: USERDETAILS?.[0].spocEmailId,
       });
 
-      const mainVerticalReq = {
-        key: 'MAIN_VERTICAL',
-        value: '',
-      };
+      getMainVerticalList();
 
-      Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
-        setVerticalMainList(mainVerticalRes);
-        state.mainVerticalList = mainVerticalRes.data;
-      });
       state.createdBy = USERDETAILS?.[0].spocEmailId;
     }
     // eslint-disable-next-line
   }, []);
 
+  const getMainVerticalList = () => {
+    console.log('clciked!!');
+    const mainVerticalReq = {
+      key: 'MAIN_VERTICAL',
+      value: '',
+    };
+
+    Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
+      setVerticalMainList(mainVerticalRes.data);
+      state.mainVerticalList = mainVerticalRes.data;
+      // setState({
+      //   ...state,
+      //   mainVerticalList: mainVerticalRes?.data,
+      //   // verticalMain: mainVerticalRes.data
+      // });
+    });
+  };
+
+  console.log('main vertical list', state.mainVerticalList);
   useEffect(() => {
     const viewEmployeeReq = {
       id: location.state.row.id,
@@ -850,6 +865,8 @@ export default function ViewEmployee() {
     });
   }, []);
 
+  console.log('main vertical value', state.verticalMain);
+
   const initialValues = {
     employeeFirstName: state.employeeFirstName,
     employeeLastName: state.employeeLastName || '',
@@ -889,7 +906,7 @@ export default function ViewEmployee() {
     projectType: state.projectType || '',
   };
 
-  console.log('state joining date', initialValues.joiningDate);
+  console.log('state joining date', initialValues.verticalMain);
   const validationSchema = Yup.object({
     employeeFirstName: Yup.string()
       .required('First name is required')
@@ -1635,7 +1652,7 @@ export default function ViewEmployee() {
                             value={state.reportingAvpVpSvp}
                           />
                           <input type="hidden" id="projectType" name="projectType" value={state.projectType} />
-                          <input type="hidden" id="invoiceType" name="invoiceType" value={state.invoiceType} />
+                          {/* <input type="hidden" id="invoiceType" name="invoiceType" value={state.invoiceType} /> */}
                           <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
 
                           {/* <input type="hidden" id="employeeStatus" name="employeeStatus" /> */}
@@ -1880,13 +1897,14 @@ export default function ViewEmployee() {
                             labelId="demo-select-small"
                             id="verticalMain"
                             name="verticalMain"
-                            // select
+                            select
                             // select={state.mainVerticalList.length !== 0}
-                            select={values.verticalMain === ''}
+                            onClick={getMainVerticalList}
+                            value={values.verticalMain}
+                            // select={values.verticalMain === ''}
                             label="Main Vertical"
                             fullWidth
                             required
-                            value={values.verticalMain}
                             onChange={(evt) => {
                               handleChange(evt);
                               handleChangeMv(evt, setFieldValue);
@@ -1911,8 +1929,8 @@ export default function ViewEmployee() {
                             id="verticalSub"
                             name="verticalSub"
                             // select={verticalSubList.length !== 0}
-                            select={values.verticalSub === ''}
-                            // select
+                            // select={values.verticalSub === ''}
+                            select
                             label="Sub Vertical"
                             fullWidth
                             required
@@ -1944,17 +1962,18 @@ export default function ViewEmployee() {
                             id="departmentDesc"
                             name="departmentDesc"
                             // select={departmentList.length !== 0}
-                            select={values.departmentDesc === ''}
-                            // select
+                            // select={values.departmentDesc === ''}
+                            select
                             label="Department (IT)"
+                        
                             fullWidth
+                            value={values.departmentDesc}
                             required
                             onChange={(evt) => {
                               handleChange(evt);
                               handleChangeDpt(evt);
                               // handleValuesForFun();
                             }}
-                            value={values.departmentDesc}
                             onBlur={handleBlur}
                             error={touched.departmentDesc ? errors.departmentDesc : ''}
                             helperText={touched.departmentDesc ? formik.errors.departmentDesc : ''}
@@ -1978,8 +1997,8 @@ export default function ViewEmployee() {
                             id="functionDesc"
                             name="functionDesc"
                             // select={functionsList.length !== 0}
-                            select={values.functionDesc === ''}
-                            // select
+                            // select={values.functionDesc === ''}
+                            select
                             label="Function (IT)"
                             fullWidth
                             required

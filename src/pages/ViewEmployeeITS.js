@@ -1755,12 +1755,12 @@ export default function ViewEmployee() {
                             name="projectType"
                             value={state.projectType}
                           />
-                           <input
+                           {/* <input
                             type="hidden"
                             id="invoiceType"
                             name="invoiceType"
                             value={state.invoiceType}
-                          />
+                          /> */}
                             <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
                             {/* <input type="hidden" id="employeeStatus" name="employeeStatus" /> */}
 

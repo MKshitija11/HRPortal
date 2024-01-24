@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 export default {
-  // BASE_URL: "http://10.39.48.255:8888/HrsmApplication/",   // DEVELOPMENT
   // BASE_URL: 'https://api.bagicuat.bajajallianz.com/BagicHRSM/', // UAT
   BASE_URL: 'https://webapi.bajajallianz.com/BagicHRSM/', // PROD
-  // BASE_URL: 'http://10.39.48.255:8888/BagicHRSM/',
+
   // TIMESHEET_URL: 'https://webservicesdev.bajajallianz.com/BagicWapPrime/pdfApi/userConfigure',
   TIMESHEET_URL: 'https://webservicesdev.bajajallianz.com/BagicVisitorAppWs/userTimeSheet',
-  // TIMESHEET_URL: 'http://10.39.48.141:8085/BagicWapPrime/pdfApi/userConfigure',
+  // TIMESHEET_URL: 'https://webservicesuat.bajajallianz.com/BagicVisitorAppWs/userTimeSheet',
+  // TIMESHEET_URL: 'http://10.39.48.45:8888/BagicVisitorAppWs/userTimeSheet',
 
   login(loginReq) {
     console.log('function->', 'login');
@@ -203,5 +203,5 @@ export default {
     console.log('url -> ', `${this.TIMESHEET_URL}`);
     console.log('request', atsReq);
     return axios.post(`${this.TIMESHEET_URL}`, atsReq);
-  }
+  },
 };

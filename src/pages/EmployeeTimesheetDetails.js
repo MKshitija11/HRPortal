@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Container, Card, Stack } from '@mui/material';
+import { Typography, Container, Card, Stack, Grid, TextField } from '@mui/material';
 // import Calendar from 'react-calendar';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-calendar/dist/Calendar.css';
+import addMonths from 'date-fns/addMonths';
+import { subMonths } from 'date-fns';
+import format from 'date-fns/format';
 import moment from 'moment';
 import { useLocation } from 'react-router-dom';
 import Loader from '../components/Loader/Loader';
@@ -11,34 +14,26 @@ import Configuration from '../utils/Configuration';
 
 export default function EmployeeTimesheetDetails() {
   const location = useLocation();
+
   const [value, onChange] = useState(new Date());
   const [fromDate, setFromDate] = useState('04-jan-2024');
   const [toDate, setToDate] = useState('04-jan-2024');
   const [userName, setUserName] = useState('');
   const [userListData, setUserListData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  console.log('LOCATION..........', location.state.user);
-
-  // function formatDate(inputDate) {
-  //   const date = new Date(inputDate);
-  //   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  //   const day = date.getDate();
-  //   const monthIndex = date.getMonth();
-  //   const year = date.getFullYear();
-  //   const formattedDate = `${day}-${monthNames[monthIndex].toLowerCase()}-${year}`;
-  //   return formattedDate;
-  // }
-
-  // const inputDateString = 'Thu Jan 04 2024 00:00:00 GMT+0530 (India Standard Time)';
-  // const formattedDateString = formatDate(inputDateString);
-  // console.log('FS>>>>', formattedDateString);
+  const [selectedStartDate, setSelectedStartDate] = useState();
+  const [selectedEndDate, setSelectedEndDate] = useState();
 
   useEffect(() => {
+    handleApi();
+  }, [location.state.user.username]);
+
+  const handleApi = () => {
     setIsLoading(true);
     const atsReq = {
-      userName: location.state.user.username,
-      fromDate: '01-dec-2023',
-      toDate: '10-jan-2024',
+      userName: location?.state?.user?.username,
+      fromDate: moment(selectedStartDate).format('DD-MMM-YYYY').toLowerCase() || '',
+      toDate: moment(selectedEndDate).format('DD-MMM-YYYY').toLowerCase() || '',
     };
     Configuration.getTimeSheetDetails(atsReq)
       .then((atsRes) => {
@@ -46,6 +41,8 @@ export default function EmployeeTimesheetDetails() {
         const list1 = JSON.parse(JSON.stringify(atsRes.data.userList));
         const list2 = JSON.parse(JSON.stringify(atsRes.data.userList));
         const list3 = JSON.parse(JSON.stringify(atsRes.data.userList));
+        const list4 = JSON.parse(JSON.stringify(atsRes.data.userList));
+        const list5 = JSON.parse(JSON.stringify(atsRes.data.userList));
         list2.map((item) => {
           delete item.status;
           return item;
@@ -55,14 +52,27 @@ export default function EmployeeTimesheetDetails() {
           delete item.atsfilledTime;
           return item;
         });
-        console.log('mapped list', list1, list2, atsRes.data.userList);
-        setUserListData([...list1, ...list2, ...list3]);
+        list4.map((item) => {
+          delete item.status;
+          delete item.atsfilledTime;
+          delete item.checkIn;
+          return item;
+        });
+        list5.map((item) => {
+          delete item.status;
+          delete item.atsfilledTime;
+          delete item.checkOut;
+          return item;
+        });
+        console.log('mapped list', list4, atsRes.data.userList);
+        setUserListData([...list1, ...list2, ...list3, ...list4]);
         setIsLoading(false);
       })
       .catch((error) => console.log('error', error));
-  }, [location.state.user.username]);
+  };
 
   const localizer = momentLocalizer(moment);
+  console.log('LOCALIZER', localizer);
 
   const events = userListData.map((data, index) => {
     console.log('data===>', data);
@@ -74,14 +84,14 @@ export default function EmployeeTimesheetDetails() {
       //   : `Vistor Entry: ${data.visitorEntry}`,
 
       title: (
-        <span>
+        <span style={{ borderRadius: 8 }}>
           <span
             style={{
               height: data.status ? 10 : 20,
-
               width: 10,
               borderRadius: '50%',
               display: 'flex',
+              backgroundColor: 'pink',
               background:
                 data.status === 'PH'
                   ? 'orange'
@@ -91,26 +101,29 @@ export default function EmployeeTimesheetDetails() {
                   ? 'red'
                   : data.status === 'HD'
                   ? '#d32f2f'
-                  : data.atsfilledTime ? 'blue' : data.visitorEntry ? 'blue' : null,
+                  : data.atsfilledTime
+                  ? 'blue'
+                  : data.checkIn || data.checkOut
+                  ? 'blue'
+                  : null,
             }}
           >
-            <input style={{borderWidth: 0}} type={data.status ? "hidden" : null} value={data.status ? '' : data.atsfilledTime ? `ATS : ${data.atsfilledTime}` : data.visitorEntry ? `Vistior: ${data.visitorEntry}` : null} />
-            {/* <input */}
-            {/* <span>{data.atsfilledTime ? '' : null}</span>
-        <span>{data.visitorEntry ? '' : null}</span> */}
-            {/* <span></span> */}
+            <input
+              style={{ borderWidth: 0, width: 'auto' }}
+              type={data.status ? 'hidden' : null}
+              value={
+                data.status
+                  ? ''
+                  : data.atsfilledTime
+                  ? `ATS : ${data.atsfilledTime}`
+                  : data.checkIn
+                  ? `CheckIn: ${data.checkIn}`
+                  : data.checkOut
+                  ? `Checkout: ${data.checkOut}`
+                  : null
+              }
+            />
           </span>
-          {/* <span   style={{
-              height: 10,
-
-              // width: 10,
-           
-              // display: 'flex',
-              background: 'blue'
-              
-            }}>
-              <input value={data.atsfilledTime}/>
-          </span> */}
         </span>
       ),
       start: data.date,
@@ -125,24 +138,26 @@ export default function EmployeeTimesheetDetails() {
       color: 'white',
       backgroundColor: 'transparent',
       top: 5,
-      // backgroundColor:
-      //   event.title === 'Status: PH'
-      //     ? 'orange'
-      //     : event.title === 'Status: P'
-      //     ? 'green'
-      //     : event.title === 'Status: H'
-      //     ? 'grey'
-      //     : event.title === 'Status: FD'
-      //     ? 'red'
-      //     : event.title === 'Status: HD'
-      //     ? 'red'
-      //     : null,
     };
     return {
       style,
     };
   };
-  console.log('user list data', userListData);
+
+  const handleChangedStartDate = (evt) => {
+    console.log('handleChangedStartDate', evt.target.value);
+    const startDate = moment(evt.target.value).format('DD-MMM-YYYY').toLowerCase();
+    console.log('start Date >>.', startDate);
+    // setSelectedStartDate(moment(evt.target.value).format('DD-MMM-YYYY').toLowerCase());
+    setSelectedStartDate(evt.target.value);
+  };
+
+  const handleChangedEndDate = (evt) => {
+    console.log('handleChangedEndDate', evt.target.value);
+    setSelectedEndDate(evt.target.value);
+    handleApi();
+  };
+
   return (
     <>
       <Container>
@@ -204,20 +219,63 @@ export default function EmployeeTimesheetDetails() {
                     padding: '10px',
                   }}
                 >
-                  <Calendar
-                    localizer={localizer}
-                    events={events}
-                    doShowMoreDrillDown
-                    drilldownView="day"
-                    popup
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: '90vh', width: 900 }}
-                    views={['month']}
-                    defaultView="month"
-                    eventPropGetter={eventPropGetter}
-                  />
+                  <Stack style={{ flexDirection: 'row' }}>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        InputLabelProps={{ shrink: true }}
+                        autoComplete="off"
+                        name="selectedStartDate"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        type="date"
+                        id="selectedStartDate"
+                        label="From"
+                        value={selectedStartDate}
+                        onChange={(evt) => {
+                          handleChangedStartDate(evt);
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        InputLabelProps={{ shrink: true }}
+                        autoComplete="off"
+                        name="selectedEndDate"
+                        variant="outlined"
+                        required
+                        fullWidth
+                        type="date"
+                        id="selectedEndDate"
+                        label="To"
+                        inputProps={{
+                          // min: new Date().toISOString().split('T')[0],
+                          // const c = subMonths(date, 3);
+                          min: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
+                          max: format(new Date(), 'yyyy-MM-dd'),
+                        }}
+                        value={selectedEndDate}
+                        onChange={(evt) => {
+                          handleChangedEndDate(evt);
+                        }}
+                      />
+                    </Grid>
+                  </Stack>
                 </Stack>
+                <Calendar
+                  localizer={localizer}
+                  events={events}
+                  doShowMoreDrillDown
+                  drilldownView="day"
+                  popup
+                  startAccessor="start"
+                  endAccessor="end"
+                  style={{ height: '90vh', width: 900 }}
+                  views={['month']}
+                  defaultView="month"
+                  eventPropGetter={eventPropGetter}
+                />
               </Stack>
 
               <Stack

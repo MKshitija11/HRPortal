@@ -13,14 +13,22 @@ import {
   Typography,
   Modal,
   TableContainer,
+  TextField,
   TablePagination,
   Box,
   Grid,
+  MenuItem,
+  Select,
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import * as XLSX from 'xlsx';
 import Marquee from 'react-fast-marquee';
+import moment from 'moment';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import { subMonths, addMonths } from 'date-fns';
+import format from 'date-fns/format';
 import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify/Iconify';
 import Scrollbar from '../components/scrollbar';
@@ -76,7 +84,8 @@ export default function TimeSheet() {
   const [empArray, setEmpArray] = useState([]);
   const [page, setPage] = useState(0);
   const [activeEmployees, setActiveEmployees] = useState([]);
-  console.log('LOCATION>>>', location);
+  const [selectedMonth, setSelectedMonth] = useState();
+  console.log('selectedMonth>>>', selectedMonth);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -206,6 +215,10 @@ export default function TimeSheet() {
   const [filterName, setFilterName] = useState('');
   const [csvData = [], setCsvData] = useState();
   const [updateWebIdModal, setUpdateWebIdModal] = useState(false);
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [selectedDate, setSelectedDate] = useState();
+  const [openCalendar, setOpenCalendar] = useState(false);
   const [pagination, setPagination] = useState({
     data: empArray.map((value, index) => ({
       id: index,
@@ -226,15 +239,17 @@ export default function TimeSheet() {
       console.log('ELEMENT', element.webUserId);
       const atsReq = {
         userName: element.webUserId ? element.webUserId : '',
-        fromDate: '',
-        toDate: '',
+        fromDate: startDate || '',
+        toDate: endDate || '',
       };
       fetchData(atsReq, (resp) => {
+        console.log('TIMESHEET RESPONSE', resp);
         const response = resp;
-        console.log('TIMESHEET RESPONSE', response);
         element.timeSheetDtls = response !== null ? response : '';
         console.log('', arr);
         setApiRes([...arr]);
+      }).catch((er) => {
+        console.log('caught error==>', er);
       });
     }
 
@@ -247,11 +262,11 @@ export default function TimeSheet() {
       pageCount: prevState.data.length / prevState.numberPerPage,
       currentData: prevState.data.slice(pagination.offset, pagination.offset + pagination.numberPerPage),
     }));
-  }, [pagination.numberPerPage, pagination.offset, empArray]);
+  }, [pagination.numberPerPage, pagination.offset, empArray, selectedMonth]);
 
   useEffect(() => {
     console.log('custom useeffect', atsApiRes);
-  }, [atsApiRes, pagination]);
+  }, [atsApiRes, pagination, selectedMonth]);
 
   const fetchData = async (atsReq, callback) => {
     await Configuration.getTimeSheetDetails(atsReq)
@@ -346,9 +361,64 @@ export default function TimeSheet() {
 
     XLSX.writeFile(wb, 'EmployeeData.xlsx');
   };
+
+  const monthList = moment.months();
+  console.log(' MONTH LIST', monthList);
+
+  const handleChangeEvent = (evt) => {
+    const date = new Date();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const day = date.getDate();
+    const monthIndex = date.getMonth();
+    const year = date.getFullYear();
+    const formattedDate = `${day}-${monthNames[monthIndex].toLowerCase()}-${year}`;
+
+    console.log('FS>>>>', formattedDate);
+
+    console.log('handle change event', evt.target.value);
+    const startOfMonth = moment().month(evt.target.value).startOf('month').format('DD-MMM-');
+    const endOfMonth = moment().month(evt.target.value).endOf('month').format('DD-MMM-YYYY');
+    console.log('start month', startOfMonth.toLowerCase().concat('2023'), formattedDate);
+    console.log('start month current date', new Date().format('DD-MMM-YYYY'));
+    setStartDate(startOfMonth.toLowerCase());
+    setEndDate('');
+    setSelectedMonth(evt.target.value);
+  };
+
+  const handleChange = (date) => {
+    console.log('selected date>>>.', date);
+    const month = moment(date).format('MMM-YYYY').toLowerCase();
+    const currentMonth = moment().format('MMM-YYYY').toLowerCase();
+    const startDateOfMonth = moment(date).startOf('month').format('DD-MMM-YYYY').toLowerCase();
+    const endDateOfMonth = moment(date).endOf('month').format('DD-MMM-YYYY').toLowerCase();
+    const currentDate = moment().format('DD-MMM-YYYY').toLowerCase();
+    console.log('current month', moment().format('DD-MMM-YYYY').toLowerCase());
+    if (month === currentMonth) {
+      setStartDate(startDateOfMonth);
+      setEndDate(currentDate);
+      setSelectedMonth(month);
+    } else {
+      setStartDate(startDateOfMonth);
+      setEndDate(endDateOfMonth);
+      setSelectedMonth(month);
+    }
+
+    // const updatedDate = new Date(date);
+    // const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    // const day = updatedDate.getDate();
+    // const monthIndex = updatedDate.getMonth();
+    // const year = updatedDate.getFullYear();
+    // const formattedDate = `${day}-${monthNames[monthIndex].toLowerCase()}-${year}`;
+    // const month = (moment(date).format('MMM')).toLowerCase()
+    // console.log("formatted date", formattedDate);
+    // console.log("formatted month",month)
+    // setSelectedDate(date);
+  };
+
+  console.log('selected date out of fun>>>>>>>', moment(selectedMonth).format('MMMM'));
+
   return (
     <>
-      {console.log('CSV DATA', csvData)}
       <Container>
         <Stack alignItems="center" justifyContent="center" spacing={5} sx={{ my: 2 }}>
           <Modal
@@ -396,10 +466,71 @@ export default function TimeSheet() {
                     color="primary"
                     // onClick={() => setApprovalModal(false)}
                     onClick={
-                      () => (openModal ? setOpenModal(false) : updateWebIdModal ? setUpdateWebIdModal(false) : null)
+                      () =>
+                        openModal
+                          ? // (
+                            setOpenModal(false)
+                          : // navigate('/EmpManagmentTL')
+                          // )
+                          updateWebIdModal
+                          ? setUpdateWebIdModal(false)
+                          : null
                       // setOpenModal(false);
                       // navigate('/EmployeesTL');
                     }
+                    sx={{ mt: 2 }}
+                  >
+                    OK
+                  </Button>
+                </Stack>
+              </Grid>
+            </Box>
+          </Modal>
+
+          <Modal open={openCalendar} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400,
+                bgcolor: 'background.paper',
+                border: '2px solid transparent',
+                boxShadow: 24,
+                p: 4,
+                borderRadius: '8px',
+              }}
+              component="form"
+            >
+              <Calendar
+                view="year"
+                value={selectedDate}
+                // onChange={handleChange}
+                onClickMonth={handleChange}
+                sx={{ height: 200, width: 200 }}
+                inputProps={{
+                  max: format(addMonths(new Date(), 2), 'yyyy-MM-dd'),
+                }}
+              />
+
+              <Grid
+                container
+                item
+                xs={12}
+                justifyContent={'center'}
+                style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
+              >
+                <Stack direction="row" justifyContent="center">
+                  <Button
+                    size="medium"
+                    variant="contained"
+                    type="button"
+                    color="primary"
+                    onClick={() => {
+                      setOpenCalendar(false);
+                      // handleChange();
+                    }}
                     sx={{ mt: 2 }}
                   >
                     OK
@@ -426,7 +557,58 @@ export default function TimeSheet() {
             justifyContent: 'center',
           }}
         >
-          <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" mt={2} sx={{ padding: 2 }}>
+          <Stack>
+            <Stack>
+              <UserListToolbar
+                numSelected={selected.length}
+                filterName={filterName}
+                onFilterName={handleFilterByName}
+                // employeeList={empArray.slice(pagination.offset, pagination.offset + pagination.numberPerPage)}
+                employeeList={empArray}
+              />
+            </Stack>
+            <Stack flexDirection="row" justifyContent="space-between" sx={{ paddingRight: 3, paddingLeft: 3 }}>
+              <Stack
+                sx={{
+                  height: 60,
+                  // width: '25%',
+                }}
+                // mb={3}
+              >
+                <Button
+                  size="medium"
+                  variant="contained"
+                  type="button"
+                  startIcon={<Iconify icon="ri:calendar-line" />}
+                  color="primary"
+                  onClick={() => setOpenCalendar(true)}
+                  // sx={{ mt: 2 }}
+                >
+                  Select Month
+                </Button>
+              </Stack>
+              <Stack mt={2}>
+                <Typography variant="h4" sx={{ color: '#0072BC' }}>
+                  {selectedMonth ? moment(selectedMonth).format('MMMM') : moment().format('MMMM')}
+                </Typography>
+              </Stack>
+              <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" mb={5}>
+                <Button
+                  variant="contained"
+                  startIcon={<Iconify icon="ri:file-excel-2-line" />}
+                  onClick={() => downloadEmployeeData()}
+                  color="primary"
+                  size="medium"
+                >
+                  Download Excel
+                </Button>
+              </Stack>
+            </Stack>
+
+            {/* </Stack> */}
+          </Stack>
+          {/* </Stack> */}
+          {/* <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" mt={2} sx={{ padding: 2 }}>
             <Button
               variant="contained"
               startIcon={<Iconify icon="ri:file-excel-2-line" />}
@@ -436,14 +618,8 @@ export default function TimeSheet() {
             >
               Download Excel
             </Button>
-          </Stack>
-          <UserListToolbar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-            // employeeList={empArray.slice(pagination.offset, pagination.offset + pagination.numberPerPage)}
-            employeeList={empArray}
-          />
+          </Stack> */}
+
           <>
             {/* <Scrollbar> */}
             {isLoading ? (
@@ -452,18 +628,28 @@ export default function TimeSheet() {
               </Stack>
             ) : (
               <>
-                <Stack
+                {/* <Stack
                   justifyContent="center"
                   alignItems="center"
+                  direction="row"
                   sx={{
                     height: 40,
                     flexDirection: 'row',
                   }}
+                  mb={3}
                 >
-                  <Typography variant="h5" sx={{ textAlign: 'center', color: '#0072BC' }}>
-                    {atsApiRes?.[0]?.timeSheetDtls?.month} {atsApiRes?.[0]?.timeSheetDtls?.year}
-                  </Typography>
-                </Stack>
+              
+                  <Button
+                    size="medium"
+                    variant="contained"
+                    type="button"
+                    color="primary"
+                    onClick={() => setOpenCalendar(true)}
+                    sx={{ mt: 2 }}
+                  >
+                    Select Month
+                  </Button>
+                </Stack> */}
                 <Scrollbar>
                   <TableContainer sx={{ minWidth: 800, height: '60vh' }}>
                     {console.log('not found', atsApiRes)}
@@ -493,14 +679,19 @@ export default function TimeSheet() {
                               role="checkbox"
                               selected={selectedUser}
                               onClick={() =>
-                                response?.webUserId
-                                  ? navigate('/EmployeeTimesheetDetails', {
-                                      state: {
-                                        user: response?.timeSheetDtls,
-                                      },
-                                    })
-                                  : setUpdateWebIdModal(true)
+                                response?.timeSheetDtls
+                                  ? response?.webUserId
+                                    ? navigate('/EmployeeTimesheetDetails', {
+                                        state: {
+                                          user: response?.timeSheetDtls,
+                                          startDate,
+                                          endDate,
+                                        },
+                                      })
+                                    : setUpdateWebIdModal(true)
+                                  : setOpenModal(true)
                               }
+                            
                               sx={{ cursor: 'pointer' }}
                               ml={2}
                             >
@@ -519,7 +710,7 @@ export default function TimeSheet() {
                                   <Typography>
                                     {response?.timeSheetDtls?.totalWorkingDays === null
                                       ? '-'
-                                      : response?.timeSheetDtls?.totalWorkingDays}
+                                      : response?.timeSheetDtls?.totalWorkingDays || '-'}
                                   </Typography>
                                 </TableCell>
 
@@ -528,7 +719,7 @@ export default function TimeSheet() {
                                     <Typography>
                                       {response?.timeSheetDtls?.atsfilledDays === null
                                         ? '-'
-                                        : response?.timeSheetDtls?.atsfilledDays}{' '}
+                                        : response?.timeSheetDtls?.atsfilledDays || '-'}
                                     </Typography>
                                   </Label>
                                 </TableCell>
@@ -536,12 +727,14 @@ export default function TimeSheet() {
                                   <Label color="success">
                                     {response?.timeSheetDtls?.atsnotFilledDays === null
                                       ? '-'
-                                      : response?.timeSheetDtls?.atsnotFilledDays}
+                                      : response?.timeSheetDtls?.atsnotFilledDays || '-'}
                                   </Label>
                                 </TableCell>
 
                                 <TableCell align="center">
-                                  {response?.timeSheetDtls?.leave === null ? '-' : response?.timeSheetDtls?.leave}
+                                  {response?.timeSheetDtls?.leave === null
+                                    ? '-'
+                                    : response?.timeSheetDtls?.leave || '-'}
                                 </TableCell>
                               </>
                             </TableRow>

@@ -7,7 +7,6 @@ import {
   Card,
   Table,
   Stack,
-  Paper,
   Button,
   TableRow,
   TableBody,
@@ -72,29 +71,17 @@ function applySortFilter(array, comparator, query) {
 export default function EmployeeListTL() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('empId');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(25);
-
   const [employeeList = [], setEmployeeList] = useState();
-
   const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState(null)
   const [errorMessage, setErrorMessage] = useState(false);
   const [emptyRows, setEmptyRows] = useState();
   const [activeEmployees, setActiveEmployees] = useState([]);
-  // const [isNotFound, setIsNotFound] = useState(false);
-
-  console.log('LOCATION', location);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
@@ -115,19 +102,10 @@ export default function EmployeeListTL() {
           } else {
             console.log('empListVendorRes=====>', empListTLRes);
             setEmployeeList(empListTLRes.data);
-            // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
 
-            // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
-
-            // const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
-
-            // const isNotFound = !filteredUsers.length && !!filterName;
             setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListTLRes.data.length) : 0);
             const filteredUsers = applySortFilter(empListTLRes.data, getComparator(order, orderBy), filterName);
-            // setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-            // setIsNotFound(filteredUsers.length && !!filterName);
 
-   
             if (location.state?.filterByPartnerName) {
               setActiveEmployees(
                 filteredUsers.filter(
@@ -173,24 +151,6 @@ export default function EmployeeListTL() {
     setSelected([]);
   };
 
-  // const handleClick = (event, name) => {
-  //   const selectedIndex = selected.indexOf(name);
-  //   let newSelected = [];
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, name);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1)
-  //     );
-  //   }
-  //   setSelected(newSelected);
-  // };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -205,16 +165,7 @@ export default function EmployeeListTL() {
     setPage(0);
     const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), event.target.value);
     setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-    // setIsNotFound(filteredUsers.length && !!event.target.value);
   };
-
-  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
-
-  // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
-
-  // const activeEmployees = filteredUsers.filter((employees) => employees.employeeStatus === 'Active');
-
-  // const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>
@@ -332,30 +283,6 @@ export default function EmployeeListTL() {
                               </TableRow>
                             )}
                           </TableBody>
-
-                          {/* {isNotFound && (
-                          <TableBody>
-                            <TableRow>
-                              <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                <Paper
-                                  sx={{
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  <Typography variant="h6" paragraph>
-                                    Not found
-                                  </Typography>
-
-                                  <Typography variant="body2">
-                                    No results found for &nbsp;
-                                    <strong>&quot;{filterName}&quot;</strong>.
-                                    <br /> Try checking for typos or using complete words.
-                                  </Typography>
-                                </Paper>
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        )} */}
                         </Table>
                       </TableContainer>
                     </Scrollbar>

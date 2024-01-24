@@ -1900,8 +1900,11 @@ export default function ViewEmployee() {
                             select
                             // select={state.mainVerticalList.length !== 0}
                             onClick={getMainVerticalList}
+                            
                             value={values.verticalMain}
                             // select={values.verticalMain === ''}
+                            open
+                          
                             label="Main Vertical"
                             fullWidth
                             required

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Card, Stack, CardHeader } from '@mui/material';
+import { Container, Typography, Card, Stack } from '@mui/material';
 import ReactApexChart from 'react-apexcharts';
 import { useNavigate } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
@@ -122,13 +122,10 @@ export default function EmpManagmentTL() {
 
     navigate('/EmployeesTL', {
       state: {
-        filterByPartnerName: chartData
-      } 
-    })
-  }
-
-  console.log('ARRAY partnerName...>>', partnerName);
-  console.log('ARRAY partnerCount...>>', partnerCount);
+        filterByPartnerName: chartData,
+      },
+    });
+  };
 
   const chartOptions = useChart({
     colors: chartColors,
@@ -191,13 +188,13 @@ export default function EmpManagmentTL() {
       },
       events: {
         dataPointSelection: (event, chartContext, config) => {
-          handleClickedData (
+          handleClickedData(
             config.w.config.series[config.seriesIndex].name,
             partnerName,
             partnerName[config.dataPointIndex]
-          )
-        }
-      }
+          );
+        },
+      },
     },
     yaxis: {
       min: -30,
@@ -230,7 +227,6 @@ export default function EmpManagmentTL() {
                     lineHeight: '1.5',
                     fontSize: '1.0625rem',
                     fontFamily: 'Roboto,sans-serif',
-                    // display: block;
                   }}
                 >
                   Employee Dashboard

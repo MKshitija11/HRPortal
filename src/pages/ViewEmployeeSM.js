@@ -27,7 +27,7 @@ import format from 'date-fns/format';
 import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
-import Constants from '../Constants/Constants'
+import Constants from '../Constants/Constants';
 
 export default function ViewEmployee() {
   const [state, setState] = useState({
@@ -86,7 +86,6 @@ export default function ViewEmployee() {
   const [isLoading, setIsLoading] = useState(false);
   const [showAlertMessage, setShowAlertMessage] = useState(false);
   const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
-  
 
   const handleChangeWaSwitch = (evt) => {
     if (evt.target.checked) {
@@ -586,18 +585,23 @@ export default function ViewEmployee() {
       state.partnerName = USERDETAILS?.[0]?.partnerName;
       state.createdBy = USERDETAILS?.[0]?.spocEmailId;
 
-      const mainVerticalReq = {
-        key: 'MAIN_VERTICAL',
-        value: '',
-      };
-
-      Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
-        setVerticalMainList(mainVerticalRes);
-        state.mainVerticalList = mainVerticalRes.data;
-      });
+      getMainVerticalList();
     }
     // eslint-disable-next-line
   }, []);
+
+  const getMainVerticalList = () => {
+    console.log('clciked!!');
+    const mainVerticalReq = {
+      key: 'MAIN_VERTICAL',
+      value: '',
+    };
+
+    Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
+      setVerticalMainList(mainVerticalRes.data);
+      state.mainVerticalList = mainVerticalRes.data;
+    });
+  };
 
   useEffect(() => {
     const viewEmployeeReq = {
@@ -1709,8 +1713,9 @@ export default function ViewEmployee() {
                             id="verticalMain"
                             name="verticalMain"
                             // select={state.mainVerticalList.length !== 0}
-                            select={values.verticalMain === ''}
-                            //  select
+                            // select={values.verticalMain === ''}
+                            select
+                            onClick={getMainVerticalList}
                             label="Main Vertical"
                             fullWidth
                             required
@@ -1736,7 +1741,8 @@ export default function ViewEmployee() {
                             id="verticalSub"
                             name="verticalSub"
                             // select={verticalSubList.length !== 0}
-                            select={values.verticalSub === ''}
+                            // select={values.verticalSub === ''}
+                            select
                             label="Sub Vertical"
                             fullWidth
                             required
@@ -1768,7 +1774,8 @@ export default function ViewEmployee() {
                             id="departmentDesc"
                             name="departmentDesc"
                             // select={departmentList.length !== 0}
-                            select={values.departmentDesc === ''}
+                            select
+                            // select={values.departmentDesc === ''}
                             label="Department (IT)"
                             fullWidth
                             required
@@ -1800,7 +1807,8 @@ export default function ViewEmployee() {
                             id="functionDesc"
                             name="functionDesc"
                             // select={functionsList.length !== 0}
-                            select={values.functionDesc === ''}
+                            // select={values.functionDesc === ''}
+                            select
                             label="Function (IT)"
                             fullWidth
                             required
@@ -1832,7 +1840,8 @@ export default function ViewEmployee() {
                             id="lob"
                             name="lob"
                             // select={projectsList.length !== 0}
-                            select={values.lob === ''}
+                            // select={values.lob === ''}
+                             select
                             label="LOB"
                             fullWidth
                             required
@@ -1864,7 +1873,8 @@ export default function ViewEmployee() {
                             id="invoiceType"
                             name="invoiceType"
                             // select={invoiceList.length !== 0}
-                            select={values.invoiceType === ''}
+                            select
+                            // select={values.invoiceType === ''}
                             label="Invoice Type"
                             fullWidth
                             required

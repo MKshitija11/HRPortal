@@ -612,11 +612,7 @@ export default function ViewEmployee() {
     Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
       setVerticalMainList(mainVerticalRes.data);
       state.mainVerticalList = mainVerticalRes.data;
-      // setState({
-      //   ...state,
-      //   mainVerticalList: mainVerticalRes?.data,
-      //   // verticalMain: mainVerticalRes.data
-      // });
+      
     });
   };
 

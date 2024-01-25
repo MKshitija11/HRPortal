@@ -95,8 +95,8 @@ export default function ViewEmployee() {
   const [isLoading, setIsLoading] = useState(false);
   const [showAlertMessage, setShowAlertMessage] = useState(false);
   const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
-  const [approvalResponse, setApprovalResponse] = useState()
-  
+  const [approvalResponse, setApprovalResponse] = useState();
+
   const handleChangeWaSwitch = (evt) => {
     if (evt.target.checked) {
       document.getElementById('whatsappNumber').value = state.mobileNumber;
@@ -388,18 +388,23 @@ export default function ViewEmployee() {
       setUserProfile(USERDETAILS?.[0]?.userProfile);
       state.partnerName = USERDETAILS?.[0]?.partnerName;
       state.createdBy = USERDETAILS?.[0]?.spocEmailId;
-      const mainVerticalReq = {
-        key: 'MAIN_VERTICAL',
-        value: '',
-      };
-
-      Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
-        setVerticalMainList(mainVerticalRes.data);
-        state.mainVerticalList = mainVerticalRes.data;
-      });
+      getMainVerticalList();
     }
     // eslint-disable-next-line
   }, []);
+
+  const getMainVerticalList = () => {
+    console.log('clciked!!');
+    const mainVerticalReq = {
+      key: 'MAIN_VERTICAL',
+      value: '',
+    };
+
+    Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
+      setVerticalMainList(mainVerticalRes.data);
+      state.mainVerticalList = mainVerticalRes.data;
+    });
+  };
 
   useEffect(() => {
     const viewEmployeeReq = {
@@ -517,7 +522,7 @@ export default function ViewEmployee() {
           .then((employeeFormRes) => {
             console.log('employeeFormRes::', employeeFormRes.data);
             if (employeeFormRes) {
-              setApprovalResponse(employeeFormRes.data)
+              setApprovalResponse(employeeFormRes.data);
               setTimeout(() => {
                 setIsLoading(false);
                 setOpenSuccessModal(true);
@@ -682,177 +687,177 @@ export default function ViewEmployee() {
   });
 
   const handleOnBoardingTicket = () => {
-    const  onBoardingRequest = {
-      requestType: "GET_TICKET",
-    integrationLogId: "unique_id_for_each_request",
-    iteration: 0,
-    ticket: {
-      project: {
-        projectName: "Employee On/Offboarding"
+    const onBoardingRequest = {
+      requestType: 'GET_TICKET',
+      integrationLogId: 'unique_id_for_each_request',
+      iteration: 0,
+      ticket: {
+        project: {
+          projectName: 'Employee On/Offboarding',
+        },
+        service: {
+          id: '83',
+        },
+        title: 'Test Ticket for UAT',
+        submittedBy: {
+          username: 'sanket.gavhane',
+        },
+        category: {
+          id: '319',
+        },
+        subCategory: {
+          id: '1105',
+        },
+        location: {
+          name: 'Marvel',
+        },
+        department: {
+          name: 'IT',
+        },
+        priority: {
+          name: 'P3',
+        },
+        urgency: {
+          name: 'Low',
+        },
+        impact: {
+          name: 'Low',
+        },
+        probDescription: 'Test Ticket for UAT employee onboarding',
+        ccMailId: '',
+        alternativeEmail: '',
+        submittedThrough: 0,
+        source: {
+          name: 'Web',
+        },
+        additionalParams: {
+          updated: false,
+          attribute76: {
+            updated: false,
+            data: '',
+            fieldid: '330',
+          },
+          attribute77: {
+            updated: false,
+            // data: "firstname",
+            data: approvalResponse.employeeFirstName,
+            fieldid: '331',
+          },
+          attribute78: {
+            updated: false,
+            // data: "lastname",
+            data: approvalResponse.employeeLastName,
+            fieldid: '332',
+          },
+          attribute79: {
+            updated: false,
+            // data: "employeecode",
+            data: approvalResponse.employeeId,
+            fieldid: '333',
+          },
+          attribute80: {
+            updated: false,
+            data: '1019',
+            fieldid: '334',
+          },
+          attribute81: {
+            updated: false,
+            // data: "mobilenumber",
+            data: approvalResponse.mobileNumber,
+            fieldid: '335',
+          },
+          attribute82: {
+            updated: false,
+            // data: "joiningDate",
+            data: approvalResponse.joiningDate,
+            fieldid: '336',
+          },
+          attribute83: {
+            updated: false,
+            data: 'bagic_reporting_auth_empcode',
+            fieldid: '337',
+          },
+          attribute84: {
+            updated: false,
+            // data: "bagic_reporting_auth_email",
+            data: approvalResponse.reportingTeamLead,
+            fieldid: '338',
+          },
+          attribute85: {
+            updated: false,
+            // data: "vendor comapany name (partner name)",
+            data: approvalResponse.partnerName,
+            fieldid: '339',
+          },
+          attribute86: {
+            updated: false,
+            data: 'senior manager email',
+            fieldid: '340',
+          },
+          attribute87: {
+            updated: false,
+            // data: "designation",
+            data: approvalResponse.designation,
+            fieldid: '341',
+          },
+          // Domain Id required
+          attribute23: {
+            updated: false,
+            data: 'No',
+            fieldid: '246',
+          },
+          // email Id required
+          attribute24: {
+            updated: false,
+            data: 'No',
+            fieldid: '247',
+          },
+          attribute122: {
+            updated: false,
+            data: 'icewrap',
+            fieldid: '289',
+          },
+          // firewall access required
+          attribute64: {
+            updated: false,
+            data: 'No',
+            fieldid: '317',
+          },
+          // source ip
+          attribute65: {
+            updated: false,
+            data: '10.1.1.1',
+            fieldid: '318',
+          },
+          // destination ip
+          attribute66: {
+            updated: false,
+            data: '10.2.2.2',
+            fieldid: '319',
+          },
+          // port
+          attribute67: {
+            updated: false,
+            data: '8080',
+            fieldid: '320',
+          },
+          // pc allocation
+          attribute73: {
+            updated: false,
+            data: 'Laptop',
+            fieldid: '327',
+          },
+          // softwares installed
+          attribute75: {
+            updated: false,
+            data: 'Notepad++',
+            fieldid: '329',
+          },
+        },
+        rpaEvent: 'false',
       },
-      service: {
-        id: "83"
-      },
-      title:"Test Ticket for UAT",
-      submittedBy: {
-        username: "sanket.gavhane"
-      },
-      category: {
-        id: "319"
-      },
-      subCategory: {
-        id:"1105"
-      },
-      location: {
-        name: "Marvel"
-      },
-      department:{
-        name: "IT"
-      },
-      priority:{
-        name: "P3"
-      },
-      urgency: {
-        name: "Low"
-      },
-      impact:{
-        name: "Low"
-      },
-      probDescription: "Test Ticket for UAT employee onboarding",
-      ccMailId: "",
-      alternativeEmail: "",
-      submittedThrough: 0,
-      source: {
-        name: "Web"
-      },
-      additionalParams: {
-        updated: false,
-        attribute76: {
-          updated: false,
-          data: "",
-          fieldid: "330"
-        },
-        attribute77: {
-          updated: false,
-          // data: "firstname",
-          data: approvalResponse.employeeFirstName,
-          fieldid: "331"
-        },
-        attribute78: {
-          updated: false,
-          // data: "lastname",
-          data: approvalResponse.employeeLastName,
-          fieldid: "332"
-        },
-        attribute79: {
-          updated: false,
-          // data: "employeecode",
-          data: approvalResponse.employeeId,
-          fieldid: "333"
-        },
-        attribute80: {
-          updated: false,
-          data: "1019",
-          fieldid: "334"
-        },
-        attribute81: {
-          updated: false,
-          // data: "mobilenumber",
-          data: approvalResponse.mobileNumber,
-          fieldid: "335"
-        },
-        attribute82: {
-          updated: false,
-          // data: "joiningDate",
-          data: approvalResponse.joiningDate,
-          fieldid: "336"
-        },
-        attribute83: {
-          updated: false,
-          data: "bagic_reporting_auth_empcode",
-          fieldid: "337"
-        },
-        attribute84: {
-          updated: false,
-          // data: "bagic_reporting_auth_email",
-          data:approvalResponse.reportingTeamLead,
-          fieldid: "338"
-        },
-        attribute85: {
-          updated: false,
-          // data: "vendor comapany name (partner name)",
-          data: approvalResponse.partnerName,
-          fieldid: "339"
-        },
-        attribute86: {
-          updated: false,
-          data: "senior manager email",
-          fieldid: "340"
-        },
-        attribute87: {
-          updated: false,
-          // data: "designation",
-          data: approvalResponse.designation,
-          fieldid: "341"
-        },
-        // Domain Id required
-        attribute23: {
-          updated: false,
-          data: "No",
-          fieldid: "246"
-        },
-        // email Id required
-        attribute24: {
-          updated: false,
-          data: "No",
-          fieldid: "247"
-        },
-        attribute122: {
-          updated: false,
-          data: "icewrap",
-          fieldid: "289"
-        },
-        // firewall access required 
-        attribute64: {
-          updated: false,
-          data: "No",
-          fieldid: "317"
-        },
-        // source ip
-        attribute65: {
-          updated: false,
-          data: "10.1.1.1",
-          fieldid: "318"
-        },
-        // destination ip
-        attribute66: {
-          updated: false,
-          data: "10.2.2.2",
-          fieldid: "319"
-        },
-        // port
-        attribute67: {
-          updated: false,
-          data: "8080",
-          fieldid: "320"
-        },
-        // pc allocation
-        attribute73: {
-          updated: false,
-          data: "Laptop",
-          fieldid: "327"
-        },
-        // softwares installed
-        attribute75: {
-          updated: false,
-          data: "Notepad++",
-          fieldid: "329"
-        },
-      },
-      rpaEvent: "false"
-    }
-    }
-  }
+    };
+  };
 
   return (
     <>
@@ -1540,25 +1545,20 @@ export default function ViewEmployee() {
                             <input type="hidden" id="itSpocFlag" name="itSpocFlag" value="Approved" />
                           )}
                           <FormControl fullWidth>
-                          <input
-                            type="hidden"
-                            id="reportingItSpoc"
-                            name="reportingItSpoc"
-                            value={state.reportingItSpoc}
-                          />
-                          <input
-                            type="hidden"
-                            id="reportingAvpVpSvp"
-                            name="reportingAvpVpSvp"
-                            value={state.reportingAvpVpSvp}
-                          />
-                           <input
-                            type="hidden"
-                            id="projectType"
-                            name="projectType"
-                            value={state.projectType}
-                          />
-                           {/* <input
+                            <input
+                              type="hidden"
+                              id="reportingItSpoc"
+                              name="reportingItSpoc"
+                              value={state.reportingItSpoc}
+                            />
+                            <input
+                              type="hidden"
+                              id="reportingAvpVpSvp"
+                              name="reportingAvpVpSvp"
+                              value={state.reportingAvpVpSvp}
+                            />
+                            <input type="hidden" id="projectType" name="projectType" value={state.projectType} />
+                            {/* <input
                             type="hidden"
                             id="invoiceType"
                             name="invoiceType"
@@ -1865,7 +1865,9 @@ export default function ViewEmployee() {
                             labelId="demo-select-small"
                             id="verticalMain"
                             name="verticalMain"
-                            select={values.verticalMain === ''}
+                            // select={values.verticalMain === ''}
+                            select
+                            onClick={getMainVerticalList}
                             label="Main Vertical"
                             fullWidth
                             required
@@ -1896,7 +1898,8 @@ export default function ViewEmployee() {
                             id="verticalSub"
                             name="verticalSub"
                             // select={verticalSubList.length !== 0}
-                            select={values.verticalSub === ''}
+                            // select={values.verticalSub === ''}
+                            select
                             label="Sub Vertical"
                             fullWidth
                             required
@@ -1928,7 +1931,8 @@ export default function ViewEmployee() {
                             id="departmentDesc"
                             name="departmentDesc"
                             // select={departmentList.length !== 0}
-                            select={values.departmentDesc === ''}
+                            // select={values.departmentDesc === ''}
+                            select
                             label="Department (IT)"
                             fullWidth
                             required
@@ -1960,7 +1964,8 @@ export default function ViewEmployee() {
                             id="functionDesc"
                             name="functionDesc"
                             // select={functionsList.length !== 0 }
-                            select={values.functionDesc === ''}
+                            // select={values.functionDesc === ''}
+                            select
                             label="Function (IT)"
                             fullWidth
                             required
@@ -1998,7 +2003,8 @@ export default function ViewEmployee() {
                             id="lob"
                             name="lob"
                             // select={projectsList.length !== 0}
-                            select={values.lob === ''}
+                            // select={values.lob === ''}
+                            select
                             label="LOB"
                             fullWidth
                             required
@@ -2067,7 +2073,8 @@ export default function ViewEmployee() {
                             id="invoiceType"
                             name="invoiceType"
                             // select={invoiceList.length !== 0}
-                            select={values.invoiceType === ''}
+                            // select={values.invoiceType === ''}
+                            select
                             label="Invoice Type"
                             fullWidth
                             required

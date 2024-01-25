@@ -32,11 +32,12 @@ import Configuration from '../utils/Configuration';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'empId', label: 'Employee Code', alignRight: false },
+  // { id: 'empId', label: 'Employee Code', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'company', label: 'Company', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
+  { id: 'joiningDate', label: 'Joining Date', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -72,21 +73,13 @@ function applySortFilter(array, comparator, query) {
 
 export default function EmployeeListBP() {
   const navigate = useNavigate();
-
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
-  const [orderBy, setOrderBy] = useState('empId');
-
+  const [orderBy, setOrderBy] = useState('joiningDate');
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(25);
-
   const [employeeList = [], setEmployeeList] = useState();
-
   const [isLoading, setIsLoading] = useState(false);
   const [csvData = [], setCsvData] = useState();
   const [errorMessage, setErrorMessage] = useState(false);
@@ -140,6 +133,7 @@ export default function EmployeeListBP() {
   };
 
   const handleRequestSort = (event, property) => {
+    // input.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -349,6 +343,7 @@ export default function EmployeeListBP() {
                                     employeeStatus,
                                     partnerName,
                                     supportDevelopment,
+                                    joiningDate,
                                   } = row;
                                   const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
@@ -362,7 +357,7 @@ export default function EmployeeListBP() {
                                       onClick={() => ViewEmployee(row.id)}
                                       sx={{ cursor: 'pointer' }}
                                     >
-                                      <TableCell align="left">{employeeId}</TableCell>
+                                      {/* <TableCell align="left">{employeeId}</TableCell> */}
 
                                       <TableCell component="th" scope="row">
                                         <Typography noWrap>{employeeFullName}</Typography>
@@ -384,6 +379,7 @@ export default function EmployeeListBP() {
                                           {employeeStatus}
                                         </Label>
                                       </TableCell>
+                                      <TableCell align="left">{joiningDate || '-'}</TableCell>
                                     </TableRow>
                                   );
                                 })}

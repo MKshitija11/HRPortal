@@ -30,7 +30,7 @@ import Configuration from '../utils/Configuration';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'empId', label: 'Employee Code', alignRight: false },
+  // { id: 'empId', label: 'Employee Code', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'company', label: 'Company', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
@@ -252,6 +252,7 @@ export default function PendingEmployeeListHR() {
                               employeeStatus,
                               partnerName,
                               supportDevelopment,
+                              joiningDate
                             } = row;
                             const selectedUser = selected.indexOf(employeeFullName) !== -1;
                             console.log('ROW ID FROM EMP', row.id, row.partnerName);
@@ -270,9 +271,9 @@ export default function PendingEmployeeListHR() {
                                 }}
                                 sx={{ cursor: 'pointer' }}
                               >
-                                <TableCell align="left">{employeeId}</TableCell>
+                                {/* <TableCell align="left">{employeeId}</TableCell> */}
 
-                                <TableCell component="th" scope="row" padding="none">
+                                <TableCell component="th" scope="row" >
                                   <Typography noWrap>{employeeFullName}</Typography>
                                 </TableCell>
 
@@ -291,6 +292,7 @@ export default function PendingEmployeeListHR() {
                                     {employeeStatus}
                                   </Label>
                                 </TableCell>
+                                <TableCell align="left">{joiningDate || '-'}</TableCell>
                               </TableRow>
                             );
                           })}

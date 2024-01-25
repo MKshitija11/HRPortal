@@ -32,11 +32,12 @@ import Configuration from '../utils/Configuration';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'empId', label: 'Employee Code', alignRight: false },
+  // { id: 'empId', label: 'Employee Code', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'company', label: 'Company', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
+  { id: 'joiningDate', label: 'Joining Date', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -389,6 +390,7 @@ export default function PendingEmployeeListBP() {
                                     employeeStatus,
                                     partnerName,
                                     supportDevelopment,
+                                    joiningDate
                                   } = row;
                                   const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
@@ -402,7 +404,7 @@ export default function PendingEmployeeListBP() {
                                       onClick={() => ViewEmployee(row.id)}
                                       sx={{ cursor: 'pointer' }}
                                     >
-                                      <TableCell align="left">{employeeId}</TableCell>
+                                      {/* <TableCell align="left">{employeeId}</TableCell> */}
 
                                       <TableCell component="th" scope="row">
                                         <Typography noWrap>{employeeFullName}</Typography>
@@ -425,6 +427,7 @@ export default function PendingEmployeeListBP() {
                                           {employeeStatus}
                                         </Label>
                                       </TableCell>
+                                      <TableCell align="left">{joiningDate || '-'}</TableCell>
                                     </TableRow>
                                   );
                                 })}

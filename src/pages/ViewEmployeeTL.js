@@ -17,6 +17,9 @@ import {
   Select,
   FormControl,
   InputLabel,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -27,6 +30,7 @@ import format from 'date-fns/format';
 import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
+import Constants from '../Constants/Constants';
 
 export default function ViewEmployee() {
   const [state, setState] = useState({
@@ -87,178 +91,7 @@ export default function ViewEmployee() {
   const [isLoading, setIsLoading] = useState(false);
   const [showAlertMessage, setShowAlertMessage] = useState(false);
   const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
-
-  const evaluationPeriodList = [
-    {
-      value: '15 Days',
-      label: '15 Days',
-    },
-    {
-      value: '30 Days',
-      label: '30 Days',
-    },
-    {
-      value: '45 Days',
-      label: '45 Days',
-    },
-    {
-      value: '60 Days',
-      label: '60 Days',
-    },
-  ];
-  const newReplacementList = [
-    {
-      value: 'New',
-      label: 'New',
-    },
-    {
-      value: 'Replacement',
-      label: 'Replacement',
-    },
-  ];
-
-  const supportDevelopmentList = [
-    {
-      value: 'Support',
-      label: 'Support',
-    },
-    {
-      value: 'Development',
-      label: 'Development',
-    },
-    {
-      value: 'Testing',
-      label: 'Testing',
-    },
-    {
-      value: 'MIS',
-      label: 'MIS',
-    },
-    {
-      value: 'Project',
-      label: 'Project',
-    },
-    {
-      value: 'Infra Support',
-      label: 'Infra Support',
-    },
-  ];
-
-  const invoiceTypeList = [
-    {
-      value: 'CapEx',
-      label: 'CapEx',
-    },
-    {
-      value: 'OpEx',
-      label: 'OpEx',
-    },
-  ];
-
-  const maximusOpusList = [
-    {
-      value: 'Maximus',
-      label: 'Maximus',
-    },
-    {
-      value: 'Opus',
-      label: 'Opus',
-    },
-    {
-      value: 'Infra',
-      label: 'Infra',
-    },
-  ];
-
-  const genderList = [
-    {
-      value: 'Male',
-      label: 'Male',
-    },
-    {
-      value: 'Female',
-      label: 'Female',
-    },
-  ];
-
-  const experienceSlab = [
-    {
-      value: '0 - 2 years',
-      label: '0 - 2 years',
-    },
-    {
-      value: '2 - 4 years',
-      label: '2 - 4 years',
-    },
-    {
-      value: '4 - 6 years',
-      label: '4 - 6 years',
-    },
-    {
-      value: '6 - 8 years',
-      label: '6 - 8 years',
-    },
-    {
-      value: '8 - 10 years',
-      label: '8 - 10 years',
-    },
-    {
-      value: '10 years and above',
-      label: '10 years and above',
-    },
-  ];
-
-  const LOBList = [
-    {
-      value: 'Health',
-      label: 'Health',
-    },
-    {
-      value: 'Motor OD',
-      label: 'Motor OD',
-    },
-    {
-      value: 'Motor TP',
-      label: 'Motor TP',
-    },
-    {
-      value: 'Non-motor',
-      label: 'Non-motor',
-    },
-    {
-      value: 'Travel',
-      label: 'Travel',
-    },
-    {
-      value: 'PG',
-      label: 'PG',
-    },
-    {
-      value: 'DBA',
-      label: 'DBA',
-    },
-    {
-      value: 'Testing',
-      label: 'Testing',
-    },
-
-    {
-      value: 'MIS',
-      label: 'MIS',
-    },
-    {
-      value: 'Accounting',
-      label: 'Accounting',
-    },
-    {
-      value: 'Customer Support',
-      label: 'Customer Support',
-    },
-    {
-      value: 'Infra',
-      label: 'Infra',
-    },
-  ];
+  const [checked, setChecked] = useState(false);
 
   const handleChangeWaSwitch = (evt) => {
     if (evt.target.checked) {
@@ -1389,7 +1222,7 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {genderList.map((option) => (
+                            {Constants.genderList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1567,7 +1400,7 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                             // }}
                           >
-                            {newReplacementList.map((option) => (
+                            {Constants.newReplacementList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1624,7 +1457,7 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                             // }}
                           >
-                            {supportDevelopmentList.map((option) => (
+                            {Constants.supportDevelopmentList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1706,7 +1539,7 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                             // }}
                           >
-                            {evaluationPeriodList.map((option) => (
+                            {Constants.evaluationPeriodList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1735,7 +1568,7 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For TL Review' ? 'grey' : 'black' },
                             // }}
                           >
-                            {experienceSlab.map((option) => (
+                            {Constants.experienceSlab.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1900,11 +1733,9 @@ export default function ViewEmployee() {
                             select
                             // select={state.mainVerticalList.length !== 0}
                             onClick={getMainVerticalList}
-                            
                             value={values.verticalMain}
                             // select={values.verticalMain === ''}
                             open
-                          
                             label="Main Vertical"
                             fullWidth
                             required
@@ -1968,7 +1799,6 @@ export default function ViewEmployee() {
                             // select={values.departmentDesc === ''}
                             select
                             label="Department (IT)"
-                        
                             fullWidth
                             value={values.departmentDesc}
                             required
@@ -2052,7 +1882,7 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {LOBList.map((option) => (
+                            {Constants.LOBList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -2085,7 +1915,7 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {invoiceTypeList.map((option) => (
+                            {Constants.invoiceTypeList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -2117,7 +1947,7 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {maximusOpusList.map((option) => (
+                            {Constants.maximusOpusList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -2126,7 +1956,23 @@ export default function ViewEmployee() {
                         </Grid>
                       </Grid>
                       <br />
-
+                      <Stack flexDirection="row">
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                // onChange={handleOnboardingProcess}
+                                id="onBoarding"
+                                disabled
+                                checked={checked ? state.onBoarding === 'Y' : !checked}
+                              />
+                            }
+                            label="Initiate On-boardinng Ticket of Employee"
+                            sx={{ color: 'black', fontWeight: 600 }}
+                          />
+                        </FormGroup>
+                      </Stack>
+                      <br />
                       <Grid container item xs={12} justifyContent={'center'}>
                         <Stack spacing={2} direction="row" justifyContent="center">
                           {state.employeeStatus === 'Active' ? (

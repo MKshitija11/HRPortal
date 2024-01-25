@@ -27,6 +27,7 @@ import format from 'date-fns/format';
 import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
+import Constants from '../Constants/Constants';
 
 export default function ViewEmployee() {
   const [state, setState] = useState({
@@ -95,205 +96,7 @@ export default function ViewEmployee() {
   const [showAlertMessage, setShowAlertMessage] = useState(false);
   const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
   const [approvalResponse, setApprovalResponse] = useState()
-  const evaluationPeriodList = [
-    {
-      value: '15 Days',
-      label: '15 Days',
-    },
-    {
-      value: '30 Days',
-      label: '30 Days',
-    },
-    {
-      value: '45 Days',
-      label: '45 Days',
-    },
-    {
-      value: '60 Days',
-      label: '60 Days',
-    },
-  ];
-  const newReplacementList = [
-    {
-      value: 'New',
-      label: 'New',
-    },
-    {
-      value: 'Replacement',
-      label: 'Replacement',
-    },
-  ];
-
-  const supportDevelopmentList = [
-    {
-      value: 'Support',
-      label: 'Support',
-    },
-    {
-      value: 'Development',
-      label: 'Development',
-    },
-    {
-      value: 'Testing',
-      label: 'Testing',
-    },
-    {
-      value: 'MIS',
-      label: 'MIS',
-    },
-    {
-      value: 'Project',
-      label: 'Project',
-    },
-    {
-      value: 'Infra Support',
-      label: 'Infra Support',
-    },
-  ];
-  const maximusOpusList = [
-    {
-      value: 'Maximus',
-      label: 'Maximus',
-    },
-    {
-      value: 'Opus',
-      label: 'Opus',
-    },
-    {
-      value: 'Infra',
-      label: 'Infra',
-    },
-  ];
-  const genderList = [
-    {
-      value: 'Male',
-      label: 'Male',
-    },
-    {
-      value: 'Female',
-      label: 'Female',
-    },
-  ];
-
-  const experienceSlab = [
-    {
-      value: '0 - 2 years',
-      label: '0 - 2 years',
-    },
-    {
-      value: '2 - 4 years',
-      label: '2 - 4 years',
-    },
-    {
-      value: '4 - 6 years',
-      label: '4 - 6 years',
-    },
-    {
-      value: '6 - 8 years',
-      label: '6 - 8 years',
-    },
-    {
-      value: '8 - 10 years',
-      label: '8 - 10 years',
-    },
-    {
-      value: '10 years and above',
-      label: '10 years and above',
-    },
-  ];
-
-  const LOBList = [
-    {
-      value: 'Health',
-      label: 'Health',
-    },
-    {
-      value: 'Motor OD',
-      label: 'Motor OD',
-    },
-    {
-      value: 'Motor TP',
-      label: 'Motor TP',
-    },
-    {
-      value: 'Non-motor',
-      label: 'Non-motor',
-    },
-    {
-      value: 'Travel',
-      label: 'Travel',
-    },
-    {
-      value: 'PG',
-      label: 'PG',
-    },
-    {
-      value: 'DBA',
-      label: 'DBA',
-    },
-    {
-      value: 'Testing',
-      label: 'Testing',
-    },
-
-    {
-      value: 'MIS',
-      label: 'MIS',
-    },
-    {
-      value: 'Accounting',
-      label: 'Accounting',
-    },
-    {
-      value: 'Customer Support',
-      label: 'Customer Support',
-    },
-    {
-      value: 'Infra',
-      label: 'Infra',
-    },
-  ];
-
-  const designationList = [
-    { value: 'Software Engineer', label: 'Software Engineer' },
-    { value: 'IT Support', label: 'IT Support' },
-    { value: 'Software Developer', label: 'Software Developer' },
-    { value: 'Fuctional Tester', label: 'Fuctional Tester' },
-    { value: 'Test Engineer', label: 'Test Engineer' },
-    { value: 'Systems Support Lead', label: 'Systems Support Lead' },
-    { value: 'Developer', label: 'Developer' },
-    { value: 'QA Engineer', label: 'QA Engineer' },
-    { value: 'Security Tester', label: 'Security Tester' },
-    { value: 'Technical Associate', label: 'Technical Associate' },
-    { value: 'Project Engineer', label: 'Project Engineer' },
-    { value: 'System Engineer', label: 'System Engineer' },
-    { value: 'Project Leader', label: 'Project Leader' },
-    { value: 'Senior Software Engineer', label: 'Senior Software Engineer' },
-    { value: 'IT Engineer', label: 'IT Engineer' },
-    { value: 'Senior Developer', label: 'Senior Developer' },
-    { value: 'Systems Support Engineer', label: 'Systems Support Engineer' },
-    { value: 'Programmer', label: 'Programmer' },
-    { value: 'Technical Lead', label: 'Technical Lead' },
-    { value: 'Senior Programmer', label: 'Senior Programmer' },
-    { value: 'L2 Support', label: 'L2 Support' },
-    { value: 'L3 Support', label: 'L3 Support' },
-    { value: 'Seniour Software Engineer', label: 'Seniour Software Engineer' },
-    { value: 'Team Leader', label: 'Team Leader' },
-    { value: 'L2 Application Support Engineer', label: 'L2 Application Support Engineer' },
-    { value: 'Data Engineer', label: 'Data Engineer' },
-    { value: 'Application Support', label: 'Application Support' },
-    { value: 'Perfomance Tester', label: 'Perfomance Tester' },
-    { value: 'Network Administrator', label: 'Network Administrator' },
-    { value: 'Technical Engineer', label: 'Technical Engineer' },
-    { value: 'Cloud Engineer', label: 'Cloud Engineer' },
-    { value: 'Engineer', label: 'Engineer' },
-    { value: 'MIS Executive', label: 'MIS Executive' },
-    { value: 'Security Consultant', label: 'Security Consultant' },
-    { value: 'Junior Developer', label: 'Junior Developer' },
-    { value: 'Senior Software Developer', label: 'Senior Software Developer' },
-    { value: 'Automation Test Engineer', label: 'Automation Test Engineer' },
-  ];
-
+  
   const handleChangeWaSwitch = (evt) => {
     if (evt.target.checked) {
       document.getElementById('whatsappNumber').value = state.mobileNumber;
@@ -1508,7 +1311,7 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {genderList.map((option) => (
+                            {Constants.genderList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1646,7 +1449,7 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
                             // }}
                           >
-                            {newReplacementList.map((option) => (
+                            {Constants.newReplacementList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1703,7 +1506,7 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
                             // }}
                           >
-                            {supportDevelopmentList.map((option) => (
+                            {Constants.supportDevelopmentList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1849,7 +1652,7 @@ export default function ViewEmployee() {
                             //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
                             // }}
                           >
-                            {evaluationPeriodList.map((option) => (
+                            {Constants.evaluationPeriodList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1880,7 +1683,7 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {experienceSlab.map((option) => (
+                            {Constants.experienceSlab.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -2213,7 +2016,7 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {LOBList.map((option) => (
+                            {Constants.LOBList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -2244,7 +2047,7 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {maximusOpusList.map((option) => (
+                            {Constants.maximusOpusList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>

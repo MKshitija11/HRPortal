@@ -18,6 +18,9 @@ import {
   Switch,
   Modal,
   Box,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import FormHelperText from '@mui/material/FormHelperText';
 
@@ -30,6 +33,7 @@ import format from 'date-fns/format';
 import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
+import Constants from '../Constants/Constants';
 
 export default function ViewEmployee({ props }) {
   const location = useLocation();
@@ -70,166 +74,19 @@ export default function ViewEmployee({ props }) {
     reportingAvpVpSvp: '',
     projectType: '',
     invoiceType: '',
+    // onBoarding: '',
   });
   const [openModal, setOpenModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [checked, setChecked] = useState(false);
   // const [failedModal, setFailedModal] = useState(false);
   const [showAlertMessage, setShowAlertMessage] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [teamLead, setTeamLead] = useState();
-
-  const evaluationPeriodList = [
-    {
-      value: '15 Days',
-      label: '15 Days',
-    },
-    {
-      value: '30 Days',
-      label: '30 Days',
-    },
-    {
-      value: '45 Days',
-      label: '45 Days',
-    },
-    {
-      value: '60 Days',
-      label: '60 Days',
-    },
-  ];
-  const newReplacementList = [
-    {
-      value: 'New',
-      label: 'New',
-    },
-    {
-      value: 'Replacement',
-      label: 'Replacement',
-    },
-  ];
-
-  const supportDevelopmentList = [
-    {
-      value: 'Support',
-      label: 'Support',
-    },
-    {
-      value: 'Development',
-      label: 'Development',
-    },
-    {
-      value: 'Testing',
-      label: 'Testing',
-    },
-    {
-      value: 'MIS',
-      label: 'MIS',
-    },
-    {
-      value: 'Project',
-      label: 'Project',
-    },
-    {
-      value: 'Infra Support',
-      label: 'Infra Support',
-    },
-  ];
-
-  const employeeStatusList = [
-    {
-      value: 'Active',
-      label: 'Active',
-    },
-    {
-      value: 'Resigned',
-      label: 'Resigned',
-    },
-  ];
-
-  const genderList = [
-    {
-      value: 'Male',
-      label: 'Male',
-    },
-    {
-      value: 'Female',
-      label: 'Female',
-    },
-  ];
-
-  const experienceSlab = [
-    {
-      value: '0 - 2 years',
-      label: '0 - 2 years',
-    },
-    {
-      value: '2 - 4 years',
-      label: '2 - 4 years',
-    },
-    {
-      value: '4 - 6 years',
-      label: '4 - 6 years',
-    },
-    {
-      value: '6 - 8 years',
-      label: '6 - 8 years',
-    },
-    {
-      value: '8 - 10 years',
-      label: '8 - 10 years',
-    },
-    {
-      value: '10 years and above',
-      label: '10 years and above',
-    },
-  ];
-
-  const LOBist = [
-    {
-      value: 'Health',
-      label: 'Health',
-    },
-    {
-      value: 'Motor',
-      label: 'Motor',
-    },
-    {
-      value: 'Non-motor',
-      label: 'Non-motor',
-    },
-    {
-      value: 'Travel',
-      label: 'Travel',
-    },
-    {
-      value: 'PG',
-      label: 'PG',
-    },
-    {
-      value: 'DBA',
-      label: 'DBA',
-    },
-    {
-      value: 'Testing',
-      label: 'Testing',
-    },
-
-    {
-      value: 'MIS',
-      label: 'MIS',
-    },
-    {
-      value: 'Accounting',
-      label: 'Accounting',
-    },
-    {
-      value: 'Customer Support',
-      label: 'Customer Support',
-    },
-  ];
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -601,9 +458,9 @@ export default function ViewEmployee({ props }) {
         setIsLoading(false);
         alert('Something went wrong');
       });
-    }, []);
-    
-    console.log("TEMP DATA", state);
+  }, []);
+
+  console.log('TEMP DATA', state);
   const initialValues = {
     employeeFirstName: state.employeeFirstName || '',
     employeeLastName: state.employeeLastName || '',
@@ -636,7 +493,8 @@ export default function ViewEmployee({ props }) {
     reportingAvpVpSvp: state.reportingAvpVpSvp || '',
     reportingItSpoc: state.reportingItSpoc || '',
     projectType: state.projectType || '',
-    invoiceType: state.invoiceType || ''
+    invoiceType: state.invoiceType || '',
+    onBoarding: state.onBoarding || '',
   };
   console.log('API INITIAL VALUEs', initialValues.reportingTeamLead);
 
@@ -690,6 +548,10 @@ export default function ViewEmployee({ props }) {
   });
 
   console.log('API TL', teamLead);
+
+  // const handleOnboardingProcess = (event) => {
+  //   setChecked(event.target.checked);
+  // };
 
   return (
     <>
@@ -1201,7 +1063,7 @@ export default function ViewEmployee({ props }) {
                               },
                             }}
                           >
-                            {genderList.map((option) => (
+                            {Constants.genderList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1423,7 +1285,7 @@ export default function ViewEmployee({ props }) {
                               state.employeeStatus === 'Pending For IT Spoc Review'
                             }
                           >
-                            {newReplacementList.map((option) => (
+                            {Constants.newReplacementList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1492,7 +1354,7 @@ export default function ViewEmployee({ props }) {
                             helperText={touched.supportDevelopment ? formik.errors.supportDevelopment : ''}
                             // }
                           >
-                            {supportDevelopmentList.map((option) => (
+                            {Constants.supportDevelopmentList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1502,6 +1364,8 @@ export default function ViewEmployee({ props }) {
 
                         <Grid item xs={12} sm={4}>
                           <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
+                          <input type="hidden" id="onBoarding" name="onBoarding" value={state.onBoarding} />
+
                           <input
                             type="hidden"
                             id="reportingItSpoc"
@@ -1514,18 +1378,8 @@ export default function ViewEmployee({ props }) {
                             name="reportingAvpVpSvp"
                             value={state.reportingAvpVpSvp}
                           />
-                           <input
-                            type="hidden"
-                            id="projectType"
-                            name="projectType"
-                            value={state.projectType}
-                          />
-                           <input
-                            type="hidden"
-                            id="invoiceType"
-                            name="invoiceType"
-                            value={state.invoiceType}
-                          />
+                          <input type="hidden" id="projectType" name="projectType" value={state.projectType} />
+                          <input type="hidden" id="invoiceType" name="invoiceType" value={state.invoiceType} />
                           <input type="hidden" id="maximusOpus" name="maximusOpus" value="NA" />
                           <input type="hidden" id="functionDesc" name="functionDesc" value="NA" />
                           <input type="hidden" id="departmentDesc" name="departmentDesc" value="NA" />
@@ -1554,7 +1408,7 @@ export default function ViewEmployee({ props }) {
                             }
                           >
                             {location.state.resignedEmployee !== 'Resigned' ? (
-                              employeeStatusList.map((option) => (
+                              Constants.employeeStatusList.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                   {option.label}
                                 </MenuItem>
@@ -1589,7 +1443,7 @@ export default function ViewEmployee({ props }) {
                               state.employeeStatus === 'Pending For IT Spoc Review'
                             }
                           >
-                            {evaluationPeriodList.map((option) => (
+                            {Constants.evaluationPeriodList.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1620,7 +1474,7 @@ export default function ViewEmployee({ props }) {
                               state.employeeStatus === 'Pending For IT Spoc Review'
                             }
                           >
-                            {experienceSlab.map((option) => (
+                            {Constants.experienceSlab.map((option) => (
                               <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                               </MenuItem>
@@ -1910,6 +1764,23 @@ export default function ViewEmployee({ props }) {
                         </Grid>
                       </Grid>
                       <br />
+                      {/* <Stack flexDirection="row">
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                // onChange={handleOnboardingProcess}
+                                id="onBoarding"
+                                disabled
+                                checked={checked ? state.onBoarding === 'Y' : !checked}
+                              />
+                            }
+                            label="Initiate On-boardinng Ticket of Employee"
+                            sx={{ color: 'black', fontWeight: 600 }}
+                          />
+                        </FormGroup>
+                      </Stack>
+                      <br /> */}
 
                       <Grid container item xs={12} justifyContent={'center'}>
                         <Stack spacing={2} direction="row" justifyContent="center">

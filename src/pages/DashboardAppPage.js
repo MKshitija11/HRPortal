@@ -20,7 +20,7 @@ import {
   AppCurrentVisits,
   // AppWebsiteVisits,
   // AppTrafficBySite,
-  // AppWidgetSummary,
+  AppWidgetSummary,
   AppCurrentSubject,
   AppConversionRates,
   AppSMResourceList,
@@ -172,7 +172,7 @@ export default function DashboardAppPage() {
                 />
               </Grid>
 
-              <Grid item xs={12} md={6} lg={3} style={{ display: 'none' }}>
+              {/* <Grid item xs={12} md={6} lg={3} style={{ display: 'none' }}>
                 <AppCurrentSubject
                   title="Current Subject"
                   chartLabels={['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math']}
@@ -183,9 +183,9 @@ export default function DashboardAppPage() {
                   ]}
                   chartColors={[...Array(6)].map(() => theme.palette.text.secondary)}
                 />
-              </Grid>
+              </Grid> */}
 
-              <Grid item xs={12} md={6} lg={8} style={{ display: 'none' }}>
+              {/* <Grid item xs={12} md={6} lg={8} style={{ display: 'none' }}>
                 <AppNewsUpdate
                   title="News Update"
                   list={[...Array(5)].map((_, index) => ({
@@ -196,8 +196,8 @@ export default function DashboardAppPage() {
                     postedAt: faker.date.recent(),
                   }))}
                 />
-              </Grid>
-
+              </Grid> */}
+{/* 
               <Grid item xs={12} md={6} lg={4} style={{ display: 'none' }}>
                 <AppOrderTimeline
                   title="Order Timeline"
@@ -214,7 +214,7 @@ export default function DashboardAppPage() {
                     time: faker.date.past(),
                   }))}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
           )}
         </Container>

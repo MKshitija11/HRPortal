@@ -3,36 +3,12 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect } from 'react';
 // @mui
-import {
-  TextField,
-  Grid,
-  Card,
-  Stack,
-  Button,
-  Container,
-  Typography,
-  MenuItem,
-  InputLabel,
-  Select,
-  Switch,
-  Modal,
-  Box,
-} from '@mui/material';
-import FormHelperText from '@mui/material/FormHelperText';
+import { Stack, Button, Container, Typography, Modal, Box } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 
-import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
-import * as Yup from 'yup';
-import addMonths from 'date-fns/addMonths';
-import format from 'date-fns/format';
-// components
-import Loader from '../components/Loader/Loader';
-import Iconify from '../components/iconify';
-import Configuration from '../utils/Configuration';
 
 export default function SwitchRole({ props }) {
   const location = useLocation();
@@ -45,14 +21,11 @@ export default function SwitchRole({ props }) {
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     setRole(USERDETAILS?.[0]?.userProfile);
-
-    // setOpenModal(true);
   }, [role]);
 
   const handleChange = (event) => {
     console.log('EVENT', event.target.value);
     setValue(event.target.value);
-    // sessionStorage.setItem('ROLE', event.target.value);
   };
 
   const handleCloseModal = () => {

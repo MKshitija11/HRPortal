@@ -40,7 +40,6 @@ export default function EmpManagmentSM() {
   const [sortedArray, setSortedArray] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [teamLeadList, setTeamLeadList] = useState([]);
-  const [employeeCount, setEmployeeCount] = useState([]);
   const [partnerNameWithCount, setPartnerNameWithCount] = useState();
 
   const chartColors = [
@@ -137,10 +136,6 @@ export default function EmpManagmentSM() {
   }, []);
 
   const handleClickedData = (OBstatus, chartName, chartData) => {
-    console.log('OBSTATUS>>>>> 1', OBstatus);
-    console.log('OBSTATUS>>>>> 2', chartName);
-    console.log('OBSTATUS>>>>> 3', chartData);
-
     navigate('/EmployeesSM', {
       state: {
         filterByPartnerName: chartData,
@@ -161,14 +156,6 @@ export default function EmpManagmentSM() {
     },
     tooltip: {
       fillSeriesColor: true,
-      // y: {
-      //   formatter: (seriesName) => fNumber(seriesName/1),
-
-      //   title: {
-      //     formatter: (seriesName) => `${seriesName}`,
-      //   },
-      //   // return config.series[opts.seriesIndex]
-      // },
     },
     plotOptions: {
       pie: {

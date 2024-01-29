@@ -161,7 +161,6 @@ export default function PendingEmployeeListBP() {
       download: 'Excel',
     };
     Configuration.getEmpListItSpoc(empListItSpocReq).then((empListItSpocRes) => {
-      console.log('Download response ', empListItSpocRes.data);
       setCsvData(empListItSpocRes.data);
       exportToCSV();
     });
@@ -185,8 +184,6 @@ export default function PendingEmployeeListBP() {
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-
       const empListVendorReq = {
         partnerName: USERDETAILS?.[0]?.partnerName,
         itSpocId: 'NA',
@@ -201,7 +198,6 @@ export default function PendingEmployeeListBP() {
               setIsLoading(false);
             }, 500);
           } else {
-            console.log('empListVendorRes', empListVendorRes);
             setEmployeeList(empListVendorRes.data);
             const downloadPendingEmp = empListVendorRes.data.filter(
               (employees) =>
@@ -211,7 +207,6 @@ export default function PendingEmployeeListBP() {
             );
             setCsvData(downloadPendingEmp);
 
-            console.log('employeeList', employeeList);
             setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0);
             const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
 
@@ -244,7 +239,6 @@ export default function PendingEmployeeListBP() {
   };
 
   const ViewEmployee = (rowId) => {
-    console.log('rowId', rowId);
     navigate('/ViewEmployeeBP', {
       state: {
         id: rowId,
@@ -289,20 +283,7 @@ export default function PendingEmployeeListBP() {
           employees.employeeStatus === 'Pending For IT Spoc Review'
       )
     );
-    // setIsNotFound(!filteredUsers.length && !!event.target.value);
   };
-
-  // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employeeList.length) : 0;
-
-  // const filteredUsers = applySortFilter(employeeList, getComparator(order, orderBy), filterName);
-  // const pendingEmployees = filteredUsers.filter(
-  //   (employees) =>
-  //     employees.employeeStatus === 'Pending For TL Review' ||
-  //     employees.employeeStatus === 'Pending For SM Review' ||
-  //     employees.employeeStatus === 'Pending For IT Spoc Review'
-  // );
-
-  // const isNotFound = !filteredUsers.length && !!filterName;
 
   return (
     <>
@@ -391,7 +372,7 @@ export default function PendingEmployeeListBP() {
                                     employeeStatus,
                                     partnerName,
                                     supportDevelopment,
-                                    joiningDate
+                                    joiningDate,
                                   } = row;
                                   const selectedUser = selected.indexOf(employeeFullName) !== -1;
 

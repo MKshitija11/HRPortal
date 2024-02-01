@@ -55,7 +55,8 @@ export default function EmpManagmentSM() {
   ];
 
   const teamLeadData = teamLeadList.map((i) => i.teamLeadName);
-  console.log('with count', teamLeadData);
+  const activeCount = teamLeadList.map((i) => i.activeCount)
+  console.log('with count', activeCount);
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
@@ -143,6 +144,14 @@ export default function EmpManagmentSM() {
     });
   };
 
+  const handleClickedDataForTL = (OBstatus, chartName, chartData) => {
+    console.log(">>>>>", OBstatus, chartName, chartData)
+  }
+
+  const handleClickChart = () => {
+    console.log("insode handle click chart")
+  }
+
   const chartOptions = useChart({
     colors: chartColors,
     labels: partnerName,
@@ -208,9 +217,9 @@ export default function EmpManagmentSM() {
 
   const chartOptionForTL = {
     series: [
-      // { name: 'Team Lead', data: teamLeadData, color: '#008000' }
+  
       {
-        data: [15, 15, 15, 15],
+        data: activeCount,
       },
     ],
     options: {
@@ -231,6 +240,18 @@ export default function EmpManagmentSM() {
             speed: 350,
           },
         },
+        // events: {
+        //   click: (event, chartContext, config) => {
+        //     handleClickChart(teamLeadData[config.dataPointIndex]);
+        //   },
+        //   dataPointSelection: (event, chartContext, config) => {
+        //     handleClickedDataForTL(
+        //       config.w.config.series[config.seriesIndex].name,
+        //       teamLeadData,
+        //       teamLeadData[config.dataPointIndex]
+        //     )
+        //   }
+        // }
       },
       stroke: {
         width: 1,
@@ -269,7 +290,6 @@ export default function EmpManagmentSM() {
       },
       xaxis: {
         categories: teamLeadData,
-        // categories1: chartLabels
       },
     },
   };
@@ -316,7 +336,7 @@ export default function EmpManagmentSM() {
               </StyledChartWrapper>
             )}
           </Card>
-          {/* <Card
+          <Card
             container
             sx={{
               padding: '15px',
@@ -351,7 +371,7 @@ export default function EmpManagmentSM() {
                 />
               </StyledChartWrapper>
             )}
-          </Card> */}
+          </Card>
         </Stack>
       </Container>
     </>

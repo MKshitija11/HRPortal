@@ -19,7 +19,9 @@ import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Configuration from '../utils/Configuration';
+import { LoginForm } from '../sections/auth/login';
 import Iconify from '../components/iconify';
+import Card from '../Images/Card.png';
 import Constants from '../Constants/Constants';
 
 // -----------------------------------------------------------
@@ -31,7 +33,13 @@ const container = {
   justifyContent: 'center',
   bottom: 40,
 };
-
+const bottomLeft = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  textAlign: 'center',
+};
 // --------------------------------------------------------------
 
 export default function UserLoginPage() {
@@ -48,6 +56,7 @@ export default function UserLoginPage() {
   const [openSsuccessSignUpModal, setOpenSuccessSignUpModal] = useState(false);
   const [failureMessage, setFailureMessage] = useState();
   const [showFailureModal, setShowFailureModal] = useState(false);
+  const [openDomainLogin, setOpenDomainLogin] = useState(false);
   const [state, setState] = useState({
     spocPassword: '',
     spocConfirmPassword: '',
@@ -64,7 +73,6 @@ export default function UserLoginPage() {
   });
 
   const handleReset = () => {
-    console.log('handle reset');
     setState({
       ...state,
       spocPassword: '',
@@ -75,6 +83,16 @@ export default function UserLoginPage() {
       spocName: '',
       spocEmailId: '',
     });
+  };
+
+  const handleResetForLogin = () => {
+    console.log('handle reset');
+    setState({
+      ...state,
+      username: 'abc',
+      password: 'abc',
+    });
+    console.log('reset form values', initialValues.username, state.password);
   };
 
   const handleClick = () => {
@@ -124,53 +142,96 @@ export default function UserLoginPage() {
     Configuration.partnerLogin(employeeFormData)
       .then((partnerLoginRes) => {
         console.log('Employee form data::', partnerLoginRes.data.length);
-
         if (partnerLoginRes.data?.[0]?.errorCode === '1') {
           setShowFailureModal(true);
           setFailureMessage(partnerLoginRes.data?.[0]?.errorDesc);
-        }
-        if (partnerLoginRes.data.length >= 1) {
-          Configuration.login(login)
-            .then((LoginResponse) => {
-              if (LoginResponse) {
-                console.log('INSIDE LENGTH  IF ', LoginResponse.data.length);
-                if (LoginResponse.data.length === 2) {
-                  navigate('/SwitchRole');
-                } else if (LoginResponse.data.length === 1) {
-                  alert('INSIDE LENGTH ELSE IF ', LoginResponse.data);
+          handleResetForLogin();
+        } else if (partnerLoginRes.data?.[0]?.errorCode === '0') {
+          if (partnerLoginRes.data.length >= 1) {
+            // Configuration.login(login)
+            //   .then((LoginResponse) => {
+            //     if (LoginResponse) {
+            //       console.log('INSIDE LENGTH  IF ', LoginResponse.data.length);
+            //       if (LoginResponse.data.length === 1) {
+            //         if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ADMIN') {
+            //           navigate('/Dashboard');
+            //         } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_PARTNER') {
+            //           navigate('/EmployeesBP');
+            //         } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_TL') {
+            //           navigate('/EmployeesTL');
+            //         } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_SM') {
+            //           console.log('INSIDE LENGTH BAGIC SM');
+            //           navigate('/EmployeesSM');
+            //         } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ITS') {
+            //           navigate('/EmployeesITS');
+            //         }
+            //       }
+            //       let USERDETAILS = {};
+            //       USERDETAILS = JSON.stringify(LoginResponse.data);
+            //       if (USERDETAILS != null) {
+            //         sessionStorage.setItem('USERDETAILS', USERDETAILS);
+            //       }
 
-                  if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ADMIN') {
-                    navigate('/Dashboard');
-                  } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_PARTNER') {
-                    navigate('/EmployeesBP');
-                  } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_TL') {
-                    navigate('/EmployeesTL');
-                  } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_SM') {
-                    console.log('INSIDE LENGTH BAGIC SM');
-                    navigate('/EmployeesSM');
-                  } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ITS') {
-                    navigate('/EmployeesITS');
+            //       Configuration.getReportingList().then((RAResponse) => {
+            //         console.log('LoginForm.getReportingList.LoginResponse', RAResponse.data);
+            //         let REPORTINGDETAILS = [];
+            //         REPORTINGDETAILS = JSON.stringify(RAResponse.data);
+            //         sessionStorage.setItem('REPORTINGDETAILS', REPORTINGDETAILS);
+            //       });
+            //     } else {
+            //       console.log('INSIDE LENGTH ELSE ');
+            //       setErrorMessage(LoginResponse.data.errorDesc);
+            //       setOpen(true);
+            //     }
+            //   })
+            //   .catch((error) => alert('Something went wrong!!'));
+            Configuration.login(login)
+              .then((LoginResponse) => {
+                if (LoginResponse?.data[0]?.errorCode === '1') {
+                  setOpen(true);
+                  setErrorMessage(LoginResponse?.data?.[0]?.errorDesc);
+                } else if (LoginResponse?.data[0]?.errorCode === '0') {
+                  if (LoginResponse.data.length === 2) {
+                    navigate('/SwitchRole');
+                  } else if (LoginResponse.data.length === 1) {
+                    if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ADMIN') {
+                      navigate('/Dashboard');
+                    } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_PARTNER') {
+                      navigate('/EmployeesBP');
+                    } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_TL') {
+                      navigate('/EmpManagmentTL');
+                    } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_SM') {
+                      console.log('INSIDE LENGTH BAGIC SM');
+                      navigate('/EmpManagmentSM');
+                    } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ITS') {
+                      navigate('/Dashboard');
+                    }
+
+                    let USERDETAILS = {};
+                    USERDETAILS = JSON.stringify(LoginResponse.data);
+                    if (USERDETAILS != null) {
+                      sessionStorage.setItem('USERDETAILS', USERDETAILS);
+                    }
+
+                    Configuration.getReportingList().then((RAResponse) => {
+                      console.log('LoginForm.getReportingList.LoginResponse', RAResponse.data);
+                      let REPORTINGDETAILS = [];
+                      REPORTINGDETAILS = JSON.stringify(RAResponse.data);
+                      sessionStorage.setItem('REPORTINGDETAILS', REPORTINGDETAILS);
+                    });
+                  } else if (LoginResponse.data.length === 0) {
+                    setOpen(true);
+                    setErrorMessage('This email id is not configured');
+                    console.log('INSIDE LENGTH ELSE  ', LoginResponse.data.length);
                   }
+                } else {
+                  console.log('INSIDE LENGTH ELSE ');
+                  setErrorMessage(LoginResponse?.data?.[0]?.errorDesc);
+                  setOpen(true);
                 }
-                let USERDETAILS = {};
-                USERDETAILS = JSON.stringify(LoginResponse.data);
-                if (USERDETAILS != null) {
-                  sessionStorage.setItem('USERDETAILS', USERDETAILS);
-                }
-
-                Configuration.getReportingList().then((RAResponse) => {
-                  console.log('LoginForm.getReportingList.LoginResponse', RAResponse.data);
-                  let REPORTINGDETAILS = [];
-                  REPORTINGDETAILS = JSON.stringify(RAResponse.data);
-                  sessionStorage.setItem('REPORTINGDETAILS', REPORTINGDETAILS);
-                });
-              } else {
-                console.log('INSIDE LENGTH ELSE ');
-                setErrorMessage(LoginResponse.data.errorDesc);
-                setOpen(true);
-              }
-            })
-            .catch((error) => alert('Something went wrong!!'));
+              })
+              .catch((error) => alert('Something went wrong!!'));
+          }
         }
       })
       .catch((error) => {
@@ -240,7 +301,10 @@ export default function UserLoginPage() {
         'Must Contain minimum 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
       ),
   });
-
+  const handleNavigation = () => {
+    console.log('inside handleNavigation');
+    <LoginForm />;
+  };
   return (
     <>
       <Stack alignItems="center" justifyContent="center">
@@ -419,6 +483,18 @@ export default function UserLoginPage() {
                             {''}Forgot Password
                           </Link>
                         </Stack> */}
+                        {/* <Link
+                          variant="subtitle2"
+                          underline="hover"
+                          onClick={() => {
+                            setOpenSignUp(false);
+                            setOpenLogin(false);
+                            setOpenDomainLogin(true);
+                          }}
+                          style={{ textDecoration: 'underline' }}
+                        >
+                          {''}Domain Login
+                        </Link> */}
                         <Stack direction="row" alignItems="center" justifyContent="center">
                           <Typography>Don't have an account?</Typography>
                           <Link
@@ -447,7 +523,10 @@ export default function UserLoginPage() {
                             type="submit"
                             variant="contained"
                             disabled={!(dirty && isValid)}
-                            onClick={handleClickForLogin}
+                            onClick={() => {
+                              handleClickForLogin();
+                              formik.resetForm();
+                            }}
                           >
                             Login
                           </LoadingButton>
@@ -712,6 +791,36 @@ export default function UserLoginPage() {
             </Formik>
           </>
         ) : null}
+        {/* {openDomainLogin ? (
+          <Stack style={container}>
+            <img src={Card} alt="Snow" style={{ width: '100%', height: '100%' }} />
+            <Stack style={bottomLeft} mt={3}>
+              <Typography variant="h4" style={{ fontSize: '20px', color: '#0066C7' }}>
+                Sign-In to HR Portal
+              </Typography>
+
+              <Stack mt={1}>
+                <Stack mb={1}>
+                  <Collapse in={open}>
+                    <Alert severity="warning" variant="filled" style={{ width: '100%' }}>
+                      {errorMessage}
+                    </Alert>
+                  </Collapse>
+                </Stack>
+                <LoadingButton
+                  // fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  // onClick={BagicSso}
+                  //  onClick={() =>handleClickBagicSSo}
+                >
+                  Domain Login
+                </LoadingButton>
+              </Stack>
+            </Stack>
+          </Stack>
+        ) : null} */}
       </Stack>
     </>
   );

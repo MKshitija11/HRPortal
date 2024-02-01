@@ -769,9 +769,10 @@ export default function ViewEmployee() {
     newReplacement: Yup.string().oneOf(['New', 'Replacement']).required('Select an option'),
     // replacementEcode: Yup.string().required('Required'),
     supportDevelopment: Yup.string().oneOf(['Support', 'Development'], 'Invalid option').required('Select an option'),
-    evaluationPeriod: Yup.string()
-      .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
-      .required('Select an option'),
+    // evaluationPeriod: Yup.string()
+    //   .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
+    //   .required('Select an option'),
+    evaluationPeriod: Yup.string().required('Please Select'),
     reportingTeamLead: Yup.object().required('Please Select'),
     reportingManager: Yup.string().required('Please Select'),
 
@@ -1952,7 +1953,7 @@ export default function ViewEmployee() {
                         </Grid>
                       </Grid>
                       <br />
-                      <Stack flexDirection="row">
+                      {/* <Stack flexDirection="row">
                         <FormGroup>
                           <FormControlLabel
                             control={
@@ -1967,7 +1968,7 @@ export default function ViewEmployee() {
                             sx={{ color: 'black', fontWeight: 600 }}
                           />
                         </FormGroup>
-                      </Stack>
+                      </Stack> */}
                       <br />
                       <Grid container item xs={12} justifyContent={'center'}>
                         <Stack spacing={2} direction="row" justifyContent="center">

@@ -174,6 +174,10 @@ export default {
 
   evaluationPeriodList: [
     {
+      value: '0 Days',
+      label: '0 Days',
+    },
+    {
       value: '15 Days',
       label: '15 Days',
     },

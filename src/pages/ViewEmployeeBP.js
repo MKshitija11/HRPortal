@@ -494,7 +494,7 @@ export default function ViewEmployee({ props }) {
     reportingItSpoc: state.reportingItSpoc || '',
     projectType: state.projectType || '',
     invoiceType: state.invoiceType || '',
-    onBoarding: state.onBoarding || '',
+    // onBoarding: state.onBoarding || '',
   };
   console.log('API INITIAL VALUEs', initialValues.reportingTeamLead);
 
@@ -529,7 +529,7 @@ export default function ViewEmployee({ props }) {
     joiningDate: Yup.string().required('Required'),
     newReplacement: Yup.string().nullable().required('Please Select'),
     supportDevelopment: Yup.string().required('Please Select'),
-    evaluationPeriod: Yup.string().nullable().required('Please Select'),
+    evaluationPeriod: Yup.string().required('Please Select'),
     reportingTeamLead: Yup.object().required('Please Select'),
     reportingManager: Yup.string().required('Please Select'),
     billingSlab: Yup.number()
@@ -1364,7 +1364,7 @@ export default function ViewEmployee({ props }) {
 
                         <Grid item xs={12} sm={4}>
                           <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
-                          <input type="hidden" id="onBoarding" name="onBoarding" value={state.onBoarding} />
+                          {/* <input type="hidden" id="onBoarding" name="onBoarding" value={state.onBoarding} /> */}
 
                           <input
                             type="hidden"

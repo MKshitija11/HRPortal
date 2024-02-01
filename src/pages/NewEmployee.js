@@ -17,18 +17,21 @@ import {
   Switch,
   Modal,
   Box,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
 } from '@mui/material';
 
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 // components
-import FlatList from 'flatlist-react';
 import addMonths from 'date-fns/addMonths';
 import { subMonths } from 'date-fns';
 import format from 'date-fns/format';
 
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
+import Constants from '../Constants/Constants';
 
 export default function EmployeeList() {
   const [state, setState] = useState({
@@ -72,6 +75,7 @@ export default function EmployeeList() {
     // invoiceList: [],
     evaluationPeriod: '',
     tlList: [],
+    // onBoarding: '',
   });
 
   const [openModal, setOpenModal] = useState(false);
@@ -79,103 +83,9 @@ export default function EmployeeList() {
   const [isChecked, setIsChecked] = useState(false);
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [referenceNumber, setReferenceNumber] = useState();
+  // const [checked, setChecked] = useState(true);
   const [selectedTL, setSelectedTL] = useState();
   const [selectedSM, setSelectedSM] = useState();
-  console.log('Selected TL', selectedTL);
-  console.log('Selected SM', selectedSM);
-  const newReplacementList = [
-    {
-      value: 'New',
-      label: 'New',
-    },
-    {
-      value: 'Replacement',
-      label: 'Replacement',
-    },
-  ];
-
-  const genderList = [
-    {
-      value: 'Male',
-      label: 'Male',
-    },
-    {
-      value: 'Female',
-      label: 'Female',
-    },
-  ];
-
-  const experienceSlab = [
-    {
-      value: '0 - 2 years',
-      label: '0 - 2 years',
-    },
-    {
-      value: '2 - 4 years',
-      label: '2 - 4 years',
-    },
-    {
-      value: '4 - 6 years',
-      label: '4 - 6 years',
-    },
-    {
-      value: '6 - 8 years',
-      label: '6 - 8 years',
-    },
-    {
-      value: '8 - 10 years',
-      label: '8 - 10 years',
-    },
-    {
-      value: '10 years and above',
-      label: '10 years and above',
-    },
-  ];
-
-  const evaluationPeriodList = [
-    {
-      value: '15 Days',
-      label: '15 Days',
-    },
-    {
-      value: '30 Days',
-      label: '30 Days',
-    },
-    {
-      value: '45 Days',
-      label: '45 Days',
-    },
-    {
-      value: '60 Days',
-      label: '60 Days',
-    },
-  ];
-  const supportDevelopmentList = [
-    {
-      value: 'Support',
-      label: 'Support',
-    },
-    {
-      value: 'Development',
-      label: 'Development',
-    },
-    {
-      value: 'Testing',
-      label: 'Testing',
-    },
-    {
-      value: 'MIS',
-      label: 'MIS',
-    },
-    {
-      value: 'Project',
-      label: 'Project',
-    },
-    {
-      value: 'Infra Support',
-      label: 'Infra Support',
-    },
-  ];
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -205,15 +115,9 @@ export default function EmployeeList() {
         whatsappNumber: '',
       });
     }
-
-    console.log('state.mobileNumber', state.mobileNumber);
-    console.log('state.whatsappNumber', state.whatsappNumber);
   };
 
   const handleChangeEvent = (evt) => {
-    console.log('evt.target.value', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
-
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
@@ -221,9 +125,6 @@ export default function EmployeeList() {
   };
 
   const handleChangeSM = (evt) => {
-    console.log('evt.target.value MANAGER', evt.target.value);
-    console.log('evt.target.name', evt.target.name);
-
     setState({
       ...state,
       [evt.target.name]: evt.target.value,
@@ -234,7 +135,6 @@ export default function EmployeeList() {
     };
 
     Configuration.getTLBySM(getTLBySMListReq).then((getTLBySMListRes) => {
-      console.log('departmentList', getTLBySMListRes.data);
       state.tlList = getTLBySMListRes?.data;
       setTeamLeadBySMList(state.tlList);
     });
@@ -358,7 +258,6 @@ export default function EmployeeList() {
       const employeeFormObj = new FormData(document.getElementById('employeeForm'));
 
       const employeeFormData = Object.fromEntries(employeeFormObj.entries());
-      console.log('employeeFormData::', employeeFormData);
       console.log('JSON:employeeFormData::', JSON.stringify(employeeFormData));
 
       Configuration.saveEmployeeData(employeeFormData).then((employeeFormRes) => {
@@ -381,18 +280,12 @@ export default function EmployeeList() {
     const FUNCTIONSDETAILS = JSON.parse(sessionStorage.getItem('FUNCTIONSDETAILS'));
 
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
-      console.log('REPORTINGDETAILS', REPORTINGDETAILS);
-      console.log('FUNCTIONSDETAILS', FUNCTIONSDETAILS);
-
       setReportingList(REPORTINGDETAILS);
 
       const mainVerticalReq = {
         key: 'MAIN_VERTICAL',
         value: '',
       };
-
-      console.log('mainVerticalReq', mainVerticalReq);
 
       setPartnerName(USERDETAILS?.[0]?.partnerName);
       state.partnerName = USERDETAILS?.[0]?.partnerName;
@@ -477,7 +370,6 @@ export default function EmployeeList() {
   });
 
   const handleReset = () => {
-    console.log('Inside reset');
     setState({
       ...state,
       employeeFirstName: '',
@@ -499,29 +391,28 @@ export default function EmployeeList() {
       experience: '',
       totalExperience: '',
       skillSet: '',
-      // reportingAvpVpSvp: '',
-      // verticalHeadHod: '',
-      // functionDesc: '',
-      // departmentDesc: '',
-      // verticalMain: '',
-      // verticalSub: '',
-      // projectType: '',
-      // maximusOpus: '',
       billingSlab: '',
-      // invoiceType: '',
       createdBy: '',
       employeeStatus: '',
-      // mainVerticalList: [],
-      // subVerticalList: [],
-      // departmentList: [],
-      // functionsList: [],
-      // projectsList: [],
-      // invoiceList: [],
       evaluationPeriod: '',
     });
     setIsChecked(!false);
   };
 
+  // const handleOnboardingProcess = (event) => {
+  //   setChecked(event.target.checked);
+  //   if (event.target.checked === true) {
+  //     setState({
+  //       ...state,
+  //       onBoarding: 'Y',
+  //     });
+  //   } else {
+  //     setState({
+  //       ...state,
+  //       onBoarding: 'N',
+  //     });
+  //   }
+  // };
   return (
     <>
       <Helmet>
@@ -644,7 +535,6 @@ export default function EmployeeList() {
               const { values, handleChange, handleSubmit, errors, touched, handleBlur, isValid, dirty } = formik;
               return (
                 <form onSubmit={handleSubmit} spacing={2} method="POST" id="employeeForm" name="employeeForm">
-                  {console.log('VALUES', formik.values)}
                   <Typography variant="subtitle1" paddingBottom={'15px'}>
                     Personal Information
                   </Typography>
@@ -746,7 +636,6 @@ export default function EmployeeList() {
                         <Typography variant="body1" display={'inline'}>
                           No
                         </Typography>
-                        {/* <Switch color="success" onChange={handleChangeWaSwitch} checked={isChecked} /> */}
                         {state.mobileNumber === state.whatsappNumber ? (
                           <Switch
                             color="success"
@@ -776,7 +665,7 @@ export default function EmployeeList() {
                         </Typography>
                       </div>
                       <input type="hidden" id="isChecked" name="isChecked" value={values.isChecked} />
-
+                      {/* <input type="hidden" id="onBoarding" name="onBoarding" value={state.onBoarding} /> */}
                       <input type="hidden" id="maximusOpus" name="maximusOpus" value="NA" />
                       <input type="hidden" id="functionDesc" name="functionDesc" value="NA" />
                       <input type="hidden" id="departmentDesc" name="departmentDesc" value="NA" />
@@ -873,7 +762,7 @@ export default function EmployeeList() {
                           state.employeeStatus === 'Pending For IT Spoc Review'
                         }
                       >
-                        {genderList.map((option) => (
+                        {Constants.genderList.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
                             {option.label}
                           </MenuItem>
@@ -1001,7 +890,7 @@ export default function EmployeeList() {
                           state.employeeStatus === 'Pending For IT Spoc Review'
                         }
                       >
-                        {newReplacementList.map((option) => (
+                        {Constants.newReplacementList.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
                             {option.label}
                           </MenuItem>
@@ -1054,7 +943,7 @@ export default function EmployeeList() {
                           state.employeeStatus === 'Pending For IT Spoc Review'
                         }
                       >
-                        {supportDevelopmentList.map((option) => (
+                        {Constants.supportDevelopmentList.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
                             {option.label}
                           </MenuItem>
@@ -1119,7 +1008,7 @@ export default function EmployeeList() {
                           state.employeeStatus === 'Pending For IT Spoc Review'
                         }
                       >
-                        {evaluationPeriodList.map((option) => (
+                        {Constants.evaluationPeriodList.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
                             {option.label}
                           </MenuItem>
@@ -1150,7 +1039,7 @@ export default function EmployeeList() {
                           state.employeeStatus === 'Pending For IT Spoc Review'
                         }
                       >
-                        {experienceSlab.map((option) => (
+                        {Constants.experienceSlab.map((option) => (
                           <MenuItem key={option.value} value={option.value}>
                             {option.label}
                           </MenuItem>
@@ -1294,6 +1183,16 @@ export default function EmployeeList() {
 
                   <br />
 
+                  {/* <Stack flexDirection="row">
+                    <FormGroup>
+                      <FormControlLabel
+                        control={<Checkbox onChange={handleOnboardingProcess} id="onBoarding" />}
+                        label="Initiate On-boardinng Ticket of Employee"
+                        sx={{ color: 'black', fontWeight: 600 }}
+                      />
+                    </FormGroup>
+                  </Stack> */}
+                  <br />
                   <Grid container item xs={12} justifyContent={'center'}>
                     <Stack spacing={2} direction="row" justifyContent="center">
                       <Button

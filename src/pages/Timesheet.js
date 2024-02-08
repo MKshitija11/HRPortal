@@ -215,10 +215,10 @@ export default function TimeSheet() {
   const [filterName, setFilterName] = useState('');
   const [csvData = [], setCsvData] = useState();
   const [updateWebIdModal, setUpdateWebIdModal] = useState(false);
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [selectedDate, setSelectedDate] = useState();
-  const [openCalendar, setOpenCalendar] = useState(false);
+  // const [openCalendar, setOpenCalendar] = useState(false);
   const [pagination, setPagination] = useState({
     data: empArray.map((value, index) => ({
       id: index,
@@ -239,9 +239,12 @@ export default function TimeSheet() {
       console.log('ELEMENT', element.webUserId);
       const atsReq = {
         userName: element.webUserId ? element.webUserId : '',
-        fromDate: startDate || '',
-        toDate: endDate || '',
+        // fromDate: startDate || '',
+        // toDate: endDate || '',
+        fromDate: '',
+        toDate: '',
       };
+      console.log('Req>>>', atsReq);
       fetchData(atsReq, (resp) => {
         console.log('TIMESHEET RESPONSE', resp);
         const response = resp;
@@ -269,18 +272,35 @@ export default function TimeSheet() {
   }, [atsApiRes, pagination, selectedMonth]);
 
   const fetchData = async (atsReq, callback) => {
+    setIsLoading(true);
     await Configuration.getTimeSheetDetails(atsReq)
       .then((atsRes) => {
-        if (atsRes.data.stringObject10) {
+        // if (atsRes.data.stringObject10) {
+        //   setIsLoading(true);
+        //   console.log('custom useeffect>>>.', atsRes.data.stringObject10);
+        //   callback(atsRes.data.stringObject10);
+        //   setIsLoading(false);
+        // } else {
+        //   setTimeout(() => {
+        //     setIsLoading(true);
+        //     // setOpenModal(true);
+        //   }, 1000);
+        //   // alert('Something went wrong');
+        // }
+        if (atsRes?.data?.errorCode === '1') {
+          setTimeout(() => {
+            setIsLoading(false);
+            // setOpenModal(true);
+          }, 1000);
+        } else if (atsRes?.data?.errorCode === '0') {
+          // setIsLoading(true);
           console.log('custom useeffect>>>.', atsRes.data.stringObject10);
           callback(atsRes.data.stringObject10);
-        } else {
-          setOpenModal(true);
-          // alert('Something went wrong');
+          setIsLoading(false);
         }
         setIsLoading(false);
       })
-      .catch((error) => console.log('error', error));
+      .catch((error) => console.log('error>>>>>', error));
     // setIsLoading(false);
   };
 
@@ -363,36 +383,37 @@ export default function TimeSheet() {
   };
 
   const monthList = moment.months();
-  console.log(' MONTH LIST', monthList);
+  console.log(' MONTH LIST', selectedDate);
 
-  const handleChangeEvent = (evt) => {
-    const date = new Date();
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const day = date.getDate();
-    const monthIndex = date.getMonth();
-    const year = date.getFullYear();
-    const formattedDate = `${day}-${monthNames[monthIndex].toLowerCase()}-${year}`;
+  // const handleChangeEvent = (evt) => {
+  //   const date = new Date();
+  //   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  //   const day = date.getDate();
+  //   const monthIndex = date.getMonth();
+  //   const year = date.getFullYear();
+  //   const formattedDate = `${day}-${monthNames[monthIndex].toLowerCase()}-${year}`;
 
-    console.log('FS>>>>', formattedDate);
+  //   console.log('FS>>>>', formattedDate);
 
-    console.log('handle change event', evt.target.value);
-    const startOfMonth = moment().month(evt.target.value).startOf('month').format('DD-MMM-');
-    const endOfMonth = moment().month(evt.target.value).endOf('month').format('DD-MMM-YYYY');
-    console.log('start month', startOfMonth.toLowerCase().concat('2023'), formattedDate);
-    console.log('start month current date', new Date().format('DD-MMM-YYYY'));
-    setStartDate(startOfMonth.toLowerCase());
-    setEndDate('');
-    setSelectedMonth(evt.target.value);
-  };
+  //   console.log('handle change event', evt.target.value);
+  //   const startOfMonth = moment().month(evt.target.value).startOf('month').format('DD-MMM-');
+  //   const endOfMonth = moment().month(evt.target.value).endOf('month').format('DD-MMM-YYYY');
+  //   // console.log('start month', startOfMonth.toLowerCase().concat('2023'), formattedDate);
+  //   console.log('start month current date', startOfMonth);
+  //   setStartDate(startOfMonth.toLowerCase());
+  //   setEndDate('');
+  //   setSelectedMonth(evt.target.value);
+  // };
 
   const handleChange = (date) => {
-    console.log('selected date>>>.', date);
+    console.log('date>>>>>>>>>', date);
     const month = moment(date).format('MMM-YYYY').toLowerCase();
     const currentMonth = moment().format('MMM-YYYY').toLowerCase();
+    console.log('selected date>>>.', month);
     const startDateOfMonth = moment(date).startOf('month').format('DD-MMM-YYYY').toLowerCase();
     const endDateOfMonth = moment(date).endOf('month').format('DD-MMM-YYYY').toLowerCase();
     const currentDate = moment().format('DD-MMM-YYYY').toLowerCase();
-    console.log('current month', moment().format('DD-MMM-YYYY').toLowerCase());
+    console.log('current month', startDateOfMonth);
     if (month === currentMonth) {
       setStartDate(startDateOfMonth);
       setEndDate(currentDate);
@@ -402,20 +423,9 @@ export default function TimeSheet() {
       setEndDate(endDateOfMonth);
       setSelectedMonth(month);
     }
-
-    // const updatedDate = new Date(date);
-    // const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    // const day = updatedDate.getDate();
-    // const monthIndex = updatedDate.getMonth();
-    // const year = updatedDate.getFullYear();
-    // const formattedDate = `${day}-${monthNames[monthIndex].toLowerCase()}-${year}`;
-    // const month = (moment(date).format('MMM')).toLowerCase()
-    // console.log("formatted date", formattedDate);
-    // console.log("formatted month",month)
-    // setSelectedDate(date);
   };
 
-  console.log('selected date out of fun>>>>>>>', moment(selectedMonth).format('MMMM'));
+  console.log('selected date out of fun>>>>>>>', startDate, endDate);
 
   return (
     <>
@@ -487,7 +497,7 @@ export default function TimeSheet() {
             </Box>
           </Modal>
 
-          <Modal open={openCalendar} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+          {/* <Modal open={openCalendar} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
             <Box
               sx={{
                 position: 'absolute',
@@ -506,12 +516,10 @@ export default function TimeSheet() {
               <Calendar
                 view="year"
                 value={selectedDate}
-                // onChange={handleChange}
                 onClickMonth={handleChange}
                 sx={{ height: 200, width: 200 }}
-                inputProps={{
-                  max: format(addMonths(new Date(), 2), 'yyyy-MM-dd'),
-                }}
+                minDate={subMonths(new Date(), 3)}
+                maxDate={new Date()}
               />
 
               <Grid
@@ -529,6 +537,7 @@ export default function TimeSheet() {
                     color="primary"
                     onClick={() => {
                       setOpenCalendar(false);
+                      fetchData()
                       // handleChange();
                     }}
                     sx={{ mt: 2 }}
@@ -538,7 +547,7 @@ export default function TimeSheet() {
                 </Stack>
               </Grid>
             </Box>
-          </Modal>
+          </Modal> */}
         </Stack>
 
         <Marquee style={{ padding: 10 }}>
@@ -567,7 +576,7 @@ export default function TimeSheet() {
                 employeeList={empArray}
               />
             </Stack>
-            <Stack flexDirection="row" justifyContent="space-between" sx={{ paddingRight: 3, paddingLeft: 3 }}>
+            {/* <Stack flexDirection="row" justifyContent="space-between" sx={{ paddingRight: 3, paddingLeft: 3 }}>
               <Stack
                 sx={{
                   height: 60,
@@ -603,12 +612,12 @@ export default function TimeSheet() {
                   Download Excel
                 </Button>
               </Stack>
-            </Stack>
+            </Stack> */}
 
             {/* </Stack> */}
           </Stack>
           {/* </Stack> */}
-          {/* <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" mt={2} sx={{ padding: 2 }}>
+          <Stack direction="row" alignItems="flex-end" justifyContent="flex-end" sx={{ paddingRight: 2 }}>
             <Button
               variant="contained"
               startIcon={<Iconify icon="ri:file-excel-2-line" />}
@@ -618,7 +627,7 @@ export default function TimeSheet() {
             >
               Download Excel
             </Button>
-          </Stack> */}
+          </Stack>
 
           <>
             {/* <Scrollbar> */}
@@ -650,6 +659,15 @@ export default function TimeSheet() {
                     Select Month
                   </Button>
                 </Stack> */}
+                <Stack alignItems="center" justifyContent="center" flexDirection="row">
+                  <Typography variant="h6" sx={{ color: '#0072BC' }}>
+                    {atsApiRes?.[0]?.timeSheetDtls?.month}
+                  </Typography>
+                  <Typography variant="h6" sx={{ color: '#0072BC' }} ml={1}>
+                    {atsApiRes?.[0]?.timeSheetDtls?.year}
+                  </Typography>
+                </Stack>
+
                 <Scrollbar>
                   <TableContainer sx={{ minWidth: 800, height: '60vh' }}>
                     {console.log('not found', atsApiRes)}
@@ -684,14 +702,15 @@ export default function TimeSheet() {
                                     ? navigate('/EmployeeTimesheetDetails', {
                                         state: {
                                           user: response?.timeSheetDtls,
-                                          startDate,
-                                          endDate,
+                                          selectedStartDate: startDate,
+                                          selectedEndDate: endDate,
+                                          month: selectedMonth,
                                         },
                                       })
                                     : setUpdateWebIdModal(true)
-                                  : setOpenModal(true)
+                                  : // setOpenModal(true);
+                                    null
                               }
-                            
                               sx={{ cursor: 'pointer' }}
                               ml={2}
                             >

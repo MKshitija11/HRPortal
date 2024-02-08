@@ -26,7 +26,7 @@ const StyledRoot = styled(AppBar)(({ theme }) => ({
 
   backgroundImage: "url('/assets/images/covers/BannerBackground.png')",
 
-  [theme.breakpoints.up('xs')]: {
+  [theme.breakpoints.up('lg')]: {
     width: `calc(100% - ${NAV_WIDTH + 1}px)`,
     // top: 5,
   },

@@ -1726,6 +1726,13 @@ export default function ViewEmployee() {
                               handleChangeMv(evt, setFieldValue);
                             }}
                             onBlur={handleBlur}
+                            onFocus={(e) => {
+                              if (state.mainVerticalList?.length <= 0) {
+                                e.target.value = empData.verticalMain;
+                                // handleChangeMv(e, setFieldValue);
+                                getMainVerticalList();
+                              }
+                            }}
                             error={touched.verticalMain ? errors.verticalMain : ''}
                             helperText={touched.verticalMain ? formik.errors.verticalMain : ''}
                           >
@@ -1753,6 +1760,13 @@ export default function ViewEmployee() {
                               handleChangeSv(evt);
                             }}
                             onBlur={handleBlur}
+                            onFocus={(e) => {
+                              if (verticalSubList?.length <= 0) {
+                                e.target.value = empData.verticalMain;
+                                // handleChangeMv(e, setFieldValue);
+                                handleChangeMv(e, setFieldValue);
+                              }
+                            }}
                             error={touched.verticalSub ? errors.verticalSub : ''}
                             helperText={touched.verticalSub ? formik.errors.verticalSub : ''}
                             // disabled={
@@ -1786,6 +1800,12 @@ export default function ViewEmployee() {
                             }}
                             value={values.departmentDesc}
                             onBlur={handleBlur}
+                            onFocus={(e) => {
+                              if (departmentList?.length <= 0) {
+                                e.target.value = empData.verticalSub;
+                                handleChangeSv(e, setFieldValue);
+                              }
+                            }}
                             error={touched.departmentDesc ? errors.departmentDesc : ''}
                             helperText={touched.departmentDesc ? formik.errors.departmentDesc : ''}
                             // disabled={
@@ -1819,6 +1839,12 @@ export default function ViewEmployee() {
                             }}
                             value={values.functionDesc}
                             onBlur={handleBlur}
+                            onFocus={(e) => {
+                              if (functionsList?.length <= 0) {
+                                e.target.value = empData.departmentDesc;
+                                handleChangeDpt(e, setFieldValue);
+                              }
+                            }}
                             error={touched.functionDesc ? errors.functionDesc : ''}
                             helperText={touched.functionDesc ? formik.errors.functionDesc : ''}
                             // disabled={

@@ -10,17 +10,22 @@ import {
   Button,
   Container,
   Typography,
-  MenuItem,
+  // MenuItem,
   Switch,
   Modal,
   Box,
-  Select,
-  FormControl,
+  // Select,
+  // FormControl,
   InputLabel,
   FormGroup,
   FormControlLabel,
   Checkbox,
 } from '@mui/material';
+
+// import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import addMonths from 'date-fns/addMonths';
@@ -612,11 +617,9 @@ export default function ViewEmployee() {
     Configuration.getMainVerticals(mainVerticalReq).then((mainVerticalRes) => {
       setVerticalMainList(mainVerticalRes.data);
       state.mainVerticalList = mainVerticalRes.data;
-      
     });
   };
 
-  console.log('main vertical list', state.mainVerticalList);
   useEffect(() => {
     const viewEmployeeReq = {
       id: location.state.row.id,
@@ -694,7 +697,7 @@ export default function ViewEmployee() {
     });
   }, []);
 
-  console.log('main vertical value', state.verticalMain);
+  console.log('main vertical value', empData);
 
   const initialValues = {
     employeeFirstName: state.employeeFirstName,
@@ -716,7 +719,7 @@ export default function ViewEmployee() {
     reportingTeamLead: state.reportingTeamLead || {},
     reportingManager: state.reportingManager || '',
     verticalMain: state.verticalMain || '',
-    verticalSub: state.verticalSub || '',
+    verticalSub: state.verticalSub,
     departmentDesc: state.departmentDesc || '',
     functionDesc: state.functionDesc || '',
     // projectType: state.projectType || '',
@@ -735,7 +738,7 @@ export default function ViewEmployee() {
     projectType: state.projectType || '',
   };
 
-  console.log('state joining date', initialValues.verticalMain);
+  console.log('state joining date', initialValues.verticalSub);
   const validationSchema = Yup.object({
     employeeFirstName: Yup.string()
       .required('First name is required')
@@ -1743,6 +1746,13 @@ export default function ViewEmployee() {
                             // value={values.verticalMain}
                             // onClick={() => handleRest()}
                             onBlur={handleBlur}
+                            onFocus={(e) => {
+                              if (state.mainVerticalList?.length <= 0) {
+                                e.target.value = empData.verticalMain;
+                                // handleChangeMv(e, setFieldValue);
+                                getMainVerticalList();
+                              }
+                            }}
                             error={touched.verticalMain ? errors.verticalMain : ''}
                             helperText={touched.verticalMain ? formik.errors.verticalMain : ''}
                           >
@@ -1759,25 +1769,31 @@ export default function ViewEmployee() {
                             labelId="demo-select-small"
                             id="verticalSub"
                             name="verticalSub"
-                            // select={verticalSubList.length !== 0}
-                            // select={values.verticalSub === ''}
                             select
+                            // select={state.mainVerticalList.length !== 0}
+                            // onClick={getMainVerticalList}
+                            value={values.verticalSub}
+                            // select={values.verticalMain === ''}
+                            open
                             label="Sub Vertical"
                             fullWidth
                             required
-                            value={values.verticalSub}
                             onChange={(evt) => {
                               handleChange(evt);
                               handleChangeSv(evt);
                             }}
+                            // value={values.verticalMain}
+                            // onClick={() => handleRest()}
                             onBlur={handleBlur}
+                            onFocus={(e) => {
+                              if (verticalSubList?.length <= 0) {
+                                e.target.value = empData.verticalMain;
+                                // handleChangeMv(e, setFieldValue);
+                                handleChangeMv(e, setFieldValue);
+                              }
+                            }}
                             error={touched.verticalSub ? errors.verticalSub : ''}
                             helperText={touched.verticalSub ? formik.errors.verticalSub : ''}
-                            // disabled={
-                            //   state.employeeStatus === 'Pending For TL Review' ||
-                            //   state.employeeStatus === 'Pending For SM Review' ||
-                            //   state.employeeStatus === 'Pending For IT Spoc Review'
-                            // }
                           >
                             {verticalSubList.map((KeyVal) => (
                               <MenuItem key={KeyVal.sub_vertical_id} value={KeyVal.sub_vertical_desc}>
@@ -1805,6 +1821,12 @@ export default function ViewEmployee() {
                               // handleValuesForFun();
                             }}
                             onBlur={handleBlur}
+                            onFocus={(e) => {
+                              if (departmentList?.length <= 0) {
+                                e.target.value = empData.verticalSub;
+                                handleChangeSv(e, setFieldValue);
+                              }
+                            }}
                             error={touched.departmentDesc ? errors.departmentDesc : ''}
                             helperText={touched.departmentDesc ? formik.errors.departmentDesc : ''}
                             // disabled={
@@ -1838,6 +1860,12 @@ export default function ViewEmployee() {
                             }}
                             value={values.functionDesc}
                             onBlur={handleBlur}
+                            onFocus={(e) => {
+                              if (functionsList?.length <= 0) {
+                                e.target.value = empData.departmentDesc;
+                                handleChangeDpt(e, setFieldValue);
+                              }
+                            }}
                             error={touched.functionDesc ? errors.functionDesc : ''}
                             helperText={touched.functionDesc ? formik.errors.functionDesc : ''}
                             // disabled={

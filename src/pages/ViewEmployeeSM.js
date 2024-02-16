@@ -28,6 +28,7 @@ import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
 import Constants from '../Constants/Constants';
+import CustomProgressBar from './CustomProgressBar';
 
 export default function ViewEmployee() {
   const [state, setState] = useState({
@@ -76,6 +77,8 @@ export default function ViewEmployee() {
     // designation: '',
     webUserId: '',
     projectType: '',
+    lwd: '',
+    resignationDate: '',
   });
   const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
@@ -652,6 +655,8 @@ export default function ViewEmployee() {
         webUserId: EMP_DETAILS.webUserId,
         reportingAvpVpSvp: EMP_DETAILS.reportingAvpVpSvp,
         projectType: EMP_DETAILS.projectType,
+        lwd: EMP_DETAILS.lwd,
+        resignationDate: EMP_DETAILS.resignationDate,
       };
       console.log('JOINING DATE', typeof state.joiningDate);
       setPartnerName(EMP_DETAILS.partnerName);
@@ -718,6 +723,8 @@ export default function ViewEmployee() {
     skillSet: state.skillSet || '',
     // designation: state.designation || '',
     webUserId: state.webUserId || '',
+    lwd: state.lwd || '',
+    resignationDate: state.resignationDate || '',
   };
   console.log('INITIAL VALUES', initialValues.joiningDate);
 
@@ -797,6 +804,13 @@ export default function ViewEmployee() {
             Home
           </Button>
         </Stack>
+        {/* 
+        <Stack mt={4} mb={4} justifyContent="center" >
+          <CustomProgressBar 
+          employeeStatus={state.employeeStatus}  percent={state.employeeStatus === 'Pending For TL Review' ? 25 : state.employeeStatus === 'Pending For SM Review' ? 50 : state.employeeStatus === 'Pending For IT Spoc Review' ? 75 : state.employeeStatus === 'Active' ? 100 : 0}
+          activeStep={2}
+          />
+        </Stack> */}
 
         <Card
           container
@@ -1345,11 +1359,14 @@ export default function ViewEmployee() {
                             error={touched.joiningDate ? errors.joiningDate : ''}
                             helperText={touched.joiningDate ? formik.errors.joiningDate : ''}
                             inputProps={{
-                              // min: new Date().toISOString().split('T')[0],
-                              min: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
-                              max: format(addMonths(new Date(), 3), 'yyyy-MM-dd'),
-                              // readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
-                              // style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
+                              min:
+                                state.employeeStatus === 'Active'
+                                  ? null
+                                  : format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
+                              max:
+                                state.employeeStatus === 'Active'
+                                  ? null
+                                  : format(addMonths(new Date(), 3), 'yyyy-MM-dd'),
                             }}
                           />
                         </Grid>
@@ -1465,7 +1482,7 @@ export default function ViewEmployee() {
                             <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
 
                             {/* <input type="hidden" id="employeeStatus" name="employeeStatus" /> */}
-                            <TextField
+                            {/* <TextField
                               InputLabelProps={{ shrink: true }}
                               autoComplete="off"
                               name="employeeStatus"
@@ -1490,9 +1507,125 @@ export default function ViewEmployee() {
                               onBlur={handleChange}
                               error={Boolean(errors.employeeStatus)}
                               helperText={errors.employeeStatus}
-                            />
+                            /> */}
+
+                            <TextField
+                              labelId="demo-select-small"
+                              id="employeeStatus"
+                              name="employeeStatus"
+                              select
+                              label="Employee Status"
+                              fullWidth
+                              required
+                              onChange={(evt) => {
+                                handleChange(evt);
+                                handleChangeEvent(evt);
+                              }}
+                              value={values.employeeStatus}
+                              onBlur={handleBlur}
+                              error={touched.employeeStatus ? errors.employeeStatus : ''}
+                              helperText={touched.employeeStatus ? formik.errors.employeeStatus : ''}
+                              // }
+                              disabled={
+                                state.employeeStatus === 'Pending For TL Review' ||
+                                state.employeeStatus === 'Pending For SM Review' ||
+                                state.employeeStatus === 'Pending For IT Spoc Review'
+                              }
+                            >
+                              {location.state.resignedEmployee !== 'Resigned' ? (
+                                Constants.employeeStatusList.map((option) => (
+                                  <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </MenuItem>
+                                ))
+                              ) : (
+                                <MenuItem value="Revoke">Revoke</MenuItem>
+                              )}
+                            </TextField>
                           </FormControl>
                         </Grid>
+
+                        {values.employeeStatus === 'Resigned' ? (
+                          <>
+                            <Grid item xs={12} sm={4}>
+                              <TextField
+                                InputLabelProps={{ shrink: true }}
+                                autoComplete="off"
+                                name="resignationDate"
+                                variant="outlined"
+                                // required
+                                fullWidth
+                                type="date"
+                                id="resignationDate"
+                                label="Resignation Date"
+                                value={values.resignationDate}
+                                onChange={(evt) => {
+                                  handleChange(evt);
+                                  handleChangeEvent(evt);
+                                }}
+                                // }
+                                inputProps={{
+                                  readOnly:
+                                    state.employeeStatus === 'Pending For TL Review' ||
+                                    state.employeeStatus === 'Pending For SM Review' ||
+                                    state.employeeStatus === 'Pending For IT Spoc Review'
+                                      ? true
+                                      : null,
+                                  style: {
+                                    color:
+                                      state.employeeStatus === 'Pending For TL Review' ||
+                                      state.employeeStatus === 'Pending For SM Review' ||
+                                      state.employeeStatus === 'Pending For IT Spoc Review'
+                                        ? 'grey'
+                                        : 'black',
+                                  },
+                                }}
+                                onBlur={handleBlur}
+                                error={formik.touched.resignationDate && Boolean(formik.errors.resignationDate)}
+                                helperText={formik.touched.resignationDate && formik.errors.resignationDate}
+                              />
+                            </Grid>
+
+                            <Grid item xs={12} sm={4}>
+                              <TextField
+                                InputLabelProps={{ shrink: true }}
+                                autoComplete="off"
+                                name="lwd"
+                                variant="outlined"
+                                // required
+                                fullWidth
+                                type="date"
+                                id="lwd"
+                                label="Last Working Date"
+                                value={values.lwd}
+                                onChange={(evt) => {
+                                  handleChange(evt);
+                                  handleChangeEvent(evt);
+                                }}
+                                // }
+                                inputProps={{
+                                  readOnly:
+                                    state.employeeStatus === 'Pending For TL Review' ||
+                                    state.employeeStatus === 'Pending For SM Review' ||
+                                    state.employeeStatus === 'Pending For IT Spoc Review'
+                                      ? true
+                                      : null,
+                                  style: {
+                                    color:
+                                      state.employeeStatus === 'Pending For TL Review' ||
+                                      state.employeeStatus === 'Pending For SM Review' ||
+                                      state.employeeStatus === 'Pending For IT Spoc Review'
+                                        ? 'grey'
+                                        : 'black',
+                                  },
+                                }}
+                                onBlur={handleBlur}
+                                error={formik.touched.lwd && Boolean(formik.errors.lwd)}
+                                helperText={formik.touched.lwd && formik.errors.lwd}
+                              />
+                            </Grid>
+                          </>
+                        ) : null}
 
                         <Grid item xs={12} sm={4}>
                           <TextField
@@ -1868,7 +2001,7 @@ export default function ViewEmployee() {
                             name="lob"
                             // select={projectsList.length !== 0}
                             // select={values.lob === ''}
-                             select
+                            select
                             label="LOB"
                             fullWidth
                             required
@@ -2009,7 +2142,7 @@ export default function ViewEmployee() {
 
                       <Grid container item xs={12} justifyContent={'center'}>
                         <Stack spacing={2} direction="row" justifyContent="center">
-                          {state.employeeStatus === 'Active' ? (
+                          {state.employeeStatus === 'Active' || state.employeeStatus === 'Resigned' ? (
                             <Button
                               size="medium"
                               variant="contained"

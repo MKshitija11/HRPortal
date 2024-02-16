@@ -28,6 +28,7 @@ import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify';
 import Configuration from '../utils/Configuration';
 import Constants from '../Constants/Constants';
+import CustomProgressBar from './CustomProgressBar';
 
 export default function ViewEmployee() {
   const [state, setState] = useState({
@@ -877,6 +878,24 @@ export default function ViewEmployee() {
           </Button>
         </Stack>
 
+        {/* <Stack mt={4} mb={4} justifyContent="center">
+          <CustomProgressBar
+            employeeStatus={state.employeeStatus}
+            percent={
+              state.employeeStatus === 'Pending For TL Review'
+                ? 25
+                : state.employeeStatus === 'Pending For SM Review'
+                ? 50
+                : state.employeeStatus === 'Pending For IT Spoc Review'
+                ? 75
+                : state.employeeStatus === 'Active'
+                ? 100
+                : 0
+            }
+            activeStep={3}
+          />
+        </Stack> */}
+
         <Card
           container
           sx={{
@@ -1424,11 +1443,10 @@ export default function ViewEmployee() {
                             error={touched.joiningDate ? errors.joiningDate : ''}
                             helperText={touched.joiningDate ? formik.errors.joiningDate : ''}
                             inputProps={{
-                              // min: new Date().toISOString().split('T')[0],
-                              min: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
-                              max: format(addMonths(new Date(), 3), 'yyyy-MM-dd'),
-                              // readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
-                              // style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
+                               
+                              min: state.employeeStatus === 'Active' ? null : format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
+                              max: state.employeeStatus === 'Active' ? null : format(addMonths(new Date(), 3), 'yyyy-MM-dd'),
+                             
                             }}
                           />
                         </Grid>

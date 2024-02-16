@@ -1,13 +1,20 @@
 import { Typography, Box } from '@mui/material';
 import { ColorRing, Oval } from 'react-loader-spinner';
 
-export default function Loader() {
+export default function Loader(props) {
   return (
     <>
-      <Box style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: "20%" }}>
+      <Box
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: props.marginTop ? props.marginTop : '20%',
+        }}
+      >
         <Oval
-          height={70}
-          width={70}
+          height={props.height ? props.height : 70}
+          width={props.width ? props.width : 70}
           color="#0072BC"
           wrapperStyle={{}}
           wrapperClass=""

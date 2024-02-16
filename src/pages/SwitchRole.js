@@ -9,7 +9,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 
-
 export default function SwitchRole({ props }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -17,10 +16,12 @@ export default function SwitchRole({ props }) {
   const [value, setValue] = useState();
   const [role, setRole] = useState();
   const ROLE = sessionStorage.getItem('ROLE');
+  const [userProfileList, setUserProfileList] = useState([]);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-    setRole(USERDETAILS?.[0]?.userProfile);
+    // setRole(USERDETAILS?.[0]?.userProfile);
+    setUserProfileList(USERDETAILS);
   }, [role]);
 
   const handleChange = (event) => {
@@ -32,13 +33,13 @@ export default function SwitchRole({ props }) {
     setOpenModal(false);
     console.log('HANDLE CLOSE MODAL EVENT', value);
     sessionStorage.setItem('ROLE', value);
+
     if (value === 'BAGIC_TL') {
       navigate('/EmployeesTL');
     } else if (value === 'BAGIC_SM') {
       navigate('/EmployeesSM');
     }
   };
-
   return (
     <>
       <Helmet>
@@ -71,6 +72,7 @@ export default function SwitchRole({ props }) {
                 alignItems: 'center',
                 alignSelf: 'center',
                 justifyContent: 'center',
+                width: '100%',
               }}
             >
               <RadioGroup
@@ -79,13 +81,32 @@ export default function SwitchRole({ props }) {
                 value={value}
                 onChange={handleChange}
                 defaultValue={ROLE}
-                style={{ flexDirection: 'row', paddingLeft: '30%' }}
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}
               >
-                <FormControlLabel value="BAGIC_TL" control={<Radio />} label="Team Lead" />
-                <FormControlLabel value="BAGIC_SM" control={<Radio />} label="Senior Manager" />
+                {/* <FormControlLabel value="BAGIC_TL" control={<Radio />} label="Team Lead" />
+                <FormControlLabel value="BAGIC_SM" control={<Radio />} label="Senior Manager" /> */}
+                {/* {userProfileList.map((item, index) => {
+
+                })} */}
+                {userProfileList.map((element) => (
+                  <Stack
+                    key={element.key}
+                    alignItems="center"
+                    justifyContent="center"
+                    flexDirection="row"
+                    style={{ flexDirection: 'row', width: '100%' }}
+                  >
+                    <FormControlLabel
+                      style={{ alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}
+                      value={element.userProfile}
+                      control={<Radio />}
+                      label={element.partnerName}
+                    />
+                  </Stack>
+                ))}
               </RadioGroup>
               <>
-                <Stack style={{ justifyContent: 'center', paddingLeft: '20%' }}>
+                <Stack style={{ justifyContent: 'center' }}>
                   <Button
                     style={{ margin: '0 auto', display: 'flex', justifyContent: 'center' }}
                     size="medium"

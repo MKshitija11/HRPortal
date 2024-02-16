@@ -1,15 +1,16 @@
-import PropTypes from "prop-types";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 // @mui
 // import { styled, alpha } from "@mui/material/styles";
-import { Box, Drawer } from "@mui/material";
+import { Box, Drawer, Stack, Typography, Button } from '@mui/material';
 // hooks
-import useResponsive from "../../../hooks/useResponsive";
+import useResponsive from '../../../hooks/useResponsive';
 // components
-import Logo from "../../../components/logo";
-import Scrollbar from "../../../components/scrollbar";
-import NavSection from "../../../components/nav-section";
+import Logo from '../../../components/logo';
+import Scrollbar from '../../../components/scrollbar';
+import NavSection from '../../../components/nav-section';
+// import BajajLogo from '../../../Images/BajajLogo.png'
 //
 
 // ----------------------------------------------------------------------
@@ -34,7 +35,7 @@ Nav.propTypes = {
 export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
 
-  const isDesktop = useResponsive("up", "lg");
+  const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {
     if (openNav) {
@@ -47,16 +48,43 @@ export default function Nav({ openNav, onCloseNav }) {
     <Scrollbar
       sx={{
         height: 1,
-        "& .simplebar-content": {
+        '& .simplebar-content': {
           height: 1,
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
         },
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, display: "inline-flex" }}>
-        <Logo />
-      </Box>
+      {/* <Box sx={{ px: 2.5, py: 1, display: 'inline-flex' }}> */}
+        {/* <Stack></Stack> */}
+        {/* <img
+          src={'/assets/images/covers/BajajLogoInBlue.png'}
+          alt="BajajLogo"
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+           
+          }}
+        /> */}
+        <Stack alignItems="center" justifyContent="center" mt={3} mb={4}>
+          <Typography
+            variant="h6"
+            style={{
+              textAlign: 'center',
+          
+              background: 'linear-gradient(90deg, rgba(70,190,236,1) 0%, rgba(35,33,167,1) 100%, rgba(2,0,36,1) 100%)',
+
+              WebkitTextFillColor: 'transparent',
+              WebkitBackgroundClip: 'text',
+
+              fontSize: '30px',
+         
+            }}
+          >
+            HR - PORTAL
+          </Typography>
+        </Stack>
+      {/* </Box> */}
 
       {/* <Box sx={{ mb: 5, mx: 2.5, boxShadow: "10px 10px 10px #000" }}>
         <Link underline="none">
@@ -76,31 +104,23 @@ export default function Nav({ openNav, onCloseNav }) {
         </Link> 
   
       </Box> */}
+
       <NavSection />
-
-      {/* <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
-        <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-          <Box
-            component="img"
-            src="/assets/illustrations/illustration_avatar.png"
-            sx={{ width: 100, position: 'absolute', top: -50 }}
+      {/* GroupImageNavSection */}
+      <Box sx={{ px: 2.5, py: 1, display: 'inline-flex', top: 7, }}>
+        <Stack mt={7}>
+          <img
+            src={'/assets/images/covers/NavSectionImage.png'}
+            alt="BajajLogo"
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              // height: 40,
+              // width: 40
+            }}
           />
-
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography gutterBottom variant="h6">
-              Get more?
-            </Typography>
-
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              From only $69
-            </Typography>
-          </Box>
-
-          <Button href="https://material-ui.com/store/items/minimal-dashboard/" target="_blank" variant="contained">
-            Upgrade to Pro
-          </Button>
         </Stack>
-      </Box> */}
+      </Box>
     </Scrollbar>
   );
 
@@ -119,8 +139,8 @@ export default function Nav({ openNav, onCloseNav }) {
           PaperProps={{
             sx: {
               width: NAV_WIDTH,
-              bgcolor: "#f4f4f4",
-              borderRightStyle: "solid",
+              bgcolor: '#f4f4f4',
+              borderRightStyle: 'solid',
             },
           }}
         >

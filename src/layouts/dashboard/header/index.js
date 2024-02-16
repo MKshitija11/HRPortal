@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Box, Stack, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
 // utils
 import { bgBlur } from '../../../utils/cssStyles';
 // components
@@ -24,7 +24,10 @@ const HEADER_DESKTOP = 90;
 const StyledRoot = styled(AppBar)(({ theme }) => ({
   ...bgBlur({ color: '#0072BC' }),
 
-  backgroundImage: "url('/assets/images/covers/BannerBackground.png')",
+  // backgroundImage: "url('/assets/images/covers/BannerBackground.png')",
+  // background: linear-gradient(90deg, rgba(70,190,236,1) 0%, rgba(17,16,87,1) 100%, rgba(2,0,36,1) 100%);
+  // background: 'rgb(70,190,236)',
+  background: 'linear-gradient(90deg, rgba(70,190,236,1) 0%, rgba(35,33,167,1) 100%, rgba(2,0,36,1) 100%)',
 
   [theme.breakpoints.up('lg')]: {
     width: `calc(100% - ${NAV_WIDTH + 1}px)`,
@@ -63,31 +66,43 @@ export default function Header({ onOpenNav }) {
         </IconButton>
 
         {/* <Searchbar /> */}
-        <Box sx={{ flexGrow: 1 }} />
-
+        {/* <Box sx={{ flexGrow: 1 }} /> */}
+        {/* 
         <Stack
           style={{}}
-          direction="column"
-          justifyContent="space-between"
+          direction="row"
+          justifyContent="space-around"
           spacing={{
             xs: 0.5,
             sm: 1,
           }}
         >
-          {/* <LanguagePopover /> */}
-          {/* <LanguagePopover />
-          <NotificationsPopover /> */}
-          {/* <img
+          <img
             src={'/assets/images/covers/BajajLogo.png'}
-            alt="text"
+            alt="BajajLogo"
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              height: 70,
-              width: 70,
+              // height: 40,
+              // width: 40
             }}
-          /> */}
+          />
           <AccountPopover />
+        </Stack> */}
+        <Stack sx={{ flexGrow: 1 }} justifyContent="space-between" display="flex" flexDirection="row">
+          <Stack alignItems="center" justifyContent="center">
+            <img
+              src={'/assets/images/covers/BajajLogo.png'}
+              alt="BajajLogo"
+              style={{
+                height: 60,
+                width: '100%',
+              }}
+            />
+          </Stack>
+          <Stack>
+            <AccountPopover />
+          </Stack>
         </Stack>
       </StyledToolbar>
     </StyledRoot>

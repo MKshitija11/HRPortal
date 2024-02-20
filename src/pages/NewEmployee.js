@@ -21,7 +21,7 @@ import {
   FormGroup,
   FormControlLabel,
 } from '@mui/material';
-
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 // components
@@ -413,6 +413,17 @@ export default function EmployeeList() {
   //     });
   //   }
   // };
+
+  const theme = createTheme({
+    components: {
+      MuiFormLabel: {
+        styleOverrides: {
+          asterisk: { color: 'red' },
+        },
+      },
+    },
+  });
+
   return (
     <>
       <Helmet>
@@ -534,9 +545,10 @@ export default function EmployeeList() {
             {(formik) => {
               const { values, handleChange, handleSubmit, errors, touched, handleBlur, isValid, dirty } = formik;
               return (
+                <ThemeProvider theme={theme}>
                 <form onSubmit={handleSubmit} spacing={2} method="POST" id="employeeForm" name="employeeForm">
                   <Typography variant="subtitle1" paddingBottom={'15px'}>
-                    Personal Information
+                  <b>Personal Information</b>
                   </Typography>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={4}>
@@ -782,6 +794,7 @@ export default function EmployeeList() {
                         id="dateOfBirth"
                         label="Date of Birth"
                         value={values.dateOfBirth}
+                        onKeyDown={(e) => e.preventDefault()}
                         onChange={(evt) => {
                           handleChange(evt);
                           handleChangeEvent(evt);
@@ -796,7 +809,7 @@ export default function EmployeeList() {
 
                   {/* Employee Details */}
                   <Typography variant="subtitle1" paddingBottom={'15px'}>
-                    Employment Details
+                   <b> Employment Details</b>
                   </Typography>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={4}>
@@ -850,6 +863,7 @@ export default function EmployeeList() {
                         type="date"
                         id="joiningDate"
                         label="Date of Joining"
+                        onKeyDown={(e) => e.preventDefault()}
                         inputProps={{
                           // min: new Date().toISOString().split('T')[0],
                           // const c = subMonths(date, 3);
@@ -1090,7 +1104,7 @@ export default function EmployeeList() {
 
                   <br />
                   <Typography variant="subtitle1" paddingBottom={'15px'}>
-                    Reporting Authorities
+                   <b>Reporting Authorities</b> 
                   </Typography>
 
                   <Grid container spacing={2}>
@@ -1222,6 +1236,7 @@ export default function EmployeeList() {
                     </Stack>
                   </Grid>
                 </form>
+                </ThemeProvider>
               );
             }}
           </Formik>

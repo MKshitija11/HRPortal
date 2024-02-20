@@ -100,6 +100,7 @@ export default function EmployeeListBP() {
   const [filteredSM, setFilteredSM] = useState();
 
   const [csvData = [], setCsvData] = useState();
+  const ROLE = sessionStorage.getItem('ROLE');
   console.log('LOCATION', location.state);
 
   useEffect(() => {
@@ -143,9 +144,20 @@ export default function EmployeeListBP() {
       //   itSpocId: 'NA',
       // };
       // console.log('empListVendorReq', location);
+   
+      // const empListItSpocReq = {
+      //   itSpocId: USERDETAILS?.[0]?.spocEmailId,
+      // };
+
       const empListItSpocReq = {
-        itSpocId: USERDETAILS?.[0]?.spocEmailId,
+        itSpocId:
+          ROLE === 'BAGIC_PRESIDENT'
+            ? 'pooja.rebba@bajajallianz.co.in'
+            : ROLE === 'BAGIC_ITS'
+            ? USERDETAILS?.[0]?.spocEmailId
+            : null,
       };
+
       setIsLoading(true);
       Configuration.getEmpListItSpoc(empListItSpocReq)
         .then((empListItSpocRes) => {

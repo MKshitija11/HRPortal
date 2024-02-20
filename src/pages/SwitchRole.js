@@ -38,6 +38,10 @@ export default function SwitchRole({ props }) {
       navigate('/EmployeesTL');
     } else if (value === 'BAGIC_SM') {
       navigate('/EmployeesSM');
+    } else if(value ==='BAGIC_PRESIDENT') {
+      navigate('/Dashboard');
+    } else if(value ==='BAGIC_ITS') {
+      navigate('/Dashboard');
     }
   };
   return (
@@ -94,14 +98,16 @@ export default function SwitchRole({ props }) {
                     alignItems="center"
                     justifyContent="center"
                     flexDirection="row"
-                    style={{ flexDirection: 'row', width: '100%' }}
+                    style={{ flexDirection: 'row', width: '100%',alignItems: 'center', justifyContent: 'center', }}
                   >
+                    <Stack style={{ width: 180, }} ml={5}>
                     <FormControlLabel
-                      style={{ alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}
+                      // style={{ alignItems: 'center', justifyContent: 'center', textAlign: 'center',  }}
                       value={element.userProfile}
                       control={<Radio />}
                       label={element.partnerName}
                     />
+                    </Stack>
                   </Stack>
                 ))}
               </RadioGroup>

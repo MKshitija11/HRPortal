@@ -95,14 +95,25 @@ export default function EmployeeListHR() {
   // const [isNotFound, setIsNotFound] = useState(false);
   console.log('location data>>>.', location.state);
 
+  const ROLE = sessionStorage.getItem('ROLE');
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS', USERDETAILS);
+      console.log('ROLE ROLE', ROLE);
+
+      //   const empListItSpocReq = {
+      //     itSpocId: "pooja.rebba@bajajallianz.co.in",
+      //   };
 
       const empListItSpocReq = {
-        itSpocId: USERDETAILS?.[0]?.spocEmailId,
+        itSpocId:
+          ROLE === 'BAGIC_PRESIDENT'
+            ? 'pooja.rebba@bajajallianz.co.in'
+            : ROLE === 'BAGIC_ITS'
+            ? USERDETAILS?.[0]?.spocEmailId
+            : null,
       };
+
       setIsLoading(true);
       Configuration.getEmpListItSpoc(empListItSpocReq)
         .then((empListItSpocRes) => {

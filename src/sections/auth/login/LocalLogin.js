@@ -107,6 +107,9 @@ export default function LoginForm() {
             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ITS') {
               navigate('/EmployeesITS');
             }
+             else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PRESIDENT') {
+              navigate('/EmployeesITS');
+            }
           }
           let USERDETAILS = {};
           USERDETAILS = JSON.stringify(LoginResponse.data);

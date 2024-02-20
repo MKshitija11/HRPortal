@@ -144,7 +144,10 @@ export default function UATLogin() {
               navigate('/EmployeesTL');
             } else if (LoginResponse.data.userProfile === 'BAGIC_SM') {
               navigate('/EmployeesSM');
-            } else if (LoginResponse.data.userProfile === 'BAGIC_ITS') {
+            } else if (LoginResponse.data.userProfile === 'BAGIC_ITS' ) {
+              navigate('/EmployeesITS');
+            } 
+            else if ( USERDETAILS?.[0]?.userProfile === 'BAGIC_PRESIDENT') {
               navigate('/EmployeesITS');
             }
 

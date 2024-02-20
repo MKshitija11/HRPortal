@@ -205,6 +205,8 @@ export default function UserLoginPage() {
                       navigate('/EmpManagmentSM');
                     } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ITS') {
                       navigate('/Dashboard');
+                    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PRESIDENT') {
+                      navigate('/Dashboard');
                     }
 
                     let USERDETAILS = {};

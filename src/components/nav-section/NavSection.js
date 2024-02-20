@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink as RouterLink, useLocation } from 'react-router-dom';
 // @mui
-import { Box, List, ListItemText } from '@mui/material';
+import { Box, List, ListItemText, Stack } from '@mui/material';
 //
 import { StyledNavItem, StyledNavItemIcon } from './styles';
 import SvgColor from '../svg-color';
@@ -17,21 +17,21 @@ export default function NavSection() {
 
   const ROLE = sessionStorage.getItem('ROLE');
   const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+  console.log('ROLE< USERDETAILS', ROLE, USERDETAILS);
   useEffect(() => {
     const loginRequest = {
       username: USERDETAILS?.[0]?.spocUsername,
+      // username: 'kshitija.madhekar@pinnacle.com'
     };
 
     Configuration.login(loginRequest).then((LoginResponse) => {
-      console.log('LoginForm.login.LoginResponse nav section >>>>', LoginResponse.data);
-      console.log('type', typeof LoginResponse.data);
+      console.log('LOGIN RESONSE>>> nav section >>>>', LoginResponse?.data?.length);
+      console.log('type', typeof LoginResponse?.data);
     });
   });
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-
-    console.log('ROLE', ROLE);
 
     if (!USERDETAILS) {
       console.log('inside first if');
@@ -45,6 +45,8 @@ export default function NavSection() {
     } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
       redirectUrl = '/EmpManagmentSM';
     } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS') {
+      redirectUrl = '/Dashboard';
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PRESIDENT') {
       redirectUrl = '/Dashboard';
     }
 
@@ -79,11 +81,11 @@ export default function NavSection() {
         path: '/ResignedEmployeesBP',
         icon: icon('ic_resignedUser'),
       },
-      // {
-      //   title: 'TimeSheet',
-      //   path: '/TimeSheet',
-      //   icon: icon('ic_timesheet'),
-      // },
+      {
+        title: 'TimeSheet',
+        path: '/TimeSheet',
+        icon: icon('ic_timesheet'),
+      },
     ];
 
     const dataTeamLead = [
@@ -112,19 +114,22 @@ export default function NavSection() {
             : '/ResignedEmployeesListTL',
         icon: icon('ic_resignedUser'),
       },
-      // {
-      //   title: 'TimeSheet',
-      //   path: '/TimeSheet',
-      //   icon: icon('ic_timesheet'),
-      // },
+      {
+        title: 'TimeSheet',
+        path: '/TimeSheet',
+        icon: icon('ic_timesheet'),
+      },
     ];
-    if (ROLE && !dataTeamLead.find((role) => role.path === '/SwitchRole')) {
-      dataTeamLead.push({
-        title: 'Switch role',
-        path: '/SwitchRole',
-        icon: icon('ic_user'),
-      });
+    if (USERDETAILS?.length > 1) {
+      if (ROLE && !dataTeamLead.find((role) => role.path === '/SwitchRole')) {
+        dataTeamLead.push({
+          title: 'Switch role',
+          path: '/SwitchRole',
+          icon: icon('ic_user'),
+        });
+      }
     }
+
     const dataSeniorManager = [
       {
         title: 'Dashboard',
@@ -154,19 +159,21 @@ export default function NavSection() {
             : '/ResignedEmployeesListSM',
         icon: icon('ic_resignedUser'),
       },
-      // {
-      //   title: 'TimeSheet',
-      //   path: '/TimeSheet',
+      {
+        title: 'TimeSheet',
+        path: '/TimeSheet',
 
-      //   icon: icon('ic_timesheet'),
-      // },
+        icon: icon('ic_timesheet'),
+      },
     ];
-    if (ROLE && !dataSeniorManager.find((role) => role.path === '/SwitchRole')) {
-      dataSeniorManager.push({
-        title: 'Switch role',
-        path: '/SwitchRole',
-        icon: icon('ic_activeUser'),
-      });
+    if (USERDETAILS?.length > 1) {
+      if (ROLE && !dataSeniorManager.find((role) => role.path === '/SwitchRole')) {
+        dataSeniorManager.push({
+          title: 'Switch role',
+          path: '/SwitchRole',
+          icon: icon('ic_activeUser'),
+        });
+      }
     }
 
     const dataAdmin = [
@@ -203,17 +210,92 @@ export default function NavSection() {
         path: '/Reports',
         icon: icon('ic_cart'),
       },
+      {
+        title: 'TimeSheet',
+        path: '/TimeSheet',
+        icon: icon('ic_timesheet'),
+      },
     ];
-    if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ADMIN') {
+    if (USERDETAILS?.length > 1) {
+      if (ROLE && !dataSpoc.find((role) => role.path === '/SwitchRole')) {
+        dataSpoc.push({
+          title: 'Switch role',
+          path: '/SwitchRole',
+          icon: icon('ic_activeUser'),
+        });
+      }
+    }
+
+    const dataPresident = [
+      {
+        title: 'Dashboard',
+        path: '/Dashboard',
+        icon: icon('ic_analytics'),
+      },
+      {
+        title: 'Active',
+        path: '/EmployeesITS',
+        icon: icon('ic_activeUser'),
+      },
+      {
+        title: 'Pending',
+        path: '/PendingEmployeesITS',
+        icon: icon('ic_pending'),
+      },
+
+      {
+        title: 'Resigned',
+        path: '/ResignedEmployeesITS',
+        icon: icon('ic_resignedUser'),
+      },
+      {
+        title: 'Reports',
+        path: '/Reports',
+        icon: icon('ic_cart'),
+      },
+      {
+        title: 'TimeSheet',
+        path: '/TimeSheet',
+        icon: icon('ic_timesheet'),
+      },
+    ];
+    if (USERDETAILS?.length > 1) {
+      if (ROLE && !dataPresident.find((role) => role.path === '/SwitchRole')) {
+        dataPresident.push({
+          title: 'Switch role',
+          path: '/SwitchRole',
+          icon: icon('ic_activeUser'),
+        });
+      }
+    }
+    // if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ADMIN') {
+    //   setMenuList(dataAdmin);
+    // } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS') {
+    //   setMenuList(dataSpoc);
+    // } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') {
+    //   setMenuList(dataTeamLead);
+    // } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
+    //   setMenuList(dataSeniorManager);
+    // } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
+    //   setMenuList(dataUser);
+    // } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PRESIDENT') {
+    //   setMenuList(dataPresident);
+    // } else {
+    //   setMenuList(userLogin);
+    // }
+
+    if (ROLE === 'BAGIC_ADMIN') {
       setMenuList(dataAdmin);
-    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS') {
+    } else if (ROLE === 'BAGIC_ITS') {
       setMenuList(dataSpoc);
-    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') {
+    } else if (ROLE === 'BAGIC_TL') {
       setMenuList(dataTeamLead);
-    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
+    } else if (ROLE === 'BAGIC_SM') {
       setMenuList(dataSeniorManager);
-    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
+    } else if (ROLE === 'BAGIC_PARTNER') {
       setMenuList(dataUser);
+    } else if (ROLE === 'BAGIC_PRESIDENT') {
+      setMenuList(dataPresident);
     } else {
       setMenuList(userLogin);
     }
@@ -221,28 +303,37 @@ export default function NavSection() {
 
   return (
     <Box>
-      <List disablePadding sx={{ p: 2 }}>
+      <List sx={{ p: 2 }} spacing={2}>
         {menuList.map((item) => (
-          <StyledNavItem
-            key={item.title}
-            component={RouterLink}
-            to={item.path}
-            sx={{
-              '&.active': {
-                color: '#004A98',
-                bgcolor: '#ddd',
-                fontWeight: 'fontWeightBold',
-              },
-              '&': {
-                color: 'text.secondary',
-                bgcolor: '#f4f4f4',
-                fontWeight: 'fontWeightBold',
-              },
-            }}
-          >
-            <StyledNavItemIcon>{item.icon && item.icon}</StyledNavItemIcon>
-            <ListItemText disableTypography primary={item.title} />
-          </StyledNavItem>
+          <Stack flexDirection="row" mt={1}>
+            <StyledNavItem
+              key={item.title}
+              component={RouterLink}
+              to={item.path}
+              sx={{
+                '&.active': {
+                  // color: '#004A98',
+                  bgcolor: '#ddd',
+                  fontWeight: 'fontWeightBold',
+                  // backgroundColor: 'white',
+                  color: 'white',
+                  background:
+                    'linear-gradient(90deg, rgba(70,190,236,1) 0%, rgba(35,33,167,1) 100%, rgba(2,0,36,1) 100%)',
+                },
+                '&': {
+                  // color: 'text.secondary',
+                  color: '#004A98',
+                  bgcolor: '#f4f4f4',
+                  fontWeight: 'fontWeightBold',
+                  // backgroundColor: '#ddd',
+                  backgroundColor: 'white',
+                },
+              }}
+            >
+              <StyledNavItemIcon>{item.icon && item.icon}</StyledNavItemIcon>
+              <ListItemText disableTypography primary={item.title} />
+            </StyledNavItem>
+          </Stack>
         ))}
       </List>
     </Box>

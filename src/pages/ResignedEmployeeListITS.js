@@ -89,13 +89,23 @@ export default function PendingEmployeeListHR() {
   const [emptyRows, setEmptyRows] = useState();
   const [pendingEmployees, setPendingEmployees] = useState([]);
   console.log('location data>>>.', location);
+  const ROLE = sessionStorage.getItem('ROLE');
   // const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
+      // const empListItSpocReq = {
+      //   itSpocId: USERDETAILS?.[0]?.spocEmailId,
+      // };
+
       const empListItSpocReq = {
-        itSpocId: USERDETAILS?.[0]?.spocEmailId,
+        itSpocId:
+          ROLE === 'BAGIC_PRESIDENT'
+            ? 'pooja.rebba@bajajallianz.co.in'
+            : ROLE === 'BAGIC_ITS'
+            ? USERDETAILS?.[0]?.spocEmailId
+            : null,
       };
       setIsLoading(true);
       Configuration.getEmpListItSpoc(empListItSpocReq)
@@ -105,16 +115,16 @@ export default function PendingEmployeeListHR() {
 
           setEmptyRows(page > 0 ? Math.max(0, (1 + page) * rowsPerPage - empListItSpocRes.data.length) : 0);
           const filteredUsers = applySortFilter(empListItSpocRes.data, getComparator(order, orderBy), filterName);
-          console.log("LOCATION FROM ITS", location.state)
-          if(location.state?.filterByPartner) {
+          console.log('LOCATION FROM ITS', location.state);
+          if (location.state?.filterByPartner) {
             setPendingEmployees(
               filteredUsers.filter(
                 (employees) =>
-                  employees.partnerName === location.state.partnerName && employees.employeeStatus === location.state.empOBStatus
+                  employees.partnerName === location.state.partnerName &&
+                  employees.employeeStatus === location.state.empOBStatus
               )
             );
-          }
-          else if (location.state?.filterBySM) {
+          } else if (location.state?.filterBySM) {
             setPendingEmployees(
               filteredUsers.filter(
                 (employees) =>
@@ -122,11 +132,11 @@ export default function PendingEmployeeListHR() {
                   employees.employeeStatus === location.state.empOBStatus
               )
             );
-          } 
-          else if (location.state?.empOBStatus) {
-            setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === location.state.empOBStatus));
-          }
-          else {
+          } else if (location.state?.empOBStatus) {
+            setPendingEmployees(
+              filteredUsers.filter((employees) => employees.employeeStatus === location.state.empOBStatus)
+            );
+          } else {
             setPendingEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Resigned'));
           }
 
@@ -252,7 +262,7 @@ export default function PendingEmployeeListHR() {
                               employeeStatus,
                               partnerName,
                               supportDevelopment,
-                              joiningDate
+                              joiningDate,
                             } = row;
                             const selectedUser = selected.indexOf(employeeFullName) !== -1;
                             console.log('ROW ID FROM EMP', row.id, row.partnerName);
@@ -273,7 +283,7 @@ export default function PendingEmployeeListHR() {
                               >
                                 {/* <TableCell align="left">{employeeId}</TableCell> */}
 
-                                <TableCell component="th" scope="row" >
+                                <TableCell component="th" scope="row">
                                   <Typography noWrap>{employeeFullName}</Typography>
                                 </TableCell>
 

@@ -48,9 +48,13 @@ export default function DashboardAppPage() {
     let USERDETAILS = '';
     USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      if (USERDETAILS?.[0]?.userProfile !== 'BAGIC_ITS') {
-        navigate('/401');
-      }
+      console.log("USERDETAILS?.[0]?.userProfile ", USERDETAILS)
+      // if (USERDETAILS?.[0]?.userProfile !== 'BAGIC_ITS' ) {
+      //   navigate('/401');
+      // } 
+      // else if(USERDETAILS?.[0]?.userProfile !== 'BAGIC_PRESIDENT') {
+      //   navigate('/401');
+      // }
 
       setLoggedName(USERDETAILS?.[0]?.spocName);
 
@@ -147,7 +151,7 @@ export default function DashboardAppPage() {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
-                  title="Onboarding Status"
+                  title="Employee Onboarding Status"
                   subheader=""
                   chartType="donut"
                   chartData={empStatusList}

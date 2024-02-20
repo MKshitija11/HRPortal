@@ -81,6 +81,7 @@ export default function ViewEmployee() {
     projectType: '',
     lwd: '',
     resignationDate: '',
+    remarks: ''
   });
   const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
@@ -666,6 +667,7 @@ export default function ViewEmployee() {
         projectType: EMP_DETAILS.projectType,
         lwd: EMP_DETAILS.lwd,
         resignationDate: EMP_DETAILS.resignationDate,
+        remarks: EMP_DETAILS.remarks
       };
       console.log('JOINING DATE', typeof state.joiningDate);
       setPartnerName(EMP_DETAILS.partnerName);
@@ -734,6 +736,7 @@ export default function ViewEmployee() {
     webUserId: state.webUserId || '',
     lwd: state.lwd || '',
     resignationDate: state.resignationDate || '',
+    remarks: state.remarks || ''
   };
   console.log('INITIAL VALUES', initialValues.employeeStatus);
 
@@ -769,7 +772,7 @@ export default function ViewEmployee() {
 
     newReplacement: Yup.string().oneOf(['New', 'Replacement']).required('Select an option'),
     // replacementEcode: Yup.string().required('Required'),
-    supportDevelopment: Yup.string().oneOf(['Support', 'Development'], 'Invalid option').required('Select an option'),
+    supportDevelopment: Yup.string().required('Please Select'),
     // evaluationPeriod: Yup.string()
     //   .oneOf(['15 Days', '30 Days', '45 Days', '60 Days'], 'Invalid option')
     //   .required('Select an option'),
@@ -1000,7 +1003,7 @@ export default function ViewEmployee() {
                     <ThemeProvider theme={theme}>
                     <form onSubmit={handleSubmit} spacing={2} method="POST" id="employeeForm" name="employeeForm">
                       <Typography variant="subtitle1" paddingBottom={'15px'}>
-                        Personal Information
+                        <b>Personal Information</b>
                       </Typography>
                       <Grid container spacing={2}>
                         <Grid item xs={12} sm={4}>
@@ -1278,7 +1281,7 @@ export default function ViewEmployee() {
                       </Grid>
                       <br />
                       <Typography variant="subtitle1" paddingBottom={'15px'}>
-                        Employment Detaills
+                        <b>Employment Details</b>
                       </Typography>
 
                       <Grid container spacing={2}>
@@ -1790,7 +1793,7 @@ export default function ViewEmployee() {
                       <br />
 
                       <Typography variant="subtitle1" paddingBottom={'15px'}>
-                        Reporting Authorities
+                        <b>Reporting Authorities</b>
                       </Typography>
 
                       <Grid container spacing={2}>
@@ -1862,7 +1865,7 @@ export default function ViewEmployee() {
                       </Grid>
                       <br />
                       <Typography variant="subtitle1" paddingBottom={'15px'}>
-                        Profile Details
+                        <b>Profile Details</b>
                       </Typography>
 
                       <Grid container spacing={2}>
@@ -2079,6 +2082,38 @@ export default function ViewEmployee() {
                             ))}
                           </TextField>
                         </Grid>
+
+                        {values.lob === 'Others' || values.lob === 'Internal IT App' ? (
+                              <Grid item xs={12} sm={6}>
+                                <TextField
+                                  labelId="demo-select-small"
+                                  id="remarks"
+                                  name="remarks"
+                                  // select={projectsList.length !== 0}
+                                  // select={values.lob === ''}
+                                  //  select
+                                  label="Others"
+                                  fullWidth
+                                  required
+                                  onChange={(evt) => {
+                                    handleChange(evt);
+                                    handleChangeEvent(evt);
+                                  }}
+                                  value={values.remarks}
+                                  onBlur={handleBlur}
+                                  error={touched.remarks ? errors.remarks : ''}
+                                  helperText={touched.remarks ? formik.errors.remarks : ''}
+                                  // disabled={
+                                  //   state.employeeStatus === 'Pending For TL Review' ||
+                                  //   state.employeeStatus === 'Pending For SM Review' ||
+                                  //   state.employeeStatus === 'Pending For IT Spoc Review'
+                                  // }
+                                />
+                              </Grid>
+                            ) : (
+                              <input type="hidden" id="remarks" name="remarks" value="" />
+                            )}
+
 
                         <Grid item xs={12} sm={6}>
                           <TextField

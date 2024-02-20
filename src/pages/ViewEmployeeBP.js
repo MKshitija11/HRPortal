@@ -740,7 +740,7 @@ export default function ViewEmployee({ props }) {
                         <form onSubmit={handleSubmit} spacing={2} method="POST" id="employeeForm" name="employeeForm">
                           <>
                             <Typography variant="subtitle1" paddingBottom={'15px'}>
-                              Personal Information
+                              <b>Personal Information</b>
                             </Typography>
 
                             <Grid container spacing={2}>

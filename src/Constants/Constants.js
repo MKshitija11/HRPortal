@@ -208,8 +208,8 @@ export default {
 
   supportDevelopmentList: [
     {
-      value: 'Support',
-      label: 'Support',
+      value: 'NRCR and Support',
+      label: 'NRCR and Support',
     },
     {
       value: 'Development',
@@ -224,12 +224,36 @@ export default {
       label: 'MIS',
     },
     {
-      value: 'Project',
-      label: 'Project',
+      value: 'UI/UX',
+      label: 'UI/UX',
     },
     {
       value: 'Infra Support',
       label: 'Infra Support',
+    },
+    {
+      value: 'DBA',
+      label: 'DBA',
+    },
+    {
+      value: 'NRCR',
+      label: 'NRCR',
+    },
+    {
+      value: 'BA',
+      label: 'BA',
+    },
+    {
+      value: 'Support',
+      label: 'Support',
+    },
+    {
+      value: 'Project',
+      label: 'Project',
+    },
+    {
+      value: 'Audit',
+      label: 'Audit',
     },
   ],
 
@@ -332,6 +356,18 @@ export default {
       value: 'Infra',
       label: 'Infra',
     },
+    {
+      value: 'Audit',
+      label: 'Audit',
+    },
+    {
+      value: 'Internal IT App',
+      label: 'Internal IT App',
+    },
+    {
+      value: 'Others',
+      label: 'Others',
+    },
   ],
   maximusOpusList: [
     {
@@ -345,6 +381,10 @@ export default {
     {
       value: 'Infra',
       label: 'Infra',
+    },
+    {
+      value: 'Maximus and Opus',
+      label: 'Maximus and Opus',
     },
   ],
 

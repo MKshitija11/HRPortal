@@ -18,6 +18,8 @@ import {
   Modal,
   Box,
 } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import addMonths from 'date-fns/addMonths';
@@ -294,6 +296,7 @@ export default function ViewEmployee() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  console.log('LOCATION', location.state.row.employeeStatus);
 
   const EmployeeList = () => {
     navigate('/employeesSM');
@@ -460,21 +463,19 @@ export default function ViewEmployee() {
   const updateEmployeeData = (param, setFieldValue) => {
     if (param && typeof param === 'boolean') {
       document.getElementById('employeeStatus').value = 'Rejected by SM';
-      // setFieldValue('employeeStatus', 'Rejected by SM');
+
       setState({
         ...state,
         employeeStatus: 'Rejected by SM',
       });
     } else {
       document.getElementById('employeeStatus').value = 'Pending For IT Spoc Review';
-      // setFieldValue('employeeStatus', 'Pending For IT Spoc Review');
       setState({
         ...state,
         employeeStatus: 'Pending For IT Spoc Review',
       });
     }
-    // event.preventDefault();
-    // document.getElementById('employeeStatus').value = 'Pending For IT Spoc Review';
+
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
@@ -525,11 +526,19 @@ export default function ViewEmployee() {
   };
 
   const updateActiveEmployee = () => {
-    document.getElementById('employeeStatus').value = 'Active';
-    setState({
-      ...state,
-      employeeStatus: 'Active',
-    });
+    if (state.employeeStatus === 'Resigned') {
+      document.getElementById('employeeStatus').value = 'Resigned';
+      setState({
+        ...state,
+        employeeStatus: 'Resigned',
+      });
+    } else {
+      document.getElementById('employeeStatus').value = 'Active';
+      setState({
+        ...state,
+        employeeStatus: 'Active',
+      });
+    }
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
@@ -726,7 +735,7 @@ export default function ViewEmployee() {
     lwd: state.lwd || '',
     resignationDate: state.resignationDate || '',
   };
-  console.log('INITIAL VALUES', initialValues.joiningDate);
+  console.log('INITIAL VALUES', initialValues.employeeStatus);
 
   const validationSchema = Yup.object({
     employeeFirstName: Yup.string()
@@ -786,6 +795,16 @@ export default function ViewEmployee() {
     lob: Yup.string().required('Please Select'),
     skillSet: Yup.string().required('Skill set are required'),
     // designation: Yup.string().required('Please Select'),
+  });
+
+  const theme = createTheme({
+    components: {
+      MuiFormLabel: {
+        styleOverrides: {
+          asterisk: { color: 'red' },
+        },
+      },
+    },
   });
 
   return (
@@ -978,6 +997,7 @@ export default function ViewEmployee() {
                         </Box>
                       </Modal>
                     </Stack>
+                    <ThemeProvider theme={theme}>
                     <form onSubmit={handleSubmit} spacing={2} method="POST" id="employeeForm" name="employeeForm">
                       <Typography variant="subtitle1" paddingBottom={'15px'}>
                         Personal Information
@@ -1250,6 +1270,7 @@ export default function ViewEmployee() {
                               handleChangeEvent(evt);
                             }}
                             onBlur={handleBlur}
+                            onKeyDown={(e) => e.preventDefault()}
                             // error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
                             // helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
                           />
@@ -1355,6 +1376,7 @@ export default function ViewEmployee() {
                               handleChange(evt);
                               handleChangeEvent(evt);
                             }}
+                            onKeyDown={(e) => e.preventDefault()}
                             onBlur={handleBlur}
                             error={touched.joiningDate ? errors.joiningDate : ''}
                             helperText={touched.joiningDate ? formik.errors.joiningDate : ''}
@@ -1482,66 +1504,69 @@ export default function ViewEmployee() {
                             <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
 
                             {/* <input type="hidden" id="employeeStatus" name="employeeStatus" /> */}
-                            {/* <TextField
-                              InputLabelProps={{ shrink: true }}
-                              autoComplete="off"
-                              name="employeeStatus"
-                              variant="outlined"
-                              required
-                              fullWidth
-                              id="employeeStatus"
-                              label="Employee Status"
-                              value={values.employeeStatus}
-                              onChange={handleChange}
-                              // inputProps={{
-                              //   readOnly:
-                              //     state.employeeStatus === 'Pending For SM Review' || state.employeeStatus === 'Active',
-                              //   style: {
-                              //     color:
-                              //       state.employeeStatus === 'Pending For SM Review' || state.employeeStatus === 'Active'
-                              //         ? 'grey'
-                              //         : 'black',
-                              //   },
-                              // }}
-                              focused={false}
-                              onBlur={handleChange}
-                              error={Boolean(errors.employeeStatus)}
-                              helperText={errors.employeeStatus}
-                            /> */}
 
-                            <TextField
-                              labelId="demo-select-small"
-                              id="employeeStatus"
-                              name="employeeStatus"
-                              select
-                              label="Employee Status"
-                              fullWidth
-                              required
-                              onChange={(evt) => {
-                                handleChange(evt);
-                                handleChangeEvent(evt);
-                              }}
-                              value={values.employeeStatus}
-                              onBlur={handleBlur}
-                              error={touched.employeeStatus ? errors.employeeStatus : ''}
-                              helperText={touched.employeeStatus ? formik.errors.employeeStatus : ''}
-                              // }
-                              disabled={
-                                state.employeeStatus === 'Pending For TL Review' ||
-                                state.employeeStatus === 'Pending For SM Review' ||
-                                state.employeeStatus === 'Pending For IT Spoc Review'
-                              }
-                            >
-                              {location.state.resignedEmployee !== 'Resigned' ? (
-                                Constants.employeeStatusList.map((option) => (
-                                  <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                  </MenuItem>
-                                ))
-                              ) : (
-                                <MenuItem value="Revoke">Revoke</MenuItem>
-                              )}
-                            </TextField>
+                            {state.employeeStatus === 'Active' || state.employeeStatus === 'Resigned' ? (
+                              <TextField
+                                labelId="demo-select-small"
+                                id="employeeStatus"
+                                name="employeeStatus"
+                                select
+                                label="Employee Status"
+                                fullWidth
+                                required
+                                onChange={(evt) => {
+                                  handleChange(evt);
+                                  handleChangeEvent(evt);
+                                }}
+                                value={values.employeeStatus}
+                                onBlur={handleBlur}
+                                error={touched.employeeStatus ? errors.employeeStatus : ''}
+                                helperText={touched.employeeStatus ? formik.errors.employeeStatus : ''}
+                                // }
+                                disabled={
+                                  state.employeeStatus === 'Pending For TL Review' ||
+                                  state.employeeStatus === 'Pending For SM Review' ||
+                                  state.employeeStatus === 'Pending For IT Spoc Review'
+                                }
+                              >
+                                {location.state.resignedEmployee !== 'Resigned' ? (
+                                  Constants.employeeStatusList.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </MenuItem>
+                                  ))
+                                ) : (
+                                  <MenuItem value="Revoke">Revoke</MenuItem>
+                                )}
+                              </TextField>
+                            ) : (
+                              <TextField
+                                InputLabelProps={{ shrink: true }}
+                                autoComplete="off"
+                                name="employeeStatus"
+                                variant="outlined"
+                                required
+                                fullWidth
+                                id="employeeStatus"
+                                label="Employee Status"
+                                value={values.employeeStatus}
+                                onChange={handleChange}
+                                // inputProps={{
+                                //   readOnly:
+                                //     state.employeeStatus === 'Pending For SM Review' || state.employeeStatus === 'Active',
+                                //   style: {
+                                //     color:
+                                //       state.employeeStatus === 'Pending For SM Review' || state.employeeStatus === 'Active'
+                                //         ? 'grey'
+                                //         : 'black',
+                                //   },
+                                // }}
+                                focused={false}
+                                onBlur={handleChange}
+                                error={Boolean(errors.employeeStatus)}
+                                helperText={errors.employeeStatus}
+                              />
+                            )}
                           </FormControl>
                         </Grid>
 
@@ -1869,11 +1894,17 @@ export default function ViewEmployee() {
                             error={touched.verticalMain ? errors.verticalMain : ''}
                             helperText={touched.verticalMain ? formik.errors.verticalMain : ''}
                           >
-                            {state.mainVerticalList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.main_vertical_id} value={KeyVal.main_vertical_desc}>
-                                {KeyVal.main_vertical_desc}
+                            {state?.mainVerticalList?.length > 0 ? (
+                              state.mainVerticalList.map((KeyVal) => (
+                                <MenuItem key={KeyVal.main_vertical_id} value={KeyVal.main_vertical_desc}>
+                                  {KeyVal.main_vertical_desc}
+                                </MenuItem>
+                              ))
+                            ) : (
+                              <MenuItem key={values.verticalMain} value={values.verticalMain}>
+                                {values.verticalMain}
                               </MenuItem>
-                            ))}
+                            )}
                           </TextField>
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -1908,11 +1939,21 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {verticalSubList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.sub_vertical_id} value={KeyVal.sub_vertical_desc}>
-                                {KeyVal.sub_vertical_desc}
-                              </MenuItem>
-                            ))}
+                             {verticalSubList?.length > 0 ? (
+                                verticalSubList.map((KeyVal) => (
+                                  <MenuItem
+                                    key={KeyVal.sub_vertical_id}
+                                    value={KeyVal.sub_vertical_desc}
+                                    id={KeyVal.sub_vertical_id}
+                                  >
+                                    {KeyVal.sub_vertical_desc}
+                                  </MenuItem>
+                                ))
+                              ) : (
+                                <MenuItem key={values.verticalSub} value={values.verticalSub} id={values.verticalSub}>
+                                  {values.verticalSub}
+                                </MenuItem>
+                              )}
                           </TextField>
                         </Grid>
 
@@ -1947,11 +1988,17 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {departmentList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.department_id} value={KeyVal.department_desc}>
-                                {KeyVal.department_desc}
-                              </MenuItem>
-                            ))}
+                           {departmentList?.length > 0 ? (
+                                departmentList.map((KeyVal) => (
+                                  <MenuItem key={KeyVal.department_id} value={KeyVal.department_desc}>
+                                    {KeyVal.department_desc}
+                                  </MenuItem>
+                                ))
+                              ) : (
+                                <MenuItem key={values.departmentDesc} value={values.departmentDesc}>
+                                  {values.departmentDesc}
+                                </MenuItem>
+                              )}
                           </TextField>
                         </Grid>
 
@@ -1986,11 +2033,17 @@ export default function ViewEmployee() {
                             //   state.employeeStatus === 'Pending For IT Spoc Review'
                             // }
                           >
-                            {functionsList.map((KeyVal) => (
-                              <MenuItem key={KeyVal.function_id} value={KeyVal.function_desc}>
-                                {KeyVal.function_desc}
-                              </MenuItem>
-                            ))}
+                            {functionsList.length > 0 ? (
+                                functionsList.map((KeyVal) => (
+                                  <MenuItem key={KeyVal.function_id} value={KeyVal.function_desc}>
+                                    {KeyVal.function_desc}
+                                  </MenuItem>
+                                ))
+                              ) : (
+                                <MenuItem key={values.functionDesc} value={values.functionDesc}>
+                                  {values.functionDesc}
+                                </MenuItem>
+                              )}
                           </TextField>
                         </Grid>
 
@@ -2184,6 +2237,7 @@ export default function ViewEmployee() {
                         </Stack>
                       </Grid>
                     </form>
+                    </ThemeProvider>
                   </>
                 );
               }}

@@ -5,7 +5,7 @@ import { useMsal } from '@azure/msal-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Container} from '@mui/material';
+import { Container } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -13,6 +13,8 @@ import Background from '../Images/Background.png';
 import { LoginForm } from '../sections/auth/login';
 import UserLoginPage from './UserLoginPage';
 import EmployeeBoardingProcess from '../Images/EmployeeBoardingProcess.png';
+// import LogoutPage from 'src/sections/auth/login/LogoutPage';
+import LogoutPage from '../sections/auth/login/LogoutPage';
 
 // ----------------------------------------------------------------------
 const StyledRoot = styled('div')(({ theme }) => ({
@@ -161,11 +163,29 @@ export default function LoginPage() {
           </div>
         )}
 
+        {/* <Container maxWidth="sm">
+          <StyledContent>
+            <img src={Background} alt="Pattern" style={backgroundStyle} />
+            {location?.state?.param ? <LogoutPage /> : userLogin ? <UserLoginPage /> : <LoginForm />}
+          
+          </StyledContent>
+        </Container>
+        {location?.state?.partnerLogin ? <UserLoginPage /> : location?.state?.domainLogin ? <LoginForm /> : null} */}
+
         <Container maxWidth="sm">
           <StyledContent>
             <img src={Background} alt="Pattern" style={backgroundStyle} />
-            {/* <LoginForm /> */}
-            {userLogin ? <UserLoginPage /> : <LoginForm />}
+            {location?.state?.param ? (
+              <LogoutPage />
+            ) : location?.state?.partnerLogin ? (
+              <UserLoginPage />
+            ) : location?.state?.domainLogin ? (
+              <LoginForm />
+            ) : userLogin ? (
+              <UserLoginPage />
+            ) : (
+              <LoginForm />
+            )}
           </StyledContent>
         </Container>
       </StyledRoot>

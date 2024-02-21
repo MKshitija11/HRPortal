@@ -39,7 +39,8 @@ import EmpManagmentTL from './pages/EmpManagmentTL'
 import EmpManagmentSM from './pages/EmpManagementSM';
 import UserLoginPage from './pages/UserLoginPage';
 import EmployeeTimesheetDetails from './pages/EmployeeTimesheetDetails';
-
+import Logout from './sections/auth/login/Logout';
+import LogoutPage from './sections/auth/login/LogoutPage';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -78,8 +79,9 @@ export default function Router() {
         { path: 'EmpManagmentTL', element: <EmpManagmentTL /> },
         { path: 'EmpManagmentSM', element: <EmpManagmentSM /> },
         {path: 'UserLoginPage', element: <UserLoginPage />},
-        {path: 'EmployeeTimesheetDetails', element: <EmployeeTimesheetDetails />}
-
+        {path: 'EmployeeTimesheetDetails', element: <EmployeeTimesheetDetails />},
+        {path: 'Logout', element: <Logout />},
+        {path: 'LogoutPage', element: <LogoutPage />}
       ],
     },
     {
@@ -177,6 +179,8 @@ export default function Router() {
     },
     {path: 'UserLoginPage', element: <UserLoginPage />},
     {path: 'EmployeeTimesheetDetails', element: <EmployeeTimesheetDetails />},
+    {path: 'Logout', element: <Logout />},
+    {path: 'LogoutPage', element: <LogoutPage />},
     // for simple layout element , there is no path specified bt has index attribute That specifies this route as the default route for the parent route, which is /.
     {
       element: <SimpleLayout />,

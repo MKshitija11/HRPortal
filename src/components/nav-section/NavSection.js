@@ -296,9 +296,10 @@ export default function NavSection() {
       setMenuList(dataUser);
     } else if (ROLE === 'BAGIC_PRESIDENT') {
       setMenuList(dataPresident);
-    } else {
-      setMenuList(userLogin);
-    }
+    } 
+    // else {
+    //   setMenuList(userLogin);
+    // }
   }, [location, ROLE]);
 
   return (

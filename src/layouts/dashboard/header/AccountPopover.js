@@ -5,6 +5,7 @@ import { alpha } from '@mui/material/styles';
 
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 import Iconify from '../../../components/iconify';
+import Logout from '../../../sections/auth/login/Logout';
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
@@ -58,7 +59,8 @@ export default function AccountPopover() {
   const handleRedirect = () => {
     localStorage.clear();
     sessionStorage.clear();
-    navigate('/login');
+    navigate('/Logout');
+    // <Logout />;
   };
 
   return (
@@ -122,7 +124,7 @@ export default function AccountPopover() {
             {displayName}
           </Typography>
 
-          <Typography variant="body2" sx={{ color: 'text.secondary',fontWeight: 'bold' }} noWrap>
+          <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 'bold' }} noWrap>
             {mobile}
           </Typography>
 

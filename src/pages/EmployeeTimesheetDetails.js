@@ -15,6 +15,7 @@ import { bounce } from 'react-animations';
 import 'animate.css';
 // import Radium, {StyleRoot} from 'radium';
 import { useLocation } from 'react-router-dom';
+import Iconify from '../components/iconify';
 import Loader from '../components/Loader/Loader';
 import Scrollbar from '../components/scrollbar/Scrollbar';
 import Configuration from '../utils/Configuration';
@@ -47,20 +48,67 @@ export default function EmployeeTimesheetDetails() {
   const endDateOfMonth = moment(month).endOf('month').format('DD-MMM-YYYY').toLowerCase();
   const formattedStartDate = moment(startDateOfMonth).format('YYYY-MM-DD');
   const formattedEndDate = moment(endDateOfMonth).format('YYYY-MM-DD');
+  const [showTask, setShowTask] = useState(false);
+  const [linesData, setLinesData] = useState('');
+  const currentDate = moment(new Date()).format('DD-MMM-YYYY').toLowerCase();
   // const [currentUserData, setCurrentUserData] = useState(userListData[userListData.length -1])
 
-  const taskDescription =
-    'Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.';
-  console.log('selectedUserListData', selectedUserListData);
+  // const taskDescription =
+  //   'Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.';
+
+  // const taskDescription = selectedUserListData ? selectedUserListData?.taskDescription : userListData[userListData.length - 1]?.taskDescription
 
   const currentUserData = userListData[userListData.length - 1];
+  console.log(
+    'selectedUserListData',
+    userListData.filter((emp) => emp.status === 'NA').map((emp) => emp.date)
+  );
+  // getShortMessages = (messages) => messages.filter(obj => obj.message.length <= 50).map(obj => obj.message);
 
-  const lines = taskDescription.split('~').map((line, index) => (
-    <div key={index}>
-      {line}
-      <br />
-    </div>
-  ));
+  // const lines = taskDescription.split('~').map((line, index) => (
+  //   <div key={index} style={{ flexDirection: 'row' }}>
+  //     <div>
+  //       <Iconify icon="material-symbols:circle" height={10} width={10} />
+  //       {line}
+  //     </div>
+
+  //     <br />
+  //   </div>
+  // ));
+
+  const handleTaskDescription = (filteredData) => {
+    const checkData = { ...filteredData?.[0] };
+    console.log('Check data', checkData);
+    setShowTask(true);
+    const taskDescription1 =
+      'Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.';
+    const taskDescription = checkData?.taskDescription ? checkData?.taskDescription : '--';
+    const lines = taskDescription.split('~').map((line, index) => (
+      // <div key={index}>
+      //   {/* <div > */}
+      //   {/* <Iconify icon="material-symbols:circle" height={10} width={10} /> */}
+      //   <div>{line}</div>
+      //   {/* </div> */}
+      //   {/* <br /> */}
+      // </div>
+      // <div key={index}>
+      //   <div style={{ flexDirection: 'row' }}>
+      //     <Iconify icon="material-symbols:circle" height={10} width={10} />
+      //     <Stack style={{ paddingLeft: 5 }} ml={2}>
+      //       {' '}
+      //       {line}
+      //     </Stack>
+      //   </div>
+      //   {/* <br /> */}
+      // </div>
+      <div key={index}>
+        <Iconify icon="material-symbols:circle" height={10} width={10} />
+
+        {line}
+      </div>
+    ));
+    setLinesData(lines);
+  };
 
   const styles = {
     bounce: {
@@ -130,11 +178,11 @@ export default function EmployeeTimesheetDetails() {
       // toDate: selectedEndDate === '' ? endDateOfMonth : moment(selectedEndDate).format('DD-MMM-YYYY').toLowerCase(),
 
       fromDate: param ? startDate : startDateOfMonth,
-      toDate: param ? endDate : endDateOfMonth,
+      toDate: param ? endDate : currentDate,
     };
 
-    console.log('REQUEST>>>', atsReq);
-    setIsLoading(true);
+    console.log('REQUEST>>>', selectedUserListData);
+    // setIsLoading(true);
 
     return fetch('https://webservices.bajajallianz.com/BagicVisitorAppWs/userTimeSheet', {
       method: 'post',
@@ -247,15 +295,17 @@ export default function EmployeeTimesheetDetails() {
               data.status === 'PH'
                 ? 'blue'
                 : data.status === 'P'
-                ? 'green'
+                ? '#228B22'
                 : data.status === 'FD'
-                ? 'red'
+                ? '#FF9B00'
                 : data.status === 'HD'
-                ? 'orange'
+                ? '#CECE00'
                 : data.status === 'H'
-                ? 'grey'
+                ? 'Grey'
+                : data.status === 'NA'
+                ? 'red'
                 : data.atsfilledTime
-                ? 'blue'
+                ? 'lightgreen'
                 : data.checkIn || data.checkOut
                 ? 'blue'
                 : null,
@@ -331,6 +381,7 @@ export default function EmployeeTimesheetDetails() {
     console.log('handled clikced event filteredData', filteredData?.[0]);
     setSelectedUserListData({ ...filteredData?.[0] });
     console.log('handled clikced event>>>>', userListData);
+    handleTaskDescription(filteredData);
   };
 
   const handleMonthChange = (date) => {
@@ -352,8 +403,6 @@ export default function EmployeeTimesheetDetails() {
       setSelectedMonth(month);
     }
   };
-
-  console.log('START DATE', new Date(startDate));
 
   return (
     <>
@@ -378,9 +427,10 @@ export default function EmployeeTimesheetDetails() {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   paddingTop: 3,
-                  paddingLeft: 5,
+                  paddingLeft: 1.5,
                   paddingRight: 5,
                 }}
+                // ml={1}
               >
                 <Stack sx={{ flexDirection: 'row' }}>
                   <Typography variant="h6" sx={{ color: '#0072BC' }}>
@@ -508,7 +558,7 @@ export default function EmployeeTimesheetDetails() {
                 </Stack>
               </Stack>
 
-              <Stack sx={{ paddingRight: 5, paddingLeft: 5 }}>
+              {/* <Stack sx={{ paddingRight: 5, paddingLeft: 5 }}>
                 <Stack style={{ flexDirection: 'row' }}>
                   <Stack>
                     <Stack mt={2} style={{ width: '45vw', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -530,9 +580,7 @@ export default function EmployeeTimesheetDetails() {
                         </Button>
                       </Stack>
                     </Stack>
-                    {/* <Typography variant="h6" mt={1} mb={1} style={{ textAlign: 'center', color: '#0072BC' }}>
-                      {selectedMonth?.month} {selectedMonth?.year}
-                    </Typography> */}
+
                     <Calendar
                       localizer={localizer}
                       events={events}
@@ -564,15 +612,293 @@ export default function EmployeeTimesheetDetails() {
                       }}
                     />
                   </Stack>
-                  {console.log('state>>..', currentUserData)}
-                  {showATSDetails ? (
-                    <Stack ml={2} mt={8.5}>
+                </Stack>
+                <Stack >
+                  <Stack
+                    // ml={2}
+                    justifyContent="space-evenly"
+                    mt={2}
+                    mb={2}
+                    sx={{
+                      height: 32,
+                      backgroundColor: 'lightGrey',
+                      borderRadius: '8px',
+                      borderWidth: 1,
+                      flexDirection: 'row',
+                      display: 'flex',
+                      //  paddingLeft: 10,
+                      width: '45vw',
+                    }}
+                  >
+                    <Stack
+                      sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    >
+                      <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'blue' }} />
+                      <Typography ml={1} sx={{ fontWeight: '500' }}>
+                        Public Holiday
+                      </Typography>
+                    </Stack>
+                    <Stack
+                      sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    >
+                      <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'red' }} />
+                      <Typography ml={1} sx={{ fontWeight: '500' }}>
+                        Full Day Leave
+                      </Typography>
+                    </Stack>
+                    <Stack
+                      sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    >
+                      <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'orange' }} />
+                      <Typography ml={1} sx={{ fontWeight: '500' }}>
+                        Half Day Leave
+                      </Typography>
+                    </Stack>
+                    <Stack
+                      sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    >
+                      <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#228B22' }} />
+                      <Typography ml={1} sx={{ fontWeight: '500' }}>
+                        Present
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </Stack>
+              </Stack> */}
+
+              <Stack>
+                <Stack mb={2} flexDirection="row" justifyContent="space-around">
+                  <Stack>
+                    <Stack mt={2} style={{ width: '45vw', flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <Typography variant="h6" mt={1} mb={1} style={{ textAlign: 'center', color: '#0072BC' }}>
+                        {selectedMonth?.month} {selectedMonth?.year}
+                      </Typography>
+                      <Stack mb={2}>
+                        <Button
+                          size="medium"
+                          variant="contained"
+                          type="button"
+                          // startIcon={<Iconify icon="ri:calendar-line" />}
+                          color="primary"
+                          onClick={() => setOpenCalendar(true)}
+                          // sx={{ mt: 2 }}
+                          style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}
+                        >
+                          Select Month
+                        </Button>
+                      </Stack>
+                    </Stack>
+
+                    <Calendar
+                      localizer={localizer}
+                      events={events}
+                      doShowMoreDrillDown
+                      drilldownView="day"
+                      popup
+                      date={startDate ? new Date(startDate) : new Date(startDateOfMonth)}
+                      // date={new Date(startDate) || new Date(startDateOfMonth)}
+                      //  date={new Date()}
+                      startAccessor="start"
+                      endAccessor="end"
+                      style={{
+                        height: '70vh',
+                        // width: showATSDetails ? 620 : '60vw',
+                        width: '45vw',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      views={['month']}
+                      defaultView="month"
+                      eventPropGetter={eventPropGetter}
+                      onSelectEvent={handleClickEvent}
+                      // components={{
+                      //   toolbar:  CustomEvent,
+                      //     month: location?.state?.month,
+                      // }}
+                      components={{
+                        toolbar: CustomEvent,
+                      }}
+                    />
+
+                    <Stack>
+                      <Stack
+                        // justifyContent="space-evenly"
+                        mt={2}
+                        mb={2}
+                        sx={{
+                          height: 100,
+                          backgroundColor: 'lightGrey',
+                          borderRadius: '8px',
+                          borderWidth: 1,
+                          flexDirection: 'row',
+                          display: 'flex',
+                          width: '45vw',
+                        }}
+                      >
+                        {/* <Stack
+                          sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        >
+                          <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'blue' }} />
+                          <Typography ml={1} sx={{ fontWeight: '500' }}>
+                            Public Holiday
+                          </Typography>
+                        </Stack>
+                        <Stack
+                          sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        >
+                          <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'red' }} />
+                          <Typography ml={1} sx={{ fontWeight: '500' }}>
+                            Full Day Leave
+                          </Typography>
+                        </Stack>
+                        <Stack
+                          sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        >
+                          <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'orange' }} />
+                          <Typography ml={1} sx={{ fontWeight: '500' }}>
+                            Half Day Leave
+                          </Typography>
+                        </Stack>
+                        <Stack
+                          sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        >
+                          <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#228B22' }} />
+                          <Typography ml={1} sx={{ fontWeight: '500' }}>
+                            Present
+                          </Typography>
+                        </Stack> */}
+                        <Stack
+                          style={{ width: '45vw' }}
+                          flexDirection="row"
+                          alignItems="center"
+                          justifyContent="space-around"
+                          ml={5}
+                          mr={5}
+                        >
+                          <Stack>
+                            <Stack
+                              sx={{
+                                flexDirection: 'row',
+                                display: 'flex',
+                                // justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#228B22' }} />
+                              <Typography ml={1} sx={{ fontWeight: '500' }}>
+                                Present
+                              </Typography>
+                            </Stack>
+
+                            <Stack
+                              sx={{
+                                flexDirection: 'row',
+                                display: 'flex',
+                                // justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#FF9B00' }} />
+                              <Typography ml={1} sx={{ fontWeight: '500' }}>
+                                Full Day Leave
+                              </Typography>
+                            </Stack>
+                            <Stack
+                              sx={{
+                                flexDirection: 'row',
+                                display: 'flex',
+                                // justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#CECE00' }} />
+                              <Typography ml={1} sx={{ fontWeight: '500' }}>
+                                Half Day Leave
+                              </Typography>
+                            </Stack>
+                          </Stack>
+
+                          <Stack>
+                            <Stack
+                              sx={{
+                                flexDirection: 'row',
+                                display: 'flex',
+                                // justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'red' }} />
+                              <Typography ml={1} sx={{ fontWeight: '500' }}>
+                                Ats Not filled Days
+                              </Typography>
+                            </Stack>
+                            <Stack
+                              sx={{
+                                flexDirection: 'row',
+                                display: 'flex',
+                                // justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'blue' }} />
+                              <Typography ml={1} sx={{ fontWeight: '500' }}>
+                                Public Holiday
+                              </Typography>
+                            </Stack>
+                            <Stack
+                              sx={{
+                                flexDirection: 'row',
+                                display: 'flex',
+                                // justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'Grey' }} />
+                              <Typography ml={1} sx={{ fontWeight: '500' }}>
+                                Weekend
+                              </Typography>
+                            </Stack>
+                            {/* <Stack
+                              sx={{
+                                flexDirection: 'row',
+                                display: 'flex',
+                                // justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'red' }} />
+                              <Typography ml={1} sx={{ fontWeight: '500' }}>
+                                Future Dated
+                              </Typography>
+                            </Stack> */}
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+
+                  <Stack>
+                    {/* <Stack
+                    ml={2}
+                    mb={4}
+                      style={{
+                        height: 80,
+                        width: 320,
+                        justifyContent: 'center',
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        backgroundColor: 'yellow',
+                      }}
+                    /> */}
+
+                    <Stack ml={2} mt={8.5} >
                       <Stack
                         style={{
-                          height: 'auto',
+                          height: 500,
                           width: 320,
                           justifyContent: 'center',
-                          padding: 5,
+                          paddingLeft: 5,
+                          paddingRight: 5,
                           backgroundColor: 'white',
                           boxShadow: '0px 0px 0.75px 0.75px #E5E4E2',
                           borderRadius: '10px',
@@ -602,15 +928,17 @@ export default function EmployeeTimesheetDetails() {
                                     fontSize: 15,
                                     color:
                                       selectedUserListData?.status === 'P'
-                                        ? 'green'
+                                        ? '#228B22'
                                         : selectedUserListData?.status === 'FD'
-                                        ? 'red'
+                                        ? '#FF9B00'
                                         : selectedUserListData?.status === 'HD'
-                                        ? 'orange'
+                                        ? '#CECE00'
                                         : selectedUserListData?.status === 'PH'
                                         ? 'blue'
                                         : selectedUserListData?.status === 'H'
-                                        ? 'grey'
+                                        ? 'Grey'
+                                        : selectedUserListData?.status === 'NA'
+                                        ? 'red'
                                         : 'black',
                                   }}
                                 >
@@ -624,6 +952,8 @@ export default function EmployeeTimesheetDetails() {
                                     ? 'Full Day Leave'
                                     : selectedUserListData?.status === 'HD'
                                     ? 'Half Day Leave'
+                                    : selectedUserListData?.status === 'NA'
+                                    ? '--'
                                     : '--'}
                                 </Typography>
                               </Stack>
@@ -683,6 +1013,7 @@ export default function EmployeeTimesheetDetails() {
                           </Stack>
                         </div>
                         {/* -------------------------------third------------------------------ */}
+
                         {/* <Stack
                         mt={2}
                         style={{
@@ -754,7 +1085,7 @@ export default function EmployeeTimesheetDetails() {
                               >
                                 <div className="animate__animated animate__bounceInLeft">
                                   <Typography variant="h6" style={{ fontSize: 15, color: 'green' }}>
-                                    {selectedUserListData?.checkIn || 'No Check In'}
+                                    {selectedUserListData?.checkIn ? selectedUserListData?.checkIn : 'No Check In'}
                                   </Typography>
                                 </div>
                               </Stack>
@@ -805,294 +1136,31 @@ export default function EmployeeTimesheetDetails() {
                           </Stack> */}
                           </Stack>
                         </Stack>
-                      </Stack>
-                    </Stack>
-                  ) : (
-                    <Stack ml={2} mt={8.5}>
-                      <Stack
-                        style={{
-                          height: 'auto',
-                          width: 320,
-                          justifyContent: 'center',
-                          padding: 5,
-                          backgroundColor: 'white',
-                          boxShadow: '0px 0px 0.75px 0.75px #E5E4E2',
-                          borderRadius: '10px',
-                        }}
-                      >
-                        {/* ---------------------------first----------------------------- */}
-                        <div className="animate__animated animate__slideInDown">
-                          <Stack>
-                            <Stack flexDirection="row" alignItems="center" justifyContent="space-between">
-                              <Stack flexDirection="row" alignItems="center">
-                                <img
-                                  src={'/assets/images/covers/TimesheetCalendar/date.png'}
-                                  alt="BajajLogo"
-                                  style={{
-                                    height: 40,
-                                    width: 40,
-                                  }}
-                                />
-                                <Typography variant="h6" style={{ fontSize: 15 }}>
-                                  {moment(currentUserData?.date).format('MMM, DD, YYYY')}
-                                </Typography>
-                              </Stack>
-                              <Stack mr={4}>
-                                <Typography
-                                  variant="h6"
-                                  style={{
-                                    fontSize: 15,
-                                    color:
-                                      currentUserData?.status === 'P'
-                                        ? 'green'
-                                        : currentUserData?.status === 'FD'
-                                        ? 'red'
-                                        : currentUserData?.status === 'HD'
-                                        ? 'orange'
-                                        : currentUserData?.status === 'PH'
-                                        ? 'blue'
-                                        : currentUserData?.status === 'PH'
-                                        ? 'grey'
-                                        : 'black',
-                                  }}
-                                >
-                                  {currentUserData?.status === 'P'
-                                    ? 'Present'
-                                    : currentUserData?.status === 'PH'
-                                    ? 'Public Holiday'
-                                    : currentUserData?.status === 'H'
-                                    ? 'Holiday/Weekend'
-                                    : currentUserData?.status === 'FD'
-                                    ? 'Full Day Leave'
-                                    : currentUserData?.status === 'HD'
-                                    ? 'Half Day Leave'
-                                    : '--'}
-                                </Typography>
-                              </Stack>
-                            </Stack>
 
-                            <Stack
-                              style={{
-                                borderTop: '2px solid',
-                                width: '100%',
-                                color: '#00000029',
-                              }}
-                            >
-                              <hr />
-                            </Stack>
-                          </Stack>
-                        </div>
-                        {/* ---------------------------second----------------------------- */}
+                        {/* {showTask ? ( */}
                         <div className="animate__animated animate__slideInDown">
                           <Stack
+                            mt={2}
                             style={{
-                              height: 40,
+                              height: 175,
                               width: '100%',
                               justifyContent: 'center',
-
                               backgroundColor: '#F7FAF4',
                               borderRadius: '10px',
                             }}
                           >
-                            {' '}
-                            {/* <div className="animate__animated animate__slideInDown"> */}
-                            <Stack flexDirection="row" alignItems="center" justifyContent="space-between">
-                              <Stack flexDirection="row" alignItems="center">
-                                <img
-                                  src={'/assets/images/covers/TimesheetCalendar/atsFilled.svg'}
-                                  alt="BajajLogo"
-                                  style={{
-                                    height: 40,
-                                    width: 40,
-                                  }}
-                                />
-
-                                <Typography variant="h6" style={{ fontSize: 15 }}>
-                                  Ats Filled Hrs:
-                                </Typography>
-                              </Stack>
-                              <div className="animate__animated animate__slideInDown">
-                                <Stack mr={4}>
-                                  <Typography variant="h6" style={{ fontSize: 15 }}>
-                                    {currentUserData?.atsfilledTime ? `${currentUserData?.atsfilledTime} Hrs` : '--'}
-                                  </Typography>
-                                </Stack>
-                              </div>
-                            </Stack>
-                            {/* </div> */}
+                            <Typography variant="h6" style={{ fontSize: 17 }}>
+                              Task Description:{' '}
+                            </Typography>
+                            {console.log('lines', linesData)}
+                            <Scrollbar>
+                              <Typography style={{ textAlign: 'justify', paddingLeft: 5 }}>{linesData}</Typography>
+                            </Scrollbar>
                           </Stack>
                         </div>
-                        {/* -------------------------------third------------------------------ */}
-                        {/* <Stack
-                      mt={2}
-                      style={{
-                        height: 40,
-                        width: '100%',
-                        justifyContent: 'center',
-
-                        backgroundColor: '#F0FAFB',
-                        borderRadius: '10px',
-                      }}
-                    >
-                      <Stack flexDirection="row" alignItems="center" justifyContent="space-between">
-                        <Stack flexDirection="row" alignItems="center">
-                          <img
-                            src={'/assets/images/covers/TimesheetCalendar/VisitorEntry.png'}
-                            alt="BajajLogo"
-                            style={{
-                              height: 40,
-                              width: 40,
-                            }}
-                          />
-                          <Typography variant="h6" style={{ fontSize: 15 }}>
-                            Ats Filled Hrs:{' '}
-                          </Typography>
-                        </Stack>
-                        <Stack mr={4}>
-                          <Typography variant="h6" style={{ fontSize: 15 }}>
-                            {selectedUserListData?.visitorEntry ? `${selectedUserListData?.visitorEntry} Hrs` : '--'}
-                          </Typography>
-                        </Stack>
-                      </Stack>
-                    </Stack> */}
-                        {/* -------------------------------forth------------------------------ */}
-                        <Stack
-                          mt={2}
-                          style={{
-                            height: 'auto',
-                            width: '100%',
-                            justifyContent: 'center',
-                            backgroundColor: '#FBF4FC',
-                            borderRadius: '10px',
-                          }}
-                        >
-                          <Stack
-                            flexDirection="row"
-                            alignItems="center"
-                            justifyContent="center"
-                            style={{ position: 'relative' }}
-                          >
-                            <Stack mt={2} mb={2} flexDirection="row" alignItems="center" justifyContent="center">
-                              <img
-                                src={'/assets/images/covers/TimesheetCalendar/CheckInOut.png'}
-                                alt="BajajLogo"
-                                style={{
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  height: '100%',
-                                  width: '100%',
-                                }}
-                              />
-
-                              <Stack
-                                style={{
-                                  position: 'absolute',
-                                  top: '15%',
-                                  left: '30%',
-                                  transform: 'translate(-50%, -50%)',
-                                }}
-                              >
-                                <div className="animate__animated animate__bounceInLeft">
-                                  <Typography variant="h6" style={{ fontSize: 15, color: 'green' }}>
-                                    {currentUserData?.checkIn || 'No Check In'}
-                                  </Typography>
-                                </div>
-                              </Stack>
-
-                              <Stack
-                                style={{
-                                  position: 'absolute',
-                                  top: '50%',
-                                  left: '50%',
-                                  transform: 'translate(-50%, -50%)',
-                                  backgroundColor: 'white',
-                                  paddingLeft: 4,
-                                  paddingRight: 4,
-                                  border: `2px solid #1789FC`,
-                                  borderRadius: '8px',
-                                }}
-                              >
-                                <div className="animate__animated animate__slideInDown">
-                                  <Typography variant="h6" style={{ fontSize: 15, textAlign: 'center' }}>
-                                    {currentUserData?.visitorEntry ? `${currentUserData?.visitorEntry} Hrs` : '--'}
-                                  </Typography>
-                                </div>
-                              </Stack>
-                              <Stack
-                                style={{
-                                  position: 'absolute',
-                                  top: '87%',
-                                  left: '68%',
-                                  transform: 'translate(-50%, -50%)',
-                                }}
-                              >
-                                <div className="animate__animated animate__bounceInRight">
-                                  <Typography variant="h6" style={{ fontSize: 15, color: 'red' }}>
-                                    {currentUserData?.checkOut || 'No Check Out'}
-                                  </Typography>
-                                </div>
-                              </Stack>
-                              {/* <Typography variant="h6" style={{ fontSize: 15 }}>
-                            Ats Filled Hrs:{' '}
-                          </Typography> */}
-                            </Stack>
-                            {/* <Stack mr={4}>
-                          <Typography variant="h6" style={{ fontSize: 15 }}>
-                            {selectedUserListData?.visitorEntry ? `${selectedUserListData?.visitorEntry} Hrs` : '--'}
-                          </Typography>
-                        </Stack> */}
-                          </Stack>
-                        </Stack>
+                        {/* ) : null} */}
                       </Stack>
                     </Stack>
-                  )}
-                </Stack>
-              </Stack>
-
-              <Stack sx={{ paddingLeft: 3 }}>
-                <Stack
-                  ml={2}
-                  justifyContent="space-evenly"
-                  // justifyContent="space-evenly"
-                  // alignItems="center"
-                  // justifyContent="space-evenly"
-                  // alignItems="center"
-                  mt={2}
-                  mb={2}
-                  sx={{
-                    height: 32,
-                    backgroundColor: 'lightGrey',
-                    borderRadius: '8px',
-                    borderWidth: 1,
-                    flexDirection: 'row',
-                    display: 'flex',
-                    //  paddingLeft: 10,
-                    width: '45vw',
-                  }}
-                >
-                  <Stack sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'blue' }} />
-                    <Typography ml={1} sx={{ fontWeight: '500' }}>
-                      Public Holiday
-                    </Typography>
-                  </Stack>
-                  <Stack sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'red' }} />
-                    <Typography ml={1} sx={{ fontWeight: '500' }}>
-                      Full Day Leave
-                    </Typography>
-                  </Stack>
-                  <Stack sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'orange' }} />
-                    <Typography ml={1} sx={{ fontWeight: '500' }}>
-                      Half Day Leave
-                    </Typography>
-                  </Stack>
-                  <Stack sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#228B22' }} />
-                    <Typography ml={1} sx={{ fontWeight: '500' }}>
-                      Present
-                    </Typography>
                   </Stack>
                 </Stack>
               </Stack>

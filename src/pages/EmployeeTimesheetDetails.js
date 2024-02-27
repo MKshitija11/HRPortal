@@ -59,10 +59,19 @@ export default function EmployeeTimesheetDetails() {
   // const taskDescription = selectedUserListData ? selectedUserListData?.taskDescription : userListData[userListData.length - 1]?.taskDescription
 
   const currentUserData = userListData[userListData.length - 1];
-  console.log(
-    'selectedUserListData',
-    userListData.filter((emp) => emp.status === 'NA').map((emp) => emp.date)
-  );
+  const atsPendingDays = userListData.filter((emp) => emp.status === 'NA').map((emp) => emp.date);
+  // const atsPendingDays1 = [
+  //   '16-JAN-24',
+  //   '17-JAN-24',
+  //   '18-JAN-24',
+  //   '16-JAN-24',
+  //   '17-JAN-24',
+  //   '18-JAN-24',
+  //   '16-JAN-24',
+  //   '17-JAN-24',
+  //   '18-JAN-24',
+  // ];
+  // console.log('selectedUserListData', atsPendingDays, moment(atsPendingDays).format('Do '));
   // getShortMessages = (messages) => messages.filter(obj => obj.message.length <= 50).map(obj => obj.message);
 
   // const lines = taskDescription.split('~').map((line, index) => (
@@ -102,9 +111,10 @@ export default function EmployeeTimesheetDetails() {
       //   {/* <br /> */}
       // </div>
       <div key={index}>
-        <Iconify icon="material-symbols:circle" height={10} width={10} />
-
-        {line}
+        <span style={{ padding: 2 }}>
+          <Iconify icon="material-symbols:circle" height={10} width={10} />
+          <span style={{ paddingLeft: 2 }}> {line}</span>
+        </span>
       </div>
     ));
     setLinesData(lines);
@@ -182,7 +192,7 @@ export default function EmployeeTimesheetDetails() {
     };
 
     console.log('REQUEST>>>', selectedUserListData);
-    // setIsLoading(true);
+    setIsLoading(true);
 
     return fetch('https://webservices.bajajallianz.com/BagicVisitorAppWs/userTimeSheet', {
       method: 'post',
@@ -877,21 +887,136 @@ export default function EmployeeTimesheetDetails() {
                     </Stack>
                   </Stack>
 
-                  <Stack>
-                    {/* <Stack
-                    ml={2}
-                    mb={4}
+                  <Stack mb={5} mt={-3}>
+                    <Stack
+                      ml={2}
                       style={{
                         height: 80,
                         width: 320,
-                        justifyContent: 'center',
-                        paddingLeft: 5,
-                        paddingRight: 5,
-                        backgroundColor: 'yellow',
+                        // justifyContent: 'center',
+                        // paddingLeft: 5,
+                        // paddingRight: 5,
+                        backgroundColor: 'white',
+                        boxShadow: '0px 0px 0.75px 0.75px #E5E4E2',
+                        borderRadius: '10px',
                       }}
-                    /> */}
+                    >
+                      <div className="animate__animated animate__slideInDown">
+                        <Stack
+                          style={{
+                            height: 40,
+                            width: '100%',
+                            justifyContent: 'center',
+                            padding: 2,
+                            backgroundColor: '#F7FAF4',
+                            // backgroundColor: 'red',
+                            borderTopLeftRadius: '10px',
+                            borderTopRightRadius: '10px',
+                          }}
+                        >
+                          <Stack>
+                            <Stack flexDirection="row" alignItems="center" mt={5} justifyContent="space-between">
+                              <Stack flexDirection="row" alignItems="center">
+                                <img
+                                  src={'/assets/images/covers/TimesheetCalendar/pendingDays.png'}
+                                  alt="BajajLogo"
+                                  style={{
+                                    height: 40,
+                                    width: 40,
+                                  }}
+                                />
 
-                    <Stack ml={2} mt={8.5} >
+                                <Typography variant="h6" style={{ fontSize: 15 }}>
+                                  ATS Pending :
+                                </Typography>
+                              </Stack>
+                              <div className="animate__animated animate__slideInDown">
+                                <Stack mr={4}>
+                                  <Typography variant="h6" style={{ fontSize: 15 }}>
+                                    {/* {selectedUserListData?.atsfilledTime
+                                      ? `${selectedUserListData?.atsfilledTime} Hrs`
+                                      : '--'} */}
+                                      {atsPendingDays.length === 1 ? '1 day' : `${atsPendingDays.length} Days`}
+                                  </Typography>
+                                </Stack>
+                              </div>
+                            </Stack>
+                            <Stack style={{}}>
+                              <div className="animate__animated animate__slideInDown">
+                                <Stack
+                                  spacing={2}
+                                  style={{
+                                    flexWrap: 'wrap',
+                                    flexDirection: 'row',
+                                    display: 'flex',
+                                    // backgroundColor: 'yellow',
+                                    justifyContent: 'space-evenly',
+                                    overflow: 'scroll',
+                                    overflowX: 'hidden',
+                                    height: 30,
+                                  }}
+                                >
+                                  {atsPendingDays.length === 0 ? (
+                                    <Stack>
+                                      <Typography
+                                        variant="h6"
+                                        style={{
+                                          fontSize: 12,
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          color: 'red',
+                                          display: 'flex',
+                                          textAlign: ' center',
+                                        }}
+                                      >
+                                        No Pending Days found
+                                      </Typography>
+                                    </Stack>
+                                  ) : (
+                                    <>
+                                      {atsPendingDays.map((data, index) => (
+                                        <Stack
+                                          key={index}
+                                          style={{
+                                            display: 'flex',
+                                            margin: 0,
+                                            flexBasis: '20%',
+                                            marginBottom: 4,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="h6"
+                                            style={{
+                                              fontSize: 12,
+                                              alignItems: 'center',
+                                              justifyContent: 'center',
+                                              color: 'red',
+                                              display: 'flex',
+                                              textAlign: ' center',
+                                              height: 30,
+                                              width: 30,
+                                              padding: 1,
+                                              borderRadius: 15,
+                                              backgroundColor: '#F7FAF4',
+                                            }}
+                                          >
+                                            {moment(data).format('Do')}
+                                          </Typography>
+                                        </Stack>
+                                      ))}
+                                    </>
+                                  )}
+                                </Stack>
+                              </div>
+                            </Stack>
+                          </Stack>
+                        </Stack>
+                      </div>
+                    </Stack>
+
+                    <Stack ml={2} mt={1.5}>
                       <Stack
                         style={{
                           height: 500,
@@ -996,7 +1121,7 @@ export default function EmployeeTimesheetDetails() {
                                 />
 
                                 <Typography variant="h6" style={{ fontSize: 15 }}>
-                                  Ats Filled Hrs:
+                                  ATS Filled Hrs:
                                 </Typography>
                               </Stack>
                               <div className="animate__animated animate__slideInDown">
@@ -1154,7 +1279,9 @@ export default function EmployeeTimesheetDetails() {
                             </Typography>
                             {console.log('lines', linesData)}
                             <Scrollbar>
-                              <Typography style={{ textAlign: 'justify', paddingLeft: 5 }}>{linesData}</Typography>
+                              <Typography style={{ textAlign: 'justify', marginLeft: '3px', marginRight: '3px' }}>
+                                {linesData}
+                              </Typography>
                             </Scrollbar>
                           </Stack>
                         </div>

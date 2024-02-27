@@ -271,7 +271,7 @@ export default function TimeSheet() {
             setIsLoading(false);
             alert('Something went wrong');
           });
-      } else if (ROLE === 'BAGIC_PARTNER') {
+      } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
         const empListVendorReq = {
           partnerName: USERDETAILS?.[0]?.partnerName,
           itSpocId: 'NA',
@@ -349,7 +349,7 @@ export default function TimeSheet() {
       } else if (ROLE === 'BAGIC_PRESIDENT') {
         const empListVendorReq = {
           // itSpocId: USERDETAILS?.[0]?.spocEmailId,
-          itSpocId: 'pooja.rebba@bajajallianz.co.in'
+          itSpocId: 'pooja.rebba@bajajallianz.co.in',
         };
         setIsLoading(true);
         Configuration.getEmpListItSpoc(empListVendorReq)
@@ -407,7 +407,7 @@ export default function TimeSheet() {
   const [selectedDate, setSelectedDate] = useState();
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [pageRender, setPageRender] = useState(50)
+  const [pageRender, setPageRender] = useState(50);
   // const [openCalendar, setOpenCalendar] = useState(false);
   const [pagination, setPagination] = useState({
     data: empArray.map((value, index) => ({
@@ -904,7 +904,7 @@ export default function TimeSheet() {
           ) : null}
 
           <Stack>
-            <Stack>
+            {/* <Stack>
               <UserListToolbar
                 numSelected={selected.length}
                 filterName={filterName}
@@ -912,6 +912,14 @@ export default function TimeSheet() {
                 // employeeList={empArray.slice(pagination.offset, pagination.offset + pagination.numberPerPage)}
                 employeeList={empArray}
               />
+            </Stack> */}
+            <Stack
+              mt={2}
+              style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', paddingRight: 12 }}
+            >
+              <Typography variant="h4" sx={{ color: '#0072BC' }}>
+                Employees ({activeEmployees.length})
+              </Typography>
             </Stack>
             {/* <Stack flexDirection="row" justifyContent="space-between" sx={{ paddingRight: 3, paddingLeft: 3 }}>
               <Stack
@@ -1077,7 +1085,7 @@ export default function TimeSheet() {
                                 </TableCell>
 
                                 <TableCell align="center">
-                                  <Label color="error">
+                                  <Label color="success">
                                     <Typography style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
                                       {!response.hideLoader ? (
                                         <Loader height={15} width={15} marginTop={0} />
@@ -1090,7 +1098,7 @@ export default function TimeSheet() {
                                   </Label>
                                 </TableCell>
                                 <TableCell align="center">
-                                  <Label color="success">
+                                  <Label color="error">
                                     <Typography style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
                                       {!response.hideLoader ? (
                                         <Loader height={15} width={15} marginTop={0} />
@@ -1143,6 +1151,7 @@ export default function TimeSheet() {
                 nextClassName={'next'}
                 pageClassName={'page'}
               />
+              {console.log('EMployee list length', activeEmployees.length)}
               {/* <TablePagination
                 rowsPerPageOptions={[25, 50, 75]}
                 component="div"

@@ -30,13 +30,13 @@ export default function AccountPopover() {
   const [mobile, setMobile] = useState();
   const [email, setEmail] = useState();
   const [photoUrl, setPhotoUrl] = useState();
-
+  const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+  const ROLE = sessionStorage.getItem('ROLE');
+  console.log('USERDETAILS from account popover', ROLE, USERDETAILS);
   useEffect(() => {
     let USERDETAILS = '';
     USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     if (USERDETAILS != null) {
-      console.log('USERDETAILS from account popover', USERDETAILS);
-
       setDisplayName(USERDETAILS?.[0]?.spocName);
       setEmail(USERDETAILS?.[0]?.spocEmailId);
       setMobile(USERDETAILS?.[0]?.spocMobileNo);
@@ -89,15 +89,37 @@ export default function AccountPopover() {
           <Iconify icon="material-symbols:person" color="white" width={40} height={40} />
         )}
       </IconButton>
-      {console.log('username', displayName)}
+
       <Typography
         variant="h6"
         sx={{
           // color: (theme) => alpha(theme.palette.grey[800], 0.8),
           color: 'white',
+          textAlign: 'center',
         }}
       >
         {displayName}
+      </Typography>
+      <Typography
+        mt={-0.75}
+        // variant="h6"
+        sx={{
+          color: 'white',
+          fontSize: 12,
+          textAlign: 'center',
+        }}
+      >
+        {ROLE === 'BAGIC_PARTNER' || USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER'
+          ? 'BAGIC PARTNER'
+          : ROLE === 'BAGIC_ITS' || USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS'
+          ? 'BAGIC ITSPOC'
+          : ROLE === 'BAGIC_SM' || USERDETAILS?.[0]?.userProfile === 'BAGIC_SM'
+          ? 'BAGIC SM'
+          : ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL'
+          ? 'BAGIC TL'
+          : ROLE === 'BAGIC_PRESIDENT' || USERDETAILS?.[0]?.userProfile === 'BAGIC_PRESIDENT'
+          ? 'PRESIDENT'
+          : null}
       </Typography>
 
       <Popover

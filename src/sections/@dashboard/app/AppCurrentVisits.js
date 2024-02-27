@@ -58,7 +58,7 @@ export default function AppCurrentVisits({
   console.log("chart series", chartSeries)
 
   // const chartColors = ["#32CD02", "#f5c71a", "#F70202", "#1e90ff"];
-  const chartColors = ["#008000", "#CD7F32", "#CD7F32", "#CD7F32", "#FF5733", "#FF5733", "#FF0000"];
+  const chartColors = ["#008000", "#C7D500", "#C7D500", "#C7D500", "#FF9800", "#FF9800", "#FF0000"];
 // const chartColors =["#008000", "#FFA500", "#ff0000"]
   const navigate = useNavigate();
 

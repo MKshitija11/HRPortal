@@ -32,7 +32,7 @@ export default function NavSection() {
 
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-
+    const ROLE = sessionStorage.getItem('ROLE');
     if (!USERDETAILS) {
       console.log('inside first if');
       redirectUrl = '/login';
@@ -284,22 +284,21 @@ export default function NavSection() {
     //   setMenuList(userLogin);
     // }
 
-    if (ROLE === 'BAGIC_ADMIN') {
+    if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ADMIN') {
       setMenuList(dataAdmin);
-    } else if (ROLE === 'BAGIC_ITS') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS') {
       setMenuList(dataSpoc);
-    } else if (ROLE === 'BAGIC_TL') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') {
       setMenuList(dataTeamLead);
-    } else if (ROLE === 'BAGIC_SM') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
       setMenuList(dataSeniorManager);
-    } else if (ROLE === 'BAGIC_PARTNER') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
       setMenuList(dataUser);
-    } else if (ROLE === 'BAGIC_PRESIDENT') {
+    } else if (USERDETAILS?.[0]?.userProfile === 'BAGIC_PRESIDENT') {
       setMenuList(dataPresident);
-    } 
-    // else {
-    //   setMenuList(userLogin);
-    // }
+    } else {
+      setMenuList(userLogin);
+    }
   }, [location, ROLE]);
 
   return (

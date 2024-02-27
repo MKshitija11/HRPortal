@@ -615,7 +615,7 @@ export default function ViewEmployee() {
     employeeStatus: state.employeeStatus || '',
     reportingTeamLead: state.reportingTeamLead || {},
     reportingManager: state.reportingManager || '',
-    verticalMain: state.verticalMain,
+    verticalMain: state.verticalMain || '',
     verticalSub: state.verticalSub || '',
     departmentDesc: state.departmentDesc || '',
     functionDesc: state.functionDesc || '',
@@ -677,7 +677,7 @@ export default function ViewEmployee() {
       .min(40000, 'Min amount should be 40000')
       .max(500000, 'Max amount should be 500000')
       .required('Monthly Billing rate is required'),
-    // verticalMain: Yup.string().required('Please Select'),
+    verticalMain: Yup.string().required('Please Select'),
     // verticalSub: Yup.string().required('Please Select'),
     // departmentDesc: Yup.string().required('Please Select'),
     // functionDesc: Yup.string().required('Please Select'),
@@ -1100,8 +1100,14 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.employeeFirstName ? errors.employeeFirstName : ''}
-                              helperText={touched.employeeFirstName ? formik.errors.employeeFirstName : ''}
+                              error={
+                                touched.employeeFirstName || errors.employeeFirstName ? errors.employeeFirstName : ''
+                              }
+                              helperText={
+                                touched.employeeFirstName || errors.employeeFirstName
+                                  ? formik.errors.employeeFirstName
+                                  : ''
+                              }
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1125,8 +1131,12 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.employeeLastName ? errors.employeeLastName : ''}
-                              helperText={touched.employeeLastName ? formik.errors.employeeLastName : ''}
+                              error={touched.employeeLastName || errors.employeeLastName ? errors.employeeLastName : ''}
+                              helperText={
+                                touched.employeeLastName || errors.employeeLastName
+                                  ? formik.errors.employeeLastName
+                                  : ''
+                              }
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1149,8 +1159,12 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.employeeFullName ? errors.employeeFullName : ''}
-                              helperText={touched.employeeFullName ? formik.errors.employeeFullName : ''}
+                              error={touched.employeeFullName || errors.employeeFullName ? errors.employeeFullName : ''}
+                              helperText={
+                                touched.employeeFullName || errors.employeeFullName
+                                  ? formik.errors.employeeFullName
+                                  : ''
+                              }
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1203,8 +1217,8 @@ export default function ViewEmployee() {
                               }}
                               onBlur={handleBlur}
                               // error={Boolean(formik.errors.mobileNumber)}
-                              error={touched.mobileNumber ? errors.mobileNumber : ''}
-                              helperText={touched.mobileNumber ? formik.errors.mobileNumber : ''}
+                              error={touched.mobileNumber || errors.mobileNumber ? errors.mobileNumber : ''}
+                              helperText={touched.mobileNumber || errors.mobileNumber ? formik.errors.mobileNumber : ''}
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For SM Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For SM Review' ? 'grey' : 'black' },
@@ -1223,12 +1237,15 @@ export default function ViewEmployee() {
                               <Switch
                                 color="success"
                                 onChange={handleChangeWaSwitch}
-                                defaultChecked={state.whatsappNumber !== '' ? false : null}
-                                disabled={
-                                  state.employeeStatus === 'Pending For TL Review' ||
-                                  state.employeeStatus === 'Pending For SM Review' ||
-                                  state.employeeStatus === 'Pending For IT Spoc Review'
+                                // defaultChecked={state.whatsappNumber !== '' ? false : null}
+                                defaultChecked={
+                                  state.whatsappNumber === state.mobileNumber || empData.mobileNumber === empData.whatsappNumber
                                 }
+                                // disabled={
+                                //   state.employeeStatus === 'Pending For TL Review' ||
+                                //   state.employeeStatus === 'Pending For SM Review' ||
+                                //   state.employeeStatus === 'Pending For IT Spoc Review'
+                                // }
                               />
                             ) : (
                               <Switch
@@ -1265,8 +1282,10 @@ export default function ViewEmployee() {
                                 handleChange(evt);
                                 handleChangeEvent(evt);
                               }}
-                              error={touched.whatsappNumber ? errors.whatsappNumber : ''}
-                              helperText={touched.whatsappNumber ? formik.errors.whatsappNumber : ''}
+                              error={touched.whatsappNumber || errors.whatsappNumber ? errors.whatsappNumber : ''}
+                              helperText={
+                                touched.whatsappNumber || errors.whatsappNumber ? formik.errors.whatsappNumber : ''
+                              }
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1295,8 +1314,10 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.personalEmail ? errors.personalEmail : ''}
-                              helperText={touched.personalEmail ? formik.errors.personalEmail : ''}
+                              error={touched.personalEmail || errors.personalEmail ? errors.personalEmail : ''}
+                              helperText={
+                                touched.personalEmail || errors.personalEmail ? formik.errors.personalEmail : ''
+                              }
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1344,8 +1365,8 @@ export default function ViewEmployee() {
                               }}
                               value={values.gender}
                               onBlur={handleBlur}
-                              error={touched.gender ? errors.gender : ''}
-                              helperText={touched.gender ? formik.errors.gender : ''}
+                              error={touched.gender || errors.gender ? errors.gender : ''}
+                              helperText={touched.gender || errors.gender ? formik.errors.gender : ''}
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -1406,8 +1427,8 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.partnerName ? errors.partnerName : ''}
-                              helperText={touched.partnerName ? formik.errors.partnerName : ''}
+                              error={touched.partnerName || errors.partnerName ? errors.partnerName : ''}
+                              helperText={touched.partnerName || errors.partnerName ? formik.errors.partnerName : ''}
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1432,8 +1453,8 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.employeeId ? errors.employeeId : ''}
-                              helperText={touched.employeeId ? formik.errors.employeeId : ''}
+                              error={touched.employeeId || errors.employeeId ? errors.employeeId : ''}
+                              helperText={touched.employeeId || errors.employeeId ? formik.errors.employeeId : ''}
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1457,8 +1478,8 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.joiningDate ? errors.joiningDate : ''}
-                              helperText={touched.joiningDate ? formik.errors.joiningDate : ''}
+                              error={touched.joiningDate || errors.joiningDate ? errors.joiningDate : ''}
+                              helperText={touched.joiningDate || errors.joiningDate ? formik.errors.joiningDate : ''}
                               onKeyDown={(e) => e.preventDefault()}
                               inputProps={{
                                 min:
@@ -1488,8 +1509,10 @@ export default function ViewEmployee() {
                               }}
                               value={values.newReplacement}
                               onBlur={handleBlur}
-                              error={touched.newReplacement ? errors.newReplacement : ''}
-                              helperText={touched.newReplacement ? formik.errors.newReplacement : ''}
+                              error={touched.newReplacement || errors.newReplacement ? errors.newReplacement : ''}
+                              helperText={
+                                touched.newReplacement || errors.newReplacement ? formik.errors.newReplacement : ''
+                              }
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1519,8 +1542,12 @@ export default function ViewEmployee() {
                                 handleChange(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.replacementEcode ? errors.replacementEcode : ''}
-                              helperText={touched.replacementEcode ? formik.errors.replacementEcode : ''}
+                              error={touched.replacementEcode || errors.replacementEcode ? errors.replacementEcode : ''}
+                              helperText={
+                                touched.replacementEcode || errors.replacementEcode
+                                  ? formik.errors.replacementEcode
+                                  : ''
+                              }
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1545,8 +1572,14 @@ export default function ViewEmployee() {
                               }}
                               value={values.supportDevelopment}
                               onBlur={handleBlur}
-                              error={touched.supportDevelopment ? errors.supportDevelopment : ''}
-                              helperText={touched.supportDevelopment ? formik.errors.supportDevelopment : ''}
+                              error={
+                                touched.supportDevelopment || errors.supportDevelopment ? errors.supportDevelopment : ''
+                              }
+                              helperText={
+                                touched.supportDevelopment || errors.supportDevelopment
+                                  ? formik.errors.supportDevelopment
+                                  : ''
+                              }
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1686,8 +1719,12 @@ export default function ViewEmployee() {
                               }}
                               value={values.evaluationPeriod}
                               onBlur={handleBlur}
-                              error={touched.evaluationPeriod ? errors.evaluationPeriod : ''}
-                              helperText={touched.evaluationPeriod ? formik.errors.evaluationPeriod : ''}
+                              error={touched.evaluationPeriod || errors.evaluationPeriod ? errors.evaluationPeriod : ''}
+                              helperText={
+                                touched.evaluationPeriod || errors.evaluationPeriod
+                                  ? formik.errors.evaluationPeriod
+                                  : ''
+                              }
                               // inputProps={{
                               //   readOnly: state.employeeStatus === 'Pending For IT Spoc Review' ? true : null,
                               //   style: { color: state.employeeStatus === 'Pending For IT Spoc Review' ? 'grey' : 'black' },
@@ -1716,8 +1753,8 @@ export default function ViewEmployee() {
                               }}
                               value={state.experience}
                               onBlur={handleBlur}
-                              error={touched.experience ? errors.experience : ''}
-                              helperText={touched.experience ? formik.errors.experience : ''}
+                              error={touched.experience || errors.experience ? errors.experience : ''}
+                              helperText={touched.experience || errors.experience ? formik.errors.experience : ''}
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -1747,8 +1784,12 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.totalExperience && Boolean(errors.totalExperience)}
-                              helperText={touched.totalExperience && errors.totalExperience}
+                              error={
+                                touched.totalExperience || errors.totalExperience ? Boolean(errors.totalExperience) : ''
+                              }
+                              helperText={
+                                touched.totalExperience || errors.totalExperience ? errors.totalExperience : ''
+                              }
                             />
                           </Grid>
 
@@ -1767,8 +1808,8 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={formik.touched.skillSet && Boolean(formik.errors.skillSet)}
-                              helperText={formik.touched.skillSet && formik.errors.skillSet}
+                              error={formik.touched.skillSet || errors.skillSet ? Boolean(formik.errors.skillSet) : ''}
+                              helperText={formik.touched.skillSet || errors.skillSet ? formik.errors.skillSet : ''}
                             />
                           </Grid>
 
@@ -1801,7 +1842,7 @@ export default function ViewEmployee() {
                         <br />
 
                         <Typography variant="subtitle1" paddingBottom={'15px'}>
-                         <b>Reporting Authorities</b> 
+                          <b>Reporting Authorities</b>
                         </Typography>
 
                         <Grid container spacing={2}>
@@ -1814,14 +1855,18 @@ export default function ViewEmployee() {
                               label="Reporting Authority (SM)"
                               required
                               fullWidth
+                              value={state.reportingManager}
                               onChange={(evt) => {
                                 handleChange(evt);
                                 handleChangeSM(evt);
                               }}
-                              value={state.reportingManager}
                               onBlur={handleBlur}
-                              error={touched.reportingManager ? errors.reportingManager : ''}
-                              helperText={touched.reportingManager ? formik.errors.reportingManager : ''}
+                              error={touched.reportingManager || errors.reportingManager ? errors.reportingManager : ''}
+                              helperText={
+                                touched.reportingManager || errors.reportingManager
+                                  ? formik.errors.reportingManager
+                                  : ''
+                              }
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -1845,6 +1890,7 @@ export default function ViewEmployee() {
                               label="Reporting Authority (TL)"
                               fullWidth
                               required
+                              value={values.reportingTeamLead.teamLeadName}
                               onChange={(evt) => {
                                 handleChange(evt);
                                 // handleChangeEvent(evt);
@@ -1853,10 +1899,15 @@ export default function ViewEmployee() {
                                   reportingTeamLead: teamLeadBySMList.find((o) => o.teamLeadName === evt.target.value),
                                 });
                               }}
-                              value={values.reportingTeamLead.teamLeadName ? values.reportingTeamLead.teamLeadName : ''}
                               onBlur={handleBlur}
-                              error={touched.reportingTeamLead ? errors.reportingTeamLead : ''}
-                              helperText={touched.reportingTeamLead ? formik.errors.reportingTeamLead : ''}
+                              error={
+                                touched.reportingTeamLead || errors.reportingTeamLead ? errors.reportingTeamLead : ''
+                              }
+                              helperText={
+                                touched.reportingTeamLead || errors.reportingTeamLead
+                                  ? formik.errors.reportingTeamLead
+                                  : ''
+                              }
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -1871,32 +1922,11 @@ export default function ViewEmployee() {
                             </TextField>
                           </Grid>
 
-                          <Grid item xs={12} sm={6}>
-                            <TextField
-                              autoComplete="off"
-                              name="billingSlab"
-                              variant="outlined"
-                              required
-                              fullWidth
-                              id="billingSlab"
-                              type="number"
-                              label="Monthly Billing Rate"
-                              value={values.billingSlab}
-                              onChange={(evt) => {
-                                handleChange(evt);
-                                handleChangeEvent(evt);
-                              }}
-                              inputProps={{ min: 40000, max: 500000 }}
-                              onBlur={handleBlur}
-                              error={formik.touched.billingSlab && Boolean(formik.errors.billingSlab)}
-                              helperText={formik.touched.billingSlab && formik.errors.billingSlab}
-                            />
-                          </Grid>
                         </Grid>
 
                         <br />
                         <Typography variant="subtitle1" paddingBottom={'15px'}>
-                         <b> Functional Details</b>
+                          <b> Functional Details</b>
                         </Typography>
 
                         <Grid container spacing={2}>
@@ -1909,6 +1939,7 @@ export default function ViewEmployee() {
                               // select={values.verticalMain === ''}
                               select
                               onClick={getMainVerticalList}
+                              open
                               label="Main Vertical"
                               fullWidth
                               required
@@ -1916,11 +1947,8 @@ export default function ViewEmployee() {
                               onChange={(evt) => {
                                 handleChange(evt);
                                 handleChangeMv(evt, setFieldValue);
-                                // if(evt.target.value === ''){
-                                //   document
-                                // }
+                            
                               }}
-                              // value={values.verticalMain}
                               onBlur={handleBlur}
                               onFocus={(e) => {
                                 if (state.mainVerticalList?.length <= 0) {
@@ -1929,8 +1957,8 @@ export default function ViewEmployee() {
                                   getMainVerticalList();
                                 }
                               }}
-                              error={touched.verticalMain ? errors.verticalMain : ''}
-                              helperText={touched.verticalMain ? formik.errors.verticalMain : ''}
+                              error={touched.verticalMain || errors.verticalMain ? errors.verticalMain : ''}
+                              helperText={touched.verticalMain || errors.verticalMain ? formik.errors.verticalMain : ''}
                             >
                               {state?.mainVerticalList?.length > 0 ? (
                                 state.mainVerticalList.map((KeyVal) => (
@@ -1970,8 +1998,8 @@ export default function ViewEmployee() {
                                   handleChangeMv(e, setFieldValue);
                                 }
                               }}
-                              error={touched.verticalSub ? errors.verticalSub : ''}
-                              helperText={touched.verticalSub ? formik.errors.verticalSub : ''}
+                              error={touched.verticalSub || errors.verticalSub ? errors.verticalSub : ''}
+                              helperText={touched.verticalSub || errors.verticalSub ? formik.errors.verticalSub : ''}
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -2019,8 +2047,10 @@ export default function ViewEmployee() {
                                   handleChangeSv(e, setFieldValue);
                                 }
                               }}
-                              error={touched.departmentDesc ? errors.departmentDesc : ''}
-                              helperText={touched.departmentDesc ? formik.errors.departmentDesc : ''}
+                              error={touched.departmentDesc || errors.departmentDesc ? errors.departmentDesc : ''}
+                              helperText={
+                                touched.departmentDesc || errors.departmentDesc ? formik.errors.departmentDesc : ''
+                              }
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -2064,8 +2094,8 @@ export default function ViewEmployee() {
                                   handleChangeDpt(e, setFieldValue);
                                 }
                               }}
-                              error={touched.functionDesc ? errors.functionDesc : ''}
-                              helperText={touched.functionDesc ? formik.errors.functionDesc : ''}
+                              error={touched.functionDesc || errors.functionDesc ? errors.functionDesc : ''}
+                              helperText={touched.functionDesc || errors.functionDesc ? formik.errors.functionDesc : ''}
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -2109,8 +2139,8 @@ export default function ViewEmployee() {
                               }}
                               value={values.lob}
                               onBlur={handleBlur}
-                              error={touched.lob ? errors.lob : ''}
-                              helperText={touched.lob ? formik.errors.lob : ''}
+                              error={touched.lob || errors.lob ? errors.lob : ''}
+                              helperText={touched.lob || errors.lob ? formik.errors.lob : ''}
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -2125,35 +2155,35 @@ export default function ViewEmployee() {
                             </TextField>
                           </Grid>
                           {values.lob === 'Others' || values.lob === 'Internal IT App' ? (
-                              <Grid item xs={12} sm={6}>
-                                <TextField
-                                  labelId="demo-select-small"
-                                  id="remarks"
-                                  name="remarks"
-                                  // select={projectsList.length !== 0}
-                                  // select={values.lob === ''}
-                                  //  select
-                                  label="Others"
-                                  fullWidth
-                                  required
-                                  onChange={(evt) => {
-                                    handleChange(evt);
-                                    handleChangeEvent(evt);
-                                  }}
-                                  value={values.remarks}
-                                  onBlur={handleBlur}
-                                  error={touched.remarks ? errors.remarks : ''}
-                                  helperText={touched.remarks ? formik.errors.remarks : ''}
-                                  // disabled={
-                                  //   state.employeeStatus === 'Pending For TL Review' ||
-                                  //   state.employeeStatus === 'Pending For SM Review' ||
-                                  //   state.employeeStatus === 'Pending For IT Spoc Review'
-                                  // }
-                                />
-                              </Grid>
-                            ) : (
-                              <input type="hidden" id="remarks" name="remarks" value="" />
-                            )}
+                            <Grid item xs={12} sm={6}>
+                              <TextField
+                                labelId="demo-select-small"
+                                id="remarks"
+                                name="remarks"
+                                // select={projectsList.length !== 0}
+                                // select={values.lob === ''}
+                                //  select
+                                label="Others"
+                                fullWidth
+                                required
+                                onChange={(evt) => {
+                                  handleChange(evt);
+                                  handleChangeEvent(evt);
+                                }}
+                                value={values.remarks}
+                                onBlur={handleBlur}
+                                error={touched.remarks || errors.remarks ? errors.remarks : ''}
+                                helperText={touched.remarks || errors.remarks ? formik.errors.remarks : ''}
+                                // disabled={
+                                //   state.employeeStatus === 'Pending For TL Review' ||
+                                //   state.employeeStatus === 'Pending For SM Review' ||
+                                //   state.employeeStatus === 'Pending For IT Spoc Review'
+                                // }
+                              />
+                            </Grid>
+                          ) : (
+                            <input type="hidden" id="remarks" name="remarks" value="" />
+                          )}
 
                           <Grid item xs={12} sm={6}>
                             <TextField
@@ -2171,8 +2201,8 @@ export default function ViewEmployee() {
                               }}
                               value={values.maximusOpus}
                               onBlur={handleBlur}
-                              error={touched.maximusOpus ? errors.maximusOpus : ''}
-                              helperText={touched.maximusOpus ? formik.errors.maximusOpus : ''}
+                              error={touched.maximusOpus || errors.maximusOpus ? errors.maximusOpus : ''}
+                              helperText={touched.maximusOpus || errors.maximusOpus ? formik.errors.maximusOpus : ''}
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -2210,8 +2240,8 @@ export default function ViewEmployee() {
                               }}
                               value={values.invoiceType}
                               onBlur={handleBlur}
-                              error={touched.invoiceType ? errors.invoiceType : ''}
-                              helperText={touched.invoiceType ? formik.errors.invoiceType : ''}
+                              error={touched.invoiceType || errors.invoiceType ? errors.invoiceType : ''}
+                              helperText={touched.invoiceType || errors.invoiceType ? formik.errors.invoiceType : ''}
                               // disabled={
                               //   state.employeeStatus === 'Pending For TL Review' ||
                               //   state.employeeStatus === 'Pending For SM Review' ||
@@ -2269,8 +2299,8 @@ export default function ViewEmployee() {
                                 handleChangeEvent(evt);
                               }}
                               onBlur={handleBlur}
-                              error={touched.billingSlab ? errors.billingSlab : ''}
-                              helperText={touched.billingSlab ? formik.errors.billingSlab : ''}
+                              error={touched.billingSlab || errors.billingSlab ? errors.billingSlab : ''}
+                              helperText={touched.billingSlab || errors.billingSlab ? formik.errors.billingSlab : ''}
                             />
                           </Grid>
                         </Grid>

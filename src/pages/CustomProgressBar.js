@@ -1,87 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import {
-  Card,
-  Table,
-  Stack,
-  Paper,
-  Button,
-  TableRow,
-  TableBody,
-  TableCell,
-  Container,
-  Typography,
-  TableContainer,
-  TablePagination,
-  // Step,
-  StepLabel,
-  // StepsLabelContainer,
-  // StepStyle,
-  // StepWrapper,
-  // StepCount,
-} from '@mui/material';
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-// import Step from '@mui/material/Step';
-// import StepLabel from '@mui/material/StepLabel';
-import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
-
+import { Stack, Typography } from '@mui/material';
 import 'react-step-progress-bar/styles.css';
 import { ProgressBar, Step } from 'react-step-progress-bar';
-import Iconify from '../components/iconify';
 
 export default function CustomProgressBar(props) {
-  console.log('log>>>>>>', props);
-  const [checked, setChecked] = useState(false);
-  const [checkPercent, setCheckedPercent] = useState();
-  const labelStyle = {
-    height: 20,
-    width: 'auto',
-    padding: 2,
-    backgroundColor: 'lightgrey',
-    border: '1px transparent',
-    borderRadius: '5px',
-  };
-
-  const ActiveConditionalLabel = {
-    height: 20,
-    width: 'auto',
-    padding: 2,
-    backgroundColor: 'green',
-    border: '1px transparent',
-    borderRadius: '5px',
-  };
-
-  const PendingLabel = {
-    height: 20,
-    width: 'auto',
-    padding: 2,
-    backgroundColor: '#FFD580',
-    border: '1px transparent',
-    borderRadius: '5px',
-  };
-
-  const labelText = {
-    textAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 14,
-    fontWeight: '600',
-  };
-
-  const ActiveLabel = {
-    textAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-  };
-
-  const handleCheck = (index) => {};
-
-  console.log('checked index', props.percent);
-  const steps = ['Generation', 'Pending with TL', 'Pending with SM', 'Pending with IT Spoc', 'Active'];
-  console.log('checkPercent', checkPercent);
-
+  console.log("props=>", props);
   const outerStyle = {
     height: 30,
     width: 30,
@@ -100,7 +24,7 @@ export default function CustomProgressBar(props) {
     height: 34,
     width: 34,
     borderRadius: 17,
-    backgroundColor: '#12CE2B',
+    backgroundColor: props.employeeStatus === 'Resigned' ? 'red' : '#12CE2B',
   };
 
   const conditionalInnerStyle = {
@@ -114,32 +38,31 @@ export default function CustomProgressBar(props) {
     height: 26,
     width: 26,
     borderRadius: 13,
-    backgroundColor: '#12CE2B',
+    backgroundColor: props.employeeStatus === 'Resigned' ? 'red' : '#12CE2B',
   };
 
-  const UnAccomplishedComponent = (accomplished) => {
-    return (
+  const UnAccomplishedComponent = (accomplished) => (
+    <Stack
+      style={{ height: 30, width: 30, borderRadius: 15, backgroundColor: 'grey' }}
+      alignItems="center"
+      justifyContent="center"
+    >
       <Stack
-        style={{ height: 30, width: 30, borderRadius: 15, backgroundColor: 'grey' }}
+        style={{ height: 14, width: 14, borderRadius: 7, backgroundColor: 'lightgrey' }}
         alignItems="center"
         justifyContent="center"
-      >
-        <Stack
-          style={{ height: 14, width: 14, borderRadius: 7, backgroundColor: 'lightgrey' }}
-          alignItems="center"
-          justifyContent="center"
-        />
-
-        {/* </Stack> */}
-      </Stack>
-    );
-  };
+      />
+    </Stack>
+  );
   return (
     <>
-      <Stack alignItems="center" >
-        <ProgressBar filledBackground="#1E3587"  percent={props.employeeStatus === 'Active' ? 100 : props.percent} height={5} width="75%">
-          {/* <Stack mt={2}> */}
-          {/* -------------------------------Generation ------------------------------------- */}
+      <Stack alignItems="center">
+        <ProgressBar
+          filledBackground="#1E3587"
+          percent={props.employeeStatus === 'Active' ? 100 : props.percent}
+          height={5}
+          width="75%"
+        >
           <Step>
             {({ accomplished, index }) => (
               <Stack>
@@ -169,190 +92,74 @@ export default function CustomProgressBar(props) {
                     <UnAccomplishedComponent accomplished />
                   )}
                 </Stack>
-                {/* <Stack><Typography><Typography style={{ fontSize: 12 }}>Generation</Typography> </Typography></Stack> */}
               </Stack>
             )}
           </Step>
-          {/* -------------------------------TL ------------------------------------- */}
-          <Step>
-            {({ accomplished, index }) => (
-              <Stack>
-                <Stack
-                  className={`indexedStep ${accomplished ? 'accomplished' : ''}`}
-                  style={props.percent === 25 ? conditionalOuterStyle : outerStyle}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  {accomplished ? (
-                    <Stack
-                      style={props.percent === 25 ? conditionalInnerStyle : innerStyle}
-                      alignItems="center"
-                      justifyContent="center"
-                    >
+          {props.data.map((status, idx) => (
+            <Step>
+              {({ accomplished }) => (
+                <Stack>
+                  <Stack
+                    className={`indexedStep ${accomplished ? 'accomplished' : ''}`}
+                    style={
+                      props.employeeStatus === status && idx === props.data.length - 1
+                        ? conditionalOuterStyle
+                        : outerStyle
+                    }
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {accomplished ? (
                       <Stack
-                        style={props.percent === 25 ? conditionalLastInnerStyle : null}
+                        style={
+                          props.employeeStatus === status && idx === props.data.length - 1
+                            ? conditionalInnerStyle
+                            : innerStyle
+                        }
                         alignItems="center"
                         justifyContent="center"
                       >
-                        {accomplished ? (
-                          <>{/* <Iconify icon="material-symbols:check" color="black" width={20} height={20} /> */}</>
-                        ) : null}
+                        <Stack
+                          style={
+                            props.employeeStatus === status && idx === props.data.length - 1
+                              ? conditionalLastInnerStyle
+                              : null
+                          }
+                          alignItems="center"
+                          justifyContent="center"
+                        >
+                          {accomplished ? <></> : null}
+                        </Stack>
                       </Stack>
-                    </Stack>
-                  ) : (
-                    <UnAccomplishedComponent accomplished />
-                  )}
+                    ) : (
+                      <UnAccomplishedComponent accomplished />
+                    )}
+                  </Stack>
                 </Stack>
-
-                {/* <Stack>
-                <Typography style={{ fontSize: 12 }}>Pending with TL</Typography>
-              </Stack> */}
-              </Stack>
-            )}
-          </Step>
-          {/* -------------------------------SM------------------------------------- */}
-          <Step>
-            {({ accomplished, index }) => (
-              <Stack>
-                <Stack
-                  className={`indexedStep ${accomplished ? 'accomplished' : ''}`}
-                  style={props.percent === 50 ? conditionalOuterStyle : outerStyle}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  {accomplished ? (
-                    <Stack
-                      style={props.percent === 50 ? conditionalInnerStyle : innerStyle}
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Stack
-                        style={props.percent === 50 ? conditionalLastInnerStyle : null}
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        {accomplished ? (
-                          <>{/* <Iconify icon="material-symbols:check" color="black" width={20} height={20} /> */}</>
-                        ) : null}
-                      </Stack>
-                    </Stack>
-                  ) : (
-                    <UnAccomplishedComponent accomplished />
-                  )}
-                </Stack>
-                {/* <Stack>
-                <Typography style={{ fontSize: 12 }}>Pending with SM</Typography>
-              </Stack> */}
-              </Stack>
-            )}
-          </Step>
-          {/* -------------------------------IT SPOC ------------------------------------- */}
-          <Step>
-            {({ accomplished, index }) => (
-              <Stack>
-                <Stack
-                  className={`indexedStep ${accomplished ? 'accomplished' : ''}`}
-                  style={props.percent === 75 ? conditionalOuterStyle : outerStyle}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  {accomplished ? (
-                    <Stack
-                      style={props.percent === 75 ? conditionalInnerStyle : innerStyle}
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Stack
-                        style={props.percent === 75 ? conditionalLastInnerStyle : null}
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        {accomplished ? (
-                          <>{/* <Iconify icon="material-symbols:check" color="black" width={20} height={20} /> */}</>
-                        ) : null}
-                      </Stack>
-                    </Stack>
-                  ) : (
-                    <UnAccomplishedComponent accomplished />
-                  )}
-                </Stack>
-                {/* <Stack>
-                <Typography style={{ fontSize: 12 }}>Pending with IT Spoc</Typography>
-              </Stack> */}
-              </Stack>
-            )}
-          </Step>
-          {/* -------------------------------ACTIVE------------------------------------- */}
-          <Step>
-            {({ accomplished, index }) => (
-              <Stack>
-                <Stack
-                  className={`indexedStep ${accomplished ? 'accomplished' : ''}`}
-                  style={props.percent === 100 ? conditionalOuterStyle : outerStyle}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  {accomplished ? (
-                    <Stack
-                      style={props.percent === 100 ? conditionalInnerStyle : innerStyle}
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Stack
-                        style={props.percent === 100 ? conditionalLastInnerStyle : null}
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        {accomplished ? (
-                          <>{/* <Iconify icon="material-symbols:check" color="black" width={20} height={20} /> */}</>
-                        ) : null}
-                      </Stack>
-                    </Stack>
-                  ) : (
-                    <UnAccomplishedComponent accomplished />
-                    // <Stack
-                    //   style={{ height: 30, width: 30, borderRadius: 15, backgroundColor: 'grey' }}
-                    //   alignItems="center"
-                    //   justifyContent="center"
-                    // >
-                    //   <Stack
-                    //     style={{ height: 20, width: 20, borderRadius: 10, backgroundColor: 'lightgrey' }}
-                    //     alignItems="center"
-                    //     justifyContent="center"
-                    //   >
-                    //     {accomplished ? (
-                    //       <>{/* <Iconify icon="material-symbols:check" color="black" width={20} height={20} /> */}</>
-                    //     ) : null}
-                    //   </Stack>
-                    // </Stack>
-                  )}
-                </Stack>
-                {/* <Stack>
-                <Typography style={{ fontSize: 12 }}>Active</Typography>
-              </Stack> */}
-              </Stack>
-            )}
-          </Step>
-          {/* </Stack> */}
+              )}
+            </Step>
+          ))}
         </ProgressBar>
       </Stack>
 
-      <Stack justifyContent="space-evenly" display="flex" alignItems="center" mt={3} flexDirection="row" width="100%">
-        <Stack>
-          <Typography style={{ fontSize: 12 }}>Generation</Typography>
+      <Stack
+        justifyContent="space-between"
+        display="flex"
+        margin="auto"
+        alignItems="flex-start"
+        mt={3}
+        flexDirection="row"
+        width="90%"
+      >
+        <Stack style={{ width: `${100 / (props.data.length + 1) - 3}%` }}>
+          <Typography style={{ fontSize: 12, textAlign: 'center' }}>Generation</Typography>
         </Stack>
-        <Stack>
-          <Typography style={{ fontSize: 12 }}>Pending with TL</Typography>
-        </Stack>
-        <Stack>
-          <Typography style={{ fontSize: 12 }}>Pending with SM</Typography>
-        </Stack>
-        <Stack>
-          <Typography style={{ fontSize: 12 }}>Pending with IT Spoc</Typography>
-        </Stack>
-        <Stack>
-          <Typography style={{ fontSize: 12 }}>Active</Typography>
-        </Stack>
+        {console.log('props.percent>>>>>>>..', props.percent)}
+        {props.data.map((status, idx) => (
+          <Stack style={{ width: `${100 / (props.data.length + 1) - 3}%` }}>
+            <Typography style={{ fontSize: 12, textAlign: 'center', flexWrap: 'wrap' }}>{status}</Typography>
+          </Stack>
+        ))}
       </Stack>
     </>
   );

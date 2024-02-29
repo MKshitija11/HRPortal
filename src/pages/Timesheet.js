@@ -13,8 +13,12 @@ import {
   Typography,
   Modal,
   TableContainer,
+  FormControl,
   TextField,
   TablePagination,
+  InputLabel,
+  InputAdornment,
+  IconButton,
   Box,
   Grid,
   MenuItem,
@@ -24,18 +28,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import * as XLSX from 'xlsx';
 import Marquee from 'react-fast-marquee';
-import moment from 'moment';
-import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { subMonths, addMonths } from 'date-fns';
-import format from 'date-fns/format';
 import Loader from '../components/Loader/Loader';
 import Iconify from '../components/iconify/Iconify';
 import Scrollbar from '../components/scrollbar';
 import Label from '../components/label';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 import Configuration from '../utils/Configuration';
-import Constants from '../Constants/Constants';
 import '../css/App.css';
 
 // import axios from 'axios';
@@ -85,120 +84,28 @@ export default function TimeSheet() {
   const [page, setPage] = useState(0);
   const [activeEmployees, setActiveEmployees] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState();
+  const [selectedName, setSelectedName] = useState('');
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [showSelectedList, setShowSelectedList] = useState(false);
+  const [updatedArray, setUpdatedArray] = useState([]);
+  const [clonedFilteredArray, setClonedFilteredArray] = useState();
+
   const ROLE = sessionStorage.getItem('ROLE');
   const USERDETAILS = sessionStorage.getItem('USERDETAILS');
   console.log('ROLE>>', ROLE, USERDETAILS);
-
-  // useEffect(() => {
-  //  Configuration.visitorDetailsBymobNo().then((response) => {console.log("get token response", response)})
-  // },[])
-
-  // useEffect(() => {
-  //   Configuration.getDashBoardForPartner()
-  //   .then((response) => {console.log("get token response", response)
-  // }
-  // },[])
-
-  // useEffect(() => {
-  //   Configuration.getToken().then((response) => {
-  //     console.log('REsposnse for token', response);
-  //   });
-
-  //   const req = {
-  //     rmInfoObj: {
-  //       userID: 'yogesh.kaushik@bajajallianz.co.in',
-  //       month: 'NOV',
-  //       year: '2023',
-  //     },
-  //   };
-
-  //   Configuration.getRmDashBoard({req}).then((response) => {
-  //     console.log('REsposnse for getRmDashBoard', response);
-  //   });
-
-  //   Configuration.bagicEmpfreqentMeet().then((response) => {
-  //     console.log('REsposnse for bagicEmpfreqentMeet', response);
-  //   })
-  // }, []);
+  const clonedActiveList = [...activeEmployees];
+  const activeEmpFullNameList = clonedActiveList
+    .filter((emp) => emp.employeeFullName)
+    .map((emp) => emp.employeeFullName);
 
   useEffect(() => {
+    console.log('location===>', location.pathname);
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-    console.log('userdetails.............', USERDETAILS);
     if (USERDETAILS != null) {
       const getEmpListTLReq = {
         teamLeadId: USERDETAILS?.[0]?.spocEmailId,
       };
 
-      // if (ROLE === 'BAGIC_TL') {
-      //   Configuration.getEmpListTeamLead(getEmpListTLReq)
-      //     .then((empListTLRes) => {
-      //       console.log('empListVendorRes=====>', empListTLRes);
-      //       if (empListTLRes.data.error) {
-      //         // setErrorMessage(true);
-      //         setTimeout(() => {
-      //           setIsLoading(false);
-      //         }, 500);
-      //       } else {
-      //         console.log('empListVendorRes=====>', empListTLRes);
-      //         const activeEmpList = empListTLRes.data.filter((emp) => emp.employeeStatus === 'Active');
-      //         setEmpArray(activeEmpList);
-      //         setPagination({
-      //           data: activeEmpList.map((value, index) => ({
-      //             id: index,
-      //           })),
-      //           offset: 0,
-      //           numberPerPage: 10,
-      //           pageCount: 0,
-      //           currentData: [],
-      //         });
-      //         const filteredUsers = applySortFilter(empListTLRes.data, getComparator(order, orderBy), filterName);
-      //         setApiRes(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-      //         // setEmployeeList(empListTLRes.data);
-      //         setCsvData(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-      //         // setIsLoading(false);
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       setIsLoading(false);
-      //       alert('Something went wrong');
-      //     });
-      // } else if (ROLE === 'BAGIC_SM') {
-      //   const empListManagerReq = {
-      //     managerId: USERDETAILS?.[0]?.spocEmailId,
-      //   };
-      //   setIsLoading(true);
-      //   Configuration.getEmpListManager(empListManagerReq)
-      //     .then((empListManagerRes) => {
-      //       if (empListManagerRes.data.error) {
-      //         setTimeout(() => {
-      //           setIsLoading(false);
-      //         }, 500);
-      //       } else {
-      //         console.log('empListVendorRes', empListManagerReq);
-      //         const activeEmpListSM = empListManagerRes.data.filter((emp) => emp.employeeStatus === 'Active');
-      //         setEmpArray(activeEmpListSM);
-      //         setPagination({
-      //           data: activeEmpListSM.map((value, index) => ({
-      //             id: index,
-      //           })),
-      //           offset: 0,
-      //           numberPerPage: 10,
-      //           pageCount: 0,
-      //           currentData: [],
-      //         });
-      //         const filteredUsers = applySortFilter(empListManagerRes.data, getComparator(order, orderBy), filterName);
-      //         // setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-
-      //         setApiRes(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-      //         setCsvData(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-      //         // setIsLoading(false);
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       setIsLoading(false);
-      //       alert('Something went wrong');
-      //     });
-      // }
       if (ROLE === 'BAGIC_TL') {
         setIsLoading(true);
         Configuration.getEmpListTeamLead(getEmpListTLReq)
@@ -207,6 +114,7 @@ export default function TimeSheet() {
             if (empListTLRes.data.error) {
               // setErrorMessage(true);
               setTimeout(() => {
+                // console.log('inside 1st false')
                 setIsLoading(false);
               }, 500);
             } else {
@@ -389,9 +297,7 @@ export default function TimeSheet() {
       navigate('/login');
     }
     // eslint-disable-next-line
-  }, []);
-  console.log('EMP array ', empArray);
-  // const empArray = Constants.timesheetEmpList;
+  }, [location]);
 
   const [atsApiRes, setApiRes] = useState(empArray);
   const [isLoading, setIsLoading] = useState(false);
@@ -408,6 +314,8 @@ export default function TimeSheet() {
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [pageRender, setPageRender] = useState(50);
+  const [open, setOpen] = useState(false);
+  const [searchApiRes, setSearchApiRes] = useState([]);
   // const [openCalendar, setOpenCalendar] = useState(false);
   const [pagination, setPagination] = useState({
     data: empArray.map((value, index) => ({
@@ -420,7 +328,13 @@ export default function TimeSheet() {
   });
 
   useEffect(() => {
-    console.log('custom useeffect 1<><>');
+    if (location.pathname === '/TimeSheet') {
+      setSelectedName('');
+    }
+  }, []);
+
+  useEffect(() => {
+    // console.log('custom useeffect 1<><>');
     // setIsLoading(false);
     const arr = empArray.slice(pagination.offset, pagination.offset + pagination.numberPerPage);
     // setIsLoading(true);
@@ -450,14 +364,19 @@ export default function TimeSheet() {
         const response = resp;
         element.timeSheetDtls = response !== null ? response : '';
         element.hideLoader = true;
-        console.log('', arr);
+        // console.log('', arr);
         setApiRes([...arr]);
+
+        // if(breakCondition){
+        //   console.log("breakCondition", index)
+        //   throw new Error()
+        // }
       }).catch((er) => {
         console.log('caught error==>', er);
       });
     }
 
-    console.log('slice/original', atsApiRes, pagination);
+    // console.log('slice/original', atsApiRes, pagination);
     setApiRes([...arr]);
     setPagination((prevState) => ({
       ...prevState,
@@ -468,49 +387,24 @@ export default function TimeSheet() {
 
   useEffect(() => {
     console.log('custom useeffect', atsApiRes);
+    // if(atsApiRes.filter(data => !data.hideLoader).length === 0){
+    //   setShowSearchBar(true)
+    // } else {
+    //   setShowSearchBar(false)
+    // }
   }, [atsApiRes, pagination, selectedMonth]);
 
-  // useEffect(() => {
-  //   const req = {
-  //     userName: 'kshitija.madhekar@its.bajajallianz.co.in',
-  //     fromDate: '',
-  //     toDate: '',
-  //   };
-  //   return fetch('https://webservices.bajajallianz.com/BagicVisitorAppWs/userTimeSheet', {
-  //     method: 'post',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     // body: atsReq,
-  //     body: JSON.stringify(req),
-  //   }).then((response) => {
-  //     return response
-  //       .json()
-  //       .then((data) => {
-  //         console.log('timesheet response using fetch', data);
-  //         return data;
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   });
-  // }, []);
-
-  const fetchData = async (atsReq, idx, arrLength, callback) => {
-    return fetch('https://webservices.bajajallianz.com/BagicVisitorAppWs/userTimeSheet', {
+  const fetchData = async (atsReq, idx, arrLength, callback) =>
+    fetch('https://webservices.bajajallianz.com/BagicVisitorAppWs/userTimeSheet', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
-      // body: atsReq,
       body: JSON.stringify(atsReq),
-      // body: {
-      //   userName: 'kshitija.madhekar@its.bajajallianz.co.in',
-      //   fromDate: '',
-      //   toDate: '',
-      // },
     }).then((response) =>
       response
         .json()
         .then((data) => {
           const atsRes = data;
-          console.log('data$$$$', atsRes);
+          // console.log('data$$$$', atsRes);
           if (atsRes?.errorCode === '1') {
             setTimeout(() => {
               setIsLoading(false);
@@ -520,7 +414,13 @@ export default function TimeSheet() {
             // setIsLoading(true);
             console.log('custom useeffect>>>.', atsRes.stringObject10);
             // if(arrLength === idx){
+            // console.log('inside 1st false >>>>');
             setIsLoading(false);
+            setShowSearchBar(true);
+
+            // }
+            // if(atsApiRes.filter(data=>data.timeSheetDtls).length === atsApiRes.length){
+            //   alert('')
             // }
             callback(atsRes.stringObject10);
           }
@@ -534,37 +434,6 @@ export default function TimeSheet() {
           console.log('error>>>>>', err);
         })
     );
-  };
-
-  // const fetchData = async (atsReq, idx, arrLength, callback) => {
-  //   await Configuration.getTimeSheetDetails(atsReq)
-  //     .then((atsRes) => {
-  //       console.log("timesheet rspnse", atsRes.json)
-
-  //       if (atsRes?.data?.errorCode === '1') {
-  //         setTimeout(() => {
-  //           // setIsLoading(false);
-  //           // setOpenModal(true);
-  //         }, 1000);
-  //       } else if (atsRes?.data?.errorCode === '0') {
-  //         // setIsLoading(true);
-  //         console.log('custom useeffect>>>.', atsRes.data.stringObject10);
-  //         // if(arrLength === idx){
-  //         setIsLoading(false);
-  //         // }
-  //         callback(atsRes.data.stringObject10);
-  //       }
-  //       // setIsLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       setTimeout(() => {
-  //         setIsLoading(false);
-  //       }, 60000);
-  //       console.log('error>>>>>', error);
-  //     });
-
-  //   // setIsLoading(false);
-  // };
 
   const handlePageClick = (event, newPage) => {
     console.log('handle Page click ', event, newPage);
@@ -576,13 +445,6 @@ export default function TimeSheet() {
     setPagination({ ...pagination, offset });
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    console.log('handle Page click for rows per page ', event);
-    setPage(0);
-    setRowsPerPage(parseInt(event.target.value, 10));
-    // handlePageClick()
-  };
-
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -590,13 +452,47 @@ export default function TimeSheet() {
   };
 
   const handleFilterByName = (event) => {
-    setFilterName(event.target.value);
-    console.log('filter by name target', event.target.value);
+    console.log('filter by name target', event);
+    // setFilterName(event);
     setPage(0);
-    const filteredUsers = applySortFilter(empArray, getComparator(order, orderBy), event.target.value);
+    const filteredUsers = applySortFilter(clonedActiveList, getComparator(order, orderBy), event);
+    console.log('activeEmp List ', filteredUsers?.[0]?.webUserId);
+    // setSearchApiRes();
 
-    setApiRes(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-    setCsvData(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+    // setApiRes(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+    setEmpArray(filteredUsers);
+    setIsLoading(true);
+    setClonedFilteredArray(filteredUsers);
+    handleSelectedTimeSheetApi(filteredUsers);
+    setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+    // setCsvData(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+    // handleFilterByNameTimesheet(filteredUsers?.[0]?.webUserId);
+  };
+
+  const handleSelectedTimeSheetApi = (filteredUsers) => {
+    console.log('filtered users====>', filteredUsers)
+ 
+    const atsReq = {
+      userName: filteredUsers?.[0]?.webUserId,
+      fromDate: '',
+      toDate: '',
+    };
+    console.log('get timesheet details req >>>>', atsReq);
+
+    return fetch('https://webservices.bajajallianz.com/BagicVisitorAppWs/userTimeSheet', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      // body: atsReq,
+      body: JSON.stringify(atsReq),
+    }).then((resp) =>
+      resp.json().then((data) => {
+        const atsRes = data;
+        console.log('ats Res===>', atsRes)
+        const result = atsApiRes.filter(emp => emp.employeeId === atsRes?.stringObject10?.employeeCode)
+        setSearchApiRes(result)
+        setIsLoading(false);
+      })
+    );
   };
 
   const downloadEmployeeData = () => {
@@ -653,54 +549,13 @@ export default function TimeSheet() {
     XLSX.writeFile(wb, 'EmployeeData.xlsx');
   };
 
-  const monthList = moment.months();
-  console.log(' MONTH LIST', selectedDate);
+  const handleChangeForSearchByUsername = (event) => {
+    updatedArray.pop();
+    // setFilterName(event.target.value)
 
-  // const handleChangeEvent = (evt) => {
-  //   const date = new Date();
-  //   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  //   const day = date.getDate();
-  //   const monthIndex = date.getMonth();
-  //   const year = date.getFullYear();
-  //   const formattedDate = `${day}-${monthNames[monthIndex].toLowerCase()}-${year}`;
-
-  //   console.log('FS>>>>', formattedDate);
-
-  //   console.log('handle change event', evt.target.value);
-  //   const startOfMonth = moment().month(evt.target.value).startOf('month').format('DD-MMM-');
-  //   const endOfMonth = moment().month(evt.target.value).endOf('month').format('DD-MMM-YYYY');
-  //   // console.log('start month', startOfMonth.toLowerCase().concat('2023'), formattedDate);
-  //   console.log('start month current date', startOfMonth);
-  //   setStartDate(startOfMonth.toLowerCase());
-  //   setEndDate('');
-  //   setSelectedMonth(evt.target.value);
-  // };
-
-  const handleChange = (date) => {
-    console.log('date>>>>>>>>>', date);
-    const month = moment(date).format('MMM-YYYY').toLowerCase();
-    const currentMonth = moment().format('MMM-YYYY').toLowerCase();
-    console.log('selected date>>>.', month);
-    const startDateOfMonth = moment(date).startOf('month').format('DD-MMM-YYYY').toLowerCase();
-    const endDateOfMonth = moment(date).endOf('month').format('DD-MMM-YYYY').toLowerCase();
-    const currentDate = moment().format('DD-MMM-YYYY').toLowerCase();
-    console.log('current month', startDateOfMonth);
-    if (month === currentMonth) {
-      setStartDate(startDateOfMonth);
-      setEndDate(currentDate);
-      setSelectedMonth(month);
-    } else {
-      setStartDate(startDateOfMonth);
-      setEndDate(endDateOfMonth);
-      setSelectedMonth(month);
-    }
-  };
-
-  console.log('selected date out of fun>>>>>>>', startDate, endDate);
-
-  const handleChangePage = (event, newPage) => {
-    console.log('handle page click change page', event, newPage);
-    setPage(newPage);
+    setSelectedName(event.target.value);
+    handleFilterByName(event.target.value);
+    setShowSelectedList(true);
   };
 
   return (
@@ -903,20 +758,55 @@ export default function TimeSheet() {
             </Stack>
           ) : null}
 
-          <Stack>
-            {/* <Stack>
+          <Stack mt={2} style={{ flexDirection: 'row', justifyContent: showSearchBar ? 'space-between' : '' }}>
+            {/* <Stack mt={10}>
               <UserListToolbar
                 numSelected={selected.length}
-                filterName={filterName}
-                onFilterName={handleFilterByName}
+                filterName={selectedName}
+                onFilterName={handleChangeForSearchByUsername}
                 // employeeList={empArray.slice(pagination.offset, pagination.offset + pagination.numberPerPage)}
                 employeeList={empArray}
               />
             </Stack> */}
-            <Stack
-              mt={2}
-              style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', paddingRight: 12 }}
-            >
+            {showSearchBar ? (
+              <Stack style={{ width: '25%', display: 'flex' }} mt={1} ml={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    open
+                    InputLabelProps={{ shrink: true }}
+                    autoComplete="off"
+                    select
+                    size="small"
+                    fullWidth
+                    placeholder="Search by Username"
+                    label="Search by Username"
+                    value={selectedName}
+                     filter
+                    onChange={(evt) => {
+                      handleChangeForSearchByUsername(evt);
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <>
+                          <InputAdornment position="start">
+                            <IconButton edge="start">
+                              <Iconify icon="material-symbols:search" />
+                            </IconButton>
+                          </InputAdornment>
+                        </>
+                      ),
+                    }}
+                  >
+                    {activeEmpFullNameList.map((name) => (
+                      <MenuItem key={name} value={name}>
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+              </Stack>
+            ) : null}
+            <Stack mt={1} mr={2} ml={2} style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
               <Typography variant="h4" sx={{ color: '#0072BC' }}>
                 Employees ({activeEmployees.length})
               </Typography>
@@ -1029,106 +919,244 @@ export default function TimeSheet() {
                         customStyle={{ backgroundColor: 'red' }}
                         isTimeSheet
                       />
+                      {console.log('searchApiRes', searchApiRes)}
+                      {showSelectedList ? (
+                        <>
+                          <TableBody>
+                            {searchApiRes.map((response, index) => {
+                              const selectedUser = selected.indexOf(response?.employeeFullName) !== -1;
+                              console.log('emp array response', response, response.hideLoader);
+                              return (
+                                <TableRow
+                                  hover
+                                  key={index}
+                                  tabIndex={-1}
+                                  role="checkbox"
+                                  selected={selectedUser}
+                                  onClick={() =>
+                                    response?.timeSheetDtls
+                                      ? response?.username
+                                        ? navigate('/EmployeeTimesheetDetails', {
+                                            state: {
+                                              user: response?.timeSheetDtls,
+                                              selectedStartDate: startDate,
+                                              selectedEndDate: endDate,
+                                              month: selectedMonth,
+                                            },
+                                          })
+                                        : setUpdateWebIdModal(true)
+                                      : // setOpenModal(true);
+                                        null
+                                  }
+                                  // onClick={() =>
+                                  //   response?.username
+                                  //     ? navigate('/EmployeeTimesheetDetails', {
+                                  //         state: {
+                                  //           user: response?.timeSheetDtls,
+                                  //           selectedStartDate: startDate,
+                                  //           selectedEndDate: endDate,
+                                  //           month: selectedMonth,
+                                  //         },
+                                  //       })
+                                  //     : setUpdateWebIdModal(true)
+                                  // }
+                                  sx={{ cursor: 'pointer' }}
+                                  ml={2}
+                                >
+                                  <>
+                                    <TableCell align="center">
+                                      {response?.employeeCode === null ? '' : response?.employeeCode}
+                                    </TableCell>
 
-                      <TableBody>
-                        {atsApiRes.map((response, index) => {
-                          const selectedUser = selected.indexOf(response?.employeeFullName) !== -1;
-                          console.log('emp array web user id', response);
-                          return (
-                            <TableRow
-                              hover
-                              key={index}
-                              tabIndex={-1}
-                              role="checkbox"
-                              selected={selectedUser}
-                              onClick={() =>
-                                response?.timeSheetDtls
-                                  ? response?.webUserId
-                                    ? navigate('/EmployeeTimesheetDetails', {
-                                        state: {
-                                          user: response?.timeSheetDtls,
-                                          selectedStartDate: startDate,
-                                          selectedEndDate: endDate,
-                                          month: selectedMonth,
-                                        },
-                                      })
-                                    : setUpdateWebIdModal(true)
-                                  : // setOpenModal(true);
-                                    null
-                              }
-                              sx={{ cursor: 'pointer' }}
-                              ml={2}
-                            >
-                              <>
-                                <TableCell align="center">
-                                  {response?.employeeId === null ? '' : response?.employeeId}
-                                </TableCell>
+                                    <TableCell component="th" scope="row" align="center">
+                                      <Typography style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
+                                        {response?.employeeName === null ? '' : response?.employeeName}
+                                      </Typography>
+                                    </TableCell>
 
-                                <TableCell component="th" scope="row" align="center">
-                                  <Typography style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
-                                    {response?.employeeFullName === null ? '' : response?.employeeFullName}
-                                  </Typography>
-                                </TableCell>
+                                    <TableCell align="center">
+                                      <Label>
+                                        <Typography
+                                          style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}
+                                        >
+                                          {/* {!response.hideLoader ? (
+                                            <Loader height={15} width={15} marginTop={0} />
+                                          ) : response?.totalWorkingDays === null ? (
+                                            '-'
+                                          ) : (
+                                            response?.totalWorkingDays || '-'
+                                          )} */}
+                                          {response?.totalWorkingDays ? response?.totalWorkingDays : '-'}
+                                        </Typography>
+                                      </Label>
+                                    </TableCell>
 
-                                <TableCell align="center">
-                                  <Label>
-                                    <Typography style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
-                                      {!response.hideLoader ? (
-                                        <Loader height={15} width={15} marginTop={0} />
-                                      ) : response?.timeSheetDtls?.totalWorkingDays === null ? (
-                                        '-'
-                                      ) : (
-                                        response?.timeSheetDtls?.totalWorkingDays || '-'
-                                      )}
-                                    </Typography>
-                                  </Label>
-                                </TableCell>
+                                    <TableCell align="center">
+                                      <Label color="success">
+                                        <Typography
+                                          style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}
+                                        >
+                                          {/* {!response.hideLoader ? (
+                                            <Loader height={15} width={15} marginTop={0} />
+                                          ) : response?.atsfilledDays === null ? (
+                                            '-'
+                                          ) : (
+                                            response?.atsfilledDays || '-'
+                                          )} */}
+                                          {response?.atsfilledDays ? response?.atsfilledDays : '-'}
+                                        </Typography>
+                                      </Label>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      <Label color="error">
+                                        <Typography
+                                          style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}
+                                        >
+                                          {/* {!response.hideLoader ? (
+                                            <Loader height={15} width={15} marginTop={0} />
+                                          ) : response?.atsnotFilledDays === null ? (
+                                            '-'
+                                          ) : (
+                                            response?.atsnotFilledDays || '-'
+                                          )} */}
+                                          {response?.atsnotFilledDays ? response?.atsnotFilledDays : '-'}
+                                        </Typography>
+                                      </Label>
+                                    </TableCell>
 
-                                <TableCell align="center">
-                                  <Label color="success">
-                                    <Typography style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
-                                      {!response.hideLoader ? (
-                                        <Loader height={15} width={15} marginTop={0} />
-                                      ) : response?.timeSheetDtls?.atsfilledDays === null ? (
-                                        '-'
-                                      ) : (
-                                        response?.timeSheetDtls?.atsfilledDays || '-'
-                                      )}
-                                    </Typography>
-                                  </Label>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Label color="error">
-                                    <Typography style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
-                                      {!response.hideLoader ? (
-                                        <Loader height={15} width={15} marginTop={0} />
-                                      ) : response?.timeSheetDtls?.atsnotFilledDays === null ? (
-                                        '-'
-                                      ) : (
-                                        response?.timeSheetDtls?.atsnotFilledDays || '-'
-                                      )}
-                                    </Typography>
-                                  </Label>
-                                </TableCell>
+                                    <TableCell align="center">
+                                      <Label>
+                                        <Typography
+                                          style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}
+                                        >
+                                          {/* {!response.hideLoader ? (
+                                            <Loader height={15} width={15} marginTop={0} />
+                                          ) : response?.leave === null ? (
+                                            '-'
+                                          ) : (
+                                            response?.leave || '-'
+                                          )} */}
+                                          {response?.leave ? response?.leave : '-'}
+                                        </Typography>
+                                      </Label>
+                                    </TableCell>
+                                  </>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </>
+                      ) : (
+                        <>
+                          <TableBody>
+                            {atsApiRes.map((response, index) => {
+                              const selectedUser = selected.indexOf(response?.employeeFullName) !== -1;
+                              console.log('emp array web user id', response);
+                              return (
+                                <TableRow
+                                  hover
+                                  key={index}
+                                  tabIndex={-1}
+                                  role="checkbox"
+                                  selected={selectedUser}
+                                  onClick={() =>
+                                    response?.timeSheetDtls
+                                      ? response?.webUserId
+                                        ? navigate('/EmployeeTimesheetDetails', {
+                                            state: {
+                                              user: response?.timeSheetDtls,
+                                              selectedStartDate: startDate,
+                                              selectedEndDate: endDate,
+                                              month: selectedMonth,
+                                            },
+                                          })
+                                        : setUpdateWebIdModal(true)
+                                      : // setOpenModal(true);
+                                        null
+                                  }
+                                  sx={{ cursor: 'pointer' }}
+                                  ml={2}
+                                >
+                                  <>
+                                    <TableCell align="center">
+                                      {response?.employeeId === null ? '' : response?.employeeId}
+                                    </TableCell>
 
-                                <TableCell align="center">
-                                  <Label>
-                                    <Typography style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
-                                      {!response.hideLoader ? (
-                                        <Loader height={15} width={15} marginTop={0} />
-                                      ) : response?.timeSheetDtls?.leave === null ? (
-                                        '-'
-                                      ) : (
-                                        response?.timeSheetDtls?.leave || '-'
-                                      )}
-                                    </Typography>
-                                  </Label>
-                                </TableCell>
-                              </>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
+                                    <TableCell component="th" scope="row" align="center">
+                                      <Typography style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
+                                        {response?.employeeFullName === null ? '' : response?.employeeFullName}
+                                      </Typography>
+                                    </TableCell>
+
+                                    <TableCell align="center">
+                                      <Label>
+                                        <Typography
+                                          style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}
+                                        >
+                                          {!response.hideLoader ? (
+                                            <Loader height={15} width={15} marginTop={0} />
+                                          ) : response?.timeSheetDtls?.totalWorkingDays === null ? (
+                                            '-'
+                                          ) : (
+                                            response?.timeSheetDtls?.totalWorkingDays || '-'
+                                          )}
+                                        </Typography>
+                                      </Label>
+                                    </TableCell>
+
+                                    <TableCell align="center">
+                                      <Label color="success">
+                                        <Typography
+                                          style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}
+                                        >
+                                          {!response.hideLoader ? (
+                                            <Loader height={15} width={15} marginTop={0} />
+                                          ) : response?.timeSheetDtls?.atsfilledDays === null ? (
+                                            '-'
+                                          ) : (
+                                            response?.timeSheetDtls?.atsfilledDays || '-'
+                                          )}
+                                        </Typography>
+                                      </Label>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      <Label color="error">
+                                        <Typography
+                                          style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}
+                                        >
+                                          {!response.hideLoader ? (
+                                            <Loader height={15} width={15} marginTop={0} />
+                                          ) : response?.timeSheetDtls?.atsnotFilledDays === null ? (
+                                            '-'
+                                          ) : (
+                                            response?.timeSheetDtls?.atsnotFilledDays || '-'
+                                          )}
+                                        </Typography>
+                                      </Label>
+                                    </TableCell>
+
+                                    <TableCell align="center">
+                                      <Label>
+                                        <Typography
+                                          style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}
+                                        >
+                                          {!response.hideLoader ? (
+                                            <Loader height={15} width={15} marginTop={0} />
+                                          ) : response?.timeSheetDtls?.leave === null ? (
+                                            '-'
+                                          ) : (
+                                            response?.timeSheetDtls?.leave || '-'
+                                          )}
+                                        </Typography>
+                                      </Label>
+                                    </TableCell>
+                                  </>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </>
+                      )}
                     </Table>
                   </TableContainer>
                 </Scrollbar>

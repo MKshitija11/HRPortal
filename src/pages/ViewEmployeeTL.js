@@ -755,7 +755,7 @@ export default function ViewEmployee() {
     supportDevelopment: state.supportDevelopment || '',
     evaluationPeriod: state.evaluationPeriod || '',
     employeeStatus: state.employeeStatus || '',
-    reportingTeamLead: state.reportingTeamLead || {},
+    reportingTeamLead: state.reportingTeamLead || '',
     reportingManager: state.reportingManager || '',
     verticalMain: state?.verticalMain || '',
     verticalSub: state.verticalSub || '',

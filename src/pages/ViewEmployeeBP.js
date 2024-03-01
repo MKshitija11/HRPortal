@@ -500,7 +500,7 @@ export default function ViewEmployee({ props }) {
     replacementEcode: state.replacementEcode || '',
     supportDevelopment: state.supportDevelopment || '',
     evaluationPeriod: state.evaluationPeriod || '',
-    reportingTeamLead: state.reportingTeamLead || {},
+    reportingTeamLead: state.reportingTeamLead || '',
     reportingManager: state.reportingManager || '',
     billingSlab: state.billingSlab || '',
     gender: state.gender || '',

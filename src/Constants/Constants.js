@@ -386,6 +386,10 @@ export default {
       value: 'Maximus and Opus',
       label: 'Maximus and Opus',
     },
+    {
+      value: 'MIS Cloud',
+      label: 'MIS Cloud',
+    },
   ],
 
   designationList: [

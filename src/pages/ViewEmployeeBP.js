@@ -609,8 +609,8 @@ export default function ViewEmployee({ props }) {
             Home
           </Button>
         </Stack>
-
-        {/* {state.employeeStatus === 'Active' ||
+{/* 
+        {state.employeeStatus === 'Active' ||
         state.employeeStatus === 'Pending For TL Review' ||
         state.employeeStatus === 'Pending For SM Review' ||
         state.employeeStatus === 'Pending For IT Spoc Review' ||
@@ -620,7 +620,7 @@ export default function ViewEmployee({ props }) {
               <CustomProgressBar
                 employeeStatus={state.employeeStatus}
                 data={data}
-                percent={100 / (data.length - data.indexOf(state.employeeStatus))}
+                percent={data.indexOf(state.employeeStatus) + 1 * 25}
               />
             </Stack>
           </Stack>

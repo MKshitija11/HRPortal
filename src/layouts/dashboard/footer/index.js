@@ -9,9 +9,9 @@ import Iconify from '../../../components/iconify';
 
 const NAV_WIDTH = 231;
 
-const HEADER_MOBILE = 64;
+const HEADER_MOBILE = 44;
 
-const HEADER_DESKTOP = 90;
+const HEADER_DESKTOP = 30;
 
 const StyledRoot = styled(AppBar)(({ theme }) => ({
   ...bgBlur({ color: '#0072BC' }),
@@ -38,23 +38,25 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 export default function Footer() {
   return (
-    <StyledRoot sx={{ mr: 0 }}>
-      <StyledToolbar>
-        <Typography
-          style={{
-            color: 'white',
-            fontFamily: 'poppins !important',
-            fontSize: 12,
-            width: '98vw',
-            display: 'flex',
-            justifyContent: 'flex-end',
-            height: 40,
-            alignItems: 'center',
-          }}
-        >
-          &copy; Copyrights Bajaj Allianz General Insurance Company Limited. All Rights Reserved
-        </Typography>
-      </StyledToolbar>
-    </StyledRoot>
+    // <StyledToolbar>
+    <Stack style={{width: '100%', height: 30, background: 'linear-gradient(90deg, rgba(70,190,236,1) 0%, rgba(35,33,167,1) 100%, rgba(2,0,36,1) 100%)', position: 'fixed', bottom: 0}}>
+      <Typography
+        style={{
+          color: 'white',
+          fontFamily: 'poppins !important',
+          fontSize: 12,
+          width: '98vw',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          height: 30,
+          alignItems: 'center',
+          textAlign: 'center',
+          position: 'fixed',
+          bottom: 0,
+        }}
+      >
+        &copy; Copyrights Bajaj Allianz General Insurance Company Limited. All Rights Reserved
+      </Typography>
+    </Stack>
   );
 }

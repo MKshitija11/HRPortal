@@ -24,9 +24,6 @@ const HEADER_DESKTOP = 90;
 const StyledRoot = styled(AppBar)(({ theme }) => ({
   ...bgBlur({ color: '#0072BC' }),
 
-  // backgroundImage: "url('/assets/images/covers/BannerBackground.png')",
-  // background: linear-gradient(90deg, rgba(70,190,236,1) 0%, rgba(17,16,87,1) 100%, rgba(2,0,36,1) 100%);
-  // background: 'rgb(70,190,236)',
   background: 'linear-gradient(90deg, rgba(70,190,236,1) 0%, rgba(35,33,167,1) 100%, rgba(2,0,36,1) 100%)',
 
   [theme.breakpoints.up('lg')]: {
@@ -52,59 +49,37 @@ Header.propTypes = {
 
 export default function Header({ onOpenNav }) {
   return (
-    <StyledRoot sx={{ mr: 0 }}>
-      <StyledToolbar>
-        <IconButton
-          onClick={onOpenNav}
-          sx={{
-            mr: 1,
-            color: 'white',
-            display: { lg: 'none' },
-          }}
-        >
-          <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
-
-        {/* <Searchbar /> */}
-        {/* <Box sx={{ flexGrow: 1 }} /> */}
-        {/* 
-        <Stack
-          style={{}}
-          direction="row"
-          justifyContent="space-around"
-          spacing={{
-            xs: 0.5,
-            sm: 1,
-          }}
-        >
-          <img
-            src={'/assets/images/covers/BajajLogo.png'}
-            alt="BajajLogo"
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              // height: 40,
-              // width: 40
+    <>
+      <StyledRoot sx={{ mr: 0, justifyContent: 'space-between' }}>
+        <StyledToolbar>
+          <IconButton
+            onClick={onOpenNav}
+            sx={{
+              mr: 1,
+              color: 'white',
+              display: { lg: 'none' },
             }}
-          />
-          <AccountPopover />
-        </Stack> */}
-        <Stack sx={{ flexGrow: 1 }} justifyContent="space-between" display="flex" flexDirection="row">
-          <Stack alignItems="center" justifyContent="center">
-            <img
-              src={'/assets/images/covers/BajajLogo.png'}
-              alt="BajajLogo"
-              style={{
-                height: 60,
-                width: '100%',
-              }}
-            />
+          >
+            <Iconify icon="eva:menu-2-fill" />
+          </IconButton>
+
+          <Stack sx={{ flexGrow: 1 }} justifyContent="space-between" display="flex" flexDirection="row">
+            <Stack alignItems="center" justifyContent="center">
+              <img
+                src={'/assets/images/covers/BajajLogo.png'}
+                alt="BajajLogo"
+                style={{
+                  height: 60,
+                  width: '100%',
+                }}
+              />
+            </Stack>
+            <Stack>
+              <AccountPopover />
+            </Stack>
           </Stack>
-          <Stack>
-            <AccountPopover />
-          </Stack>
-        </Stack>
-      </StyledToolbar>
-    </StyledRoot>
+        </StyledToolbar>
+      </StyledRoot>
+    </>
   );
 }

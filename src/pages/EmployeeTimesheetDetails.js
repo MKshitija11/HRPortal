@@ -51,65 +51,18 @@ export default function EmployeeTimesheetDetails() {
   const [showTask, setShowTask] = useState(false);
   const [linesData, setLinesData] = useState('');
   const currentDate = moment(new Date()).format('DD-MMM-YYYY').toLowerCase();
-  // const [currentUserData, setCurrentUserData] = useState(userListData[userListData.length -1])
-
-  // const taskDescription =
-  //   'Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.';
-
-  // const taskDescription = selectedUserListData ? selectedUserListData?.taskDescription : userListData[userListData.length - 1]?.taskDescription
+  const [preSelectedData, setPreSelectedData] = useState(false);
 
   const currentUserData = userListData[userListData.length - 1];
   const atsPendingDays = userListData.filter((emp) => emp.status === 'NA').map((emp) => emp.date);
-  // const atsPendingDays1 = [
-  //   '16-JAN-24',
-  //   '17-JAN-24',
-  //   '18-JAN-24',
-  //   '16-JAN-24',
-  //   '17-JAN-24',
-  //   '18-JAN-24',
-  //   '16-JAN-24',
-  //   '17-JAN-24',
-  //   '18-JAN-24',
-  // ];
-  // console.log('selectedUserListData', atsPendingDays, moment(atsPendingDays).format('Do '));
-  // getShortMessages = (messages) => messages.filter(obj => obj.message.length <= 50).map(obj => obj.message);
-
-  // const lines = taskDescription.split('~').map((line, index) => (
-  //   <div key={index} style={{ flexDirection: 'row' }}>
-  //     <div>
-  //       <Iconify icon="material-symbols:circle" height={10} width={10} />
-  //       {line}
-  //     </div>
-
-  //     <br />
-  //   </div>
-  // ));
 
   const handleTaskDescription = (filteredData) => {
     const checkData = { ...filteredData?.[0] };
     console.log('Check data', checkData);
     setShowTask(true);
-    const taskDescription1 =
-      'Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.Application closed as per the channel approval,report generating for prosphet reject and imd expiry ~Imd storing error and\nPayment related link issue.';
+
     const taskDescription = checkData?.taskDescription ? checkData?.taskDescription : '--';
     const lines = taskDescription.split('~').map((line, index) => (
-      // <div key={index}>
-      //   {/* <div > */}
-      //   {/* <Iconify icon="material-symbols:circle" height={10} width={10} /> */}
-      //   <div>{line}</div>
-      //   {/* </div> */}
-      //   {/* <br /> */}
-      // </div>
-      // <div key={index}>
-      //   <div style={{ flexDirection: 'row' }}>
-      //     <Iconify icon="material-symbols:circle" height={10} width={10} />
-      //     <Stack style={{ paddingLeft: 5 }} ml={2}>
-      //       {' '}
-      //       {line}
-      //     </Stack>
-      //   </div>
-      //   {/* <br /> */}
-      // </div>
       <div key={index}>
         <span style={{ padding: 2 }}>
           <Iconify icon="material-symbols:circle" height={10} width={10} />
@@ -120,36 +73,6 @@ export default function EmployeeTimesheetDetails() {
     setLinesData(lines);
   };
 
-  const styles = {
-    bounce: {
-      animationName: bounce,
-      animationDuration: '1s',
-    },
-  };
-
-  const divStyle = {
-    backgroundColor: '#FFF5EE',
-    width: '100%',
-    height: '100%',
-    margin: '5px',
-    fonstSize: '30px',
-    borderRadius: '8px',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  const userContentStyle = {
-    boxShadow: '0 0 2px 2px lightgrey',
-    height: '40px',
-    width: 290,
-    backgroundColor: '#f1f1f1',
-
-    borderRadius: '8px',
-
-    margin: '5px',
-    top: 5,
-    flexDirection: 'row',
-  };
   const eventsList = [{ id: 1, startData: startDateOfMonth, endData: endDateOfMonth }];
   const filteredSelectedDate = [startDateOfMonth, endDateOfMonth];
   const filteredevents = eventsList.filter((data) =>
@@ -157,41 +80,17 @@ export default function EmployeeTimesheetDetails() {
       (date) => moment(eventsList.start).isSame(date, 'day') || moment(eventsList.end).isSame(data, 'day')
     )
   );
-  console.log('filteredevents', filteredevents);
   useEffect(() => {
     handleApi();
   }, [location.state.user.username, selectedEndDate]);
 
   const handleApi = (param) => {
-    console.log('PARAM', param);
-    // setIsLoading(true);
-    // setIsLoading(false);
     const atsReq = {
       userName: location?.state?.user?.username,
-      // fromDate: location?.state?.month
-      //   ? startDateOfMonth
-      //   : selectedStartDate === ''
-      //   ? ''
-      //   : moment(selectedStartDate).format('DD-MMM-YYYY').toLowerCase(),
-      // fromDate: location?.state?.month
-      //   ? startDateOfMonth
-      //   : moment(selectedStartDate).format('DD-MMM-YYYY').toLowerCase(),
-      // toDate: location?.state?.month
-      //   ? endDateOfMonth
-      //   : selectedEndDate === ''
-      //   ? ''
-      //   : moment(selectedEndDate).format('DD-MMM-YYYY').toLowerCase(),
-      // toDate: location?.state?.month ? endDateOfMonth : moment(selectedEndDate).format('DD-MMM-YYYY').toLowerCase(),
-      // fromDate:
-      //   selectedStartDate === '' ? startDateOfMonth : moment(selectedStartDate).format('DD-MMM-YYYY').toLowerCase(),
-
-      // toDate: selectedEndDate === '' ? endDateOfMonth : moment(selectedEndDate).format('DD-MMM-YYYY').toLowerCase(),
-
       fromDate: param ? startDate : startDateOfMonth,
       toDate: param ? endDate : currentDate,
     };
 
-    console.log('REQUEST>>>', selectedUserListData);
     setIsLoading(true);
 
     return fetch('https://webservices.bajajallianz.com/BagicVisitorAppWs/userTimeSheet', {
@@ -246,45 +145,6 @@ export default function EmployeeTimesheetDetails() {
           console.log(err);
         })
     );
-    // Configuration.getTimeSheetDetails(atsReq)
-    //   .then((atsRes) => {
-    //     if (atsRes?.data?.errorCode === '0') {
-    //       console.log('custom useeffect>>>.', atsRes.data.userList);
-    //       const list1 = JSON.parse(JSON.stringify(atsRes.data.userList));
-    //       const list2 = JSON.parse(JSON.stringify(atsRes.data.userList));
-    //       const list3 = JSON.parse(JSON.stringify(atsRes.data.userList));
-    //       const list4 = JSON.parse(JSON.stringify(atsRes.data.userList));
-    //       const list5 = JSON.parse(JSON.stringify(atsRes.data.userList));
-    //       list2.map((item) => {
-    //         delete item.status;
-    //         return item;
-    //       });
-    //       list3.map((item) => {
-    //         delete item.status;
-    //         delete item.atsfilledTime;
-    //         return item;
-    //       });
-    //       list4.map((item) => {
-    //         delete item.status;
-    //         delete item.atsfilledTime;
-    //         delete item.checkIn;
-    //         return item;
-    //       });
-    //       list5.map((item) => {
-    //         delete item.status;
-    //         delete item.atsfilledTime;
-    //         delete item.checkOut;
-    //         return item;
-    //       });
-    //       console.log('mapped list', atsRes.data?.stringObject10);
-    //       setSelectedMonth(atsRes.data?.stringObject10);
-    //       // setUserListData([...list1, ...list2, ...list3, ...list4]);
-    //       setUserListData([...list1]);
-
-    //       setIsLoading(false);
-    //     }
-    //   })
-    //   .catch((error) => console.log('error', error));
   };
 
   const localizer = momentLocalizer(moment);
@@ -298,8 +158,7 @@ export default function EmployeeTimesheetDetails() {
             height: data.status ? 10 : 20,
             width: 10,
             borderRadius: '50%',
-            // margin: 20,
-            // height: '100%', width:'100%',
+
             display: 'flex',
             backgroundColor:
               data.status === 'PH'
@@ -326,14 +185,14 @@ export default function EmployeeTimesheetDetails() {
             type={data.status ? 'hidden' : null}
             value={
               data.status
-                ? ''
-                : data.atsfilledTime
-                ? `ATS : ${data.atsfilledTime} hrs`
-                : data.checkIn
-                ? `CheckIn: ${data.checkIn}`
-                : data.checkOut
-                ? `Checkout: ${data.checkOut}`
-                : null
+              ? ''
+              : data.atsfilledTime
+              ? `ATS : ${data.atsfilledTime} hrs`
+              : data.checkIn
+              ? `CheckIn: ${data.checkIn}`
+              : data.checkOut
+              ? `Checkout: ${data.checkOut}`
+              : null
             }
           /> */}
         </span>
@@ -344,16 +203,7 @@ export default function EmployeeTimesheetDetails() {
     backgroundColor: 'yellow',
   }));
 
-  // const selectedEvents = [{selectedStart:  selectedStartDate, selectedEnd: selectedEndDate }];
-
-  // const filteredEvents = selectedEvents.filter((events) => console.log(events));
-  // console.log('filtered events ', filteredEvents);
-
-  // const [selectedEvents, setSelectedEvents] = useState([])
-  // setSelectedEvents(current => [...current, selectedStartDate, selectedEndDate] )
-
   const eventPropGetter = (event, start, end, title, isSelected) => {
-    // console.log('EVENT', event);
     const style = {
       color: 'white',
       backgroundColor: 'transparent',
@@ -368,14 +218,12 @@ export default function EmployeeTimesheetDetails() {
     console.log('Date handleChangedStartDate', evt.target.value);
     const startDate = moment(evt.target.value).format('DD-MMM-YYYY').toLowerCase();
     console.log('start Date >>.', startDate);
-    // setSelectedStartDate(moment(evt.target.value).format('DD-MMM-YYYY').toLowerCase());
     setSelectedStartDate(evt.target.value);
   };
 
   const handleChangedEndDate = (evt) => {
     console.log('Date handleChangedEndDate', evt.target.value);
     setSelectedEndDate(evt.target.value);
-    // setSelectedEvents(current => [...current, selectedStartDate, selectedEndDate] )
     setTimeout(() => {
       handleApi();
     }, 500);
@@ -450,20 +298,6 @@ export default function EmployeeTimesheetDetails() {
                     {location.state.user.employeeName}
                   </Typography>
                 </Stack>
-                {/* <Stack>
-                  <Button
-                    size="medium"
-                    variant="contained"
-                    type="button"
-                    // startIcon={<Iconify icon="ri:calendar-line" />}
-                    color="primary"
-                    onClick={() => setOpenCalendar(true)}
-                    // sx={{ mt: 2 }}
-                    style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}
-                  >
-                    Select Month
-                  </Button>
-                </Stack> */}
               </Stack>
               <Modal open={openCalendar} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                 <Box
@@ -568,114 +402,6 @@ export default function EmployeeTimesheetDetails() {
                 </Stack>
               </Stack>
 
-              {/* <Stack sx={{ paddingRight: 5, paddingLeft: 5 }}>
-                <Stack style={{ flexDirection: 'row' }}>
-                  <Stack>
-                    <Stack mt={2} style={{ width: '45vw', flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <Typography variant="h6" mt={1} mb={1} style={{ textAlign: 'center', color: '#0072BC' }}>
-                        {selectedMonth?.month} {selectedMonth?.year}
-                      </Typography>
-                      <Stack mb={2}>
-                        <Button
-                          size="medium"
-                          variant="contained"
-                          type="button"
-                          // startIcon={<Iconify icon="ri:calendar-line" />}
-                          color="primary"
-                          onClick={() => setOpenCalendar(true)}
-                          // sx={{ mt: 2 }}
-                          style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}
-                        >
-                          Select Month
-                        </Button>
-                      </Stack>
-                    </Stack>
-
-                    <Calendar
-                      localizer={localizer}
-                      events={events}
-                      doShowMoreDrillDown
-                      drilldownView="day"
-                      popup
-                      date={startDate ? new Date(startDate) : new Date(startDateOfMonth)}
-                      // date={new Date(startDate) || new Date(startDateOfMonth)}
-                      //  date={new Date()}
-                      startAccessor="start"
-                      endAccessor="end"
-                      style={{
-                        height: '70vh',
-                        // width: showATSDetails ? 620 : '60vw',
-                        width: '45vw',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                      views={['month']}
-                      defaultView="month"
-                      eventPropGetter={eventPropGetter}
-                      onSelectEvent={handleClickEvent}
-                      // components={{
-                      //   toolbar:  CustomEvent,
-                      //     month: location?.state?.month,
-                      // }}
-                      components={{
-                        toolbar: CustomEvent,
-                      }}
-                    />
-                  </Stack>
-                </Stack>
-                <Stack >
-                  <Stack
-                    // ml={2}
-                    justifyContent="space-evenly"
-                    mt={2}
-                    mb={2}
-                    sx={{
-                      height: 32,
-                      backgroundColor: 'lightGrey',
-                      borderRadius: '8px',
-                      borderWidth: 1,
-                      flexDirection: 'row',
-                      display: 'flex',
-                      //  paddingLeft: 10,
-                      width: '45vw',
-                    }}
-                  >
-                    <Stack
-                      sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                    >
-                      <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'blue' }} />
-                      <Typography ml={1} sx={{ fontWeight: '500' }}>
-                        Public Holiday
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                    >
-                      <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'red' }} />
-                      <Typography ml={1} sx={{ fontWeight: '500' }}>
-                        Full Day Leave
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                    >
-                      <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'orange' }} />
-                      <Typography ml={1} sx={{ fontWeight: '500' }}>
-                        Half Day Leave
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                    >
-                      <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#228B22' }} />
-                      <Typography ml={1} sx={{ fontWeight: '500' }}>
-                        Present
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                </Stack>
-              </Stack> */}
-
               <Stack>
                 <Stack mb={2} flexDirection="row" justifyContent="space-around">
                   <Stack>
@@ -745,38 +471,6 @@ export default function EmployeeTimesheetDetails() {
                           width: '45vw',
                         }}
                       >
-                        {/* <Stack
-                          sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                        >
-                          <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'blue' }} />
-                          <Typography ml={1} sx={{ fontWeight: '500' }}>
-                            Public Holiday
-                          </Typography>
-                        </Stack>
-                        <Stack
-                          sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                        >
-                          <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'red' }} />
-                          <Typography ml={1} sx={{ fontWeight: '500' }}>
-                            Full Day Leave
-                          </Typography>
-                        </Stack>
-                        <Stack
-                          sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                        >
-                          <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'orange' }} />
-                          <Typography ml={1} sx={{ fontWeight: '500' }}>
-                            Half Day Leave
-                          </Typography>
-                        </Stack>
-                        <Stack
-                          sx={{ flexDirection: 'row', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                        >
-                          <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: '#228B22' }} />
-                          <Typography ml={1} sx={{ fontWeight: '500' }}>
-                            Present
-                          </Typography>
-                        </Stack> */}
                         <Stack
                           style={{ width: '45vw' }}
                           flexDirection="row"
@@ -868,19 +562,6 @@ export default function EmployeeTimesheetDetails() {
                                 Weekend
                               </Typography>
                             </Stack>
-                            {/* <Stack
-                              sx={{
-                                flexDirection: 'row',
-                                display: 'flex',
-                                // justifyContent: 'center',
-                                alignItems: 'center',
-                              }}
-                            >
-                              <Stack sx={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'red' }} />
-                              <Typography ml={1} sx={{ fontWeight: '500' }}>
-                                Future Dated
-                              </Typography>
-                            </Stack> */}
                           </Stack>
                         </Stack>
                       </Stack>
@@ -893,9 +574,7 @@ export default function EmployeeTimesheetDetails() {
                       style={{
                         height: 80,
                         width: 320,
-                        // justifyContent: 'center',
-                        // paddingLeft: 5,
-                        // paddingRight: 5,
+
                         backgroundColor: 'white',
                         boxShadow: '0px 0px 0.75px 0.75px #E5E4E2',
                         borderRadius: '10px',
@@ -936,7 +615,7 @@ export default function EmployeeTimesheetDetails() {
                                     {/* {selectedUserListData?.atsfilledTime
                                       ? `${selectedUserListData?.atsfilledTime} Hrs`
                                       : '--'} */}
-                                      {atsPendingDays.length === 1 ? '1 day' : `${atsPendingDays.length} Days`}
+                                    {atsPendingDays.length === 1 ? '1 day' : `${atsPendingDays.length} Days`}
                                   </Typography>
                                 </Stack>
                               </div>
@@ -1139,38 +818,6 @@ export default function EmployeeTimesheetDetails() {
                         </div>
                         {/* -------------------------------third------------------------------ */}
 
-                        {/* <Stack
-                        mt={2}
-                        style={{
-                          height: 40,
-                          width: '100%',
-                          justifyContent: 'center',
-
-                          backgroundColor: '#F0FAFB',
-                          borderRadius: '10px',
-                        }}
-                      >
-                        <Stack flexDirection="row" alignItems="center" justifyContent="space-between">
-                          <Stack flexDirection="row" alignItems="center">
-                            <img
-                              src={'/assets/images/covers/TimesheetCalendar/VisitorEntry.png'}
-                              alt="BajajLogo"
-                              style={{
-                                height: 40,
-                                width: 40,
-                              }}
-                            />
-                            <Typography variant="h6" style={{ fontSize: 15 }}>
-                              Ats Filled Hrs:{' '}
-                            </Typography>
-                          </Stack>
-                          <Stack mr={4}>
-                            <Typography variant="h6" style={{ fontSize: 15 }}>
-                              {selectedUserListData?.visitorEntry ? `${selectedUserListData?.visitorEntry} Hrs` : '--'}
-                            </Typography>
-                          </Stack>
-                        </Stack>
-                      </Stack> */}
                         {/* -------------------------------forth------------------------------ */}
                         <Stack
                           mt={2}
@@ -1250,15 +897,7 @@ export default function EmployeeTimesheetDetails() {
                                   </Typography>
                                 </div>
                               </Stack>
-                              {/* <Typography variant="h6" style={{ fontSize: 15 }}>
-                              Ats Filled Hrs:{' '}
-                            </Typography> */}
                             </Stack>
-                            {/* <Stack mr={4}>
-                            <Typography variant="h6" style={{ fontSize: 15 }}>
-                              {selectedUserListData?.visitorEntry ? `${selectedUserListData?.visitorEntry} Hrs` : '--'}
-                            </Typography>
-                          </Stack> */}
                           </Stack>
                         </Stack>
 

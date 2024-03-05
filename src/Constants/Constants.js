@@ -266,6 +266,10 @@ export default {
       value: 'Resigned',
       label: 'Resigned',
     },
+    {
+      value: 'Resignation Initiated',
+      label: 'Resignation Initiated',
+    },
   ],
 
   genderList: [

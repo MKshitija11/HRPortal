@@ -32,10 +32,14 @@ import RejectedEmployeeListBP from './pages/RejectedEmployeeListBP';
 import ResignedEmployeeListBP from './pages/ResignedEmployeeListBP';
 import ResignedEmployeeListITS from './pages/ResignedEmployeeListITS';
 import ResignedEmployeeListTL from './pages/ResignedEmployeeListTL';
+import ResignationInitiatedListTL from './pages/ResignationInitiatedListTL';
+import ResignationInitiatedListSM from './pages/ResignationInitiatedListSM';
+import ResignationInitiatedListITS from './pages/ResignationInitiatedListITS';
+import ResignationInitiatedListBP from './pages/ResignationInitiatedListBP';
 import SwitchRole from './pages/SwitchRole';
 import TimeSheet from './pages/Timesheet';
 // import EmpManagmentTL from './pages/EmpManagmentTLjs';
-import EmpManagmentTL from './pages/EmpManagmentTL'
+import EmpManagmentTL from './pages/EmpManagmentTL';
 import EmpManagmentSM from './pages/EmpManagementSM';
 import UserLoginPage from './pages/UserLoginPage';
 import EmployeeTimesheetDetails from './pages/EmployeeTimesheetDetails';
@@ -50,7 +54,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/Login" />, index: true },
-        {element: <Navigate to="/UserLoginPage" />, index: true},
+        { element: <Navigate to="/UserLoginPage" />, index: true },
         { path: 'Dashboard', element: <DashboardAppPage /> },
         { path: 'Reports', element: <Reports /> },
         { path: 'EmployeesBP', element: <EmployeeListBP /> },
@@ -60,6 +64,10 @@ export default function Router() {
         { path: 'EmployeesTL', element: <EmployeeListTL /> },
         { path: 'EmployeesListTL', element: <PendingEmployeeListTL /> },
         { path: 'ResignedEmployeesListTL', element: <ResignedEmployeeListTL /> },
+        { path: 'ResignationInitiatedListTL', element: <ResignationInitiatedListTL /> },
+        { path: 'ResignationInitiatedListSM', element: <ResignationInitiatedListSM /> },
+        { path: 'ResignationInitiatedListITS', element: <ResignationInitiatedListITS /> },
+        { path: 'ResignationInitiatedListBP', element: <ResignationInitiatedListBP /> },
         { path: 'EmployeesSM', element: <EmployeeListSM /> },
         { path: 'EmployeesListSM', element: <PendingEmployeeListSM /> },
         { path: 'ResignedEmployeesListSM', element: <ResignedEmployeeListSM /> },
@@ -78,10 +86,10 @@ export default function Router() {
         { path: 'TimeSheet', element: <TimeSheet /> },
         { path: 'EmpManagmentTL', element: <EmpManagmentTL /> },
         { path: 'EmpManagmentSM', element: <EmpManagmentSM /> },
-        {path: 'UserLoginPage', element: <UserLoginPage />},
-        {path: 'EmployeeTimesheetDetails', element: <EmployeeTimesheetDetails />},
-        {path: 'Logout', element: <Logout />},
-        {path: 'LogoutPage', element: <LogoutPage />}
+        { path: 'UserLoginPage', element: <UserLoginPage /> },
+        { path: 'EmployeeTimesheetDetails', element: <EmployeeTimesheetDetails /> },
+        { path: 'Logout', element: <Logout /> },
+        { path: 'LogoutPage', element: <LogoutPage /> },
       ],
     },
     {
@@ -120,6 +128,23 @@ export default function Router() {
       path: 'ResignedEmployeesListTL',
       element: <ResignedEmployeeListTL />,
     },
+    {
+      path: 'ResignationInitiatedListTL',
+      element: <ResignationInitiatedListTL />,
+    },
+    {
+      path: 'ResignationInitiatedListSM',
+      element: <ResignationInitiatedListSM />,
+    },
+    {
+      path: 'ResignationInitiatedListITS',
+      element: <ResignationInitiatedListITS />,
+    },
+    {
+      path: 'ResignationInitiatedListBP',
+      element: <ResignationInitiatedListBP />,
+    },
+
     {
       path: 'EmployeesSM',
       element: <EmployeeListSM />,
@@ -177,10 +202,10 @@ export default function Router() {
       path: 'EmpManagmentSM',
       element: <EmpManagmentSM />,
     },
-    {path: 'UserLoginPage', element: <UserLoginPage />},
-    {path: 'EmployeeTimesheetDetails', element: <EmployeeTimesheetDetails />},
-    {path: 'Logout', element: <Logout />},
-    {path: 'LogoutPage', element: <LogoutPage />},
+    { path: 'UserLoginPage', element: <UserLoginPage /> },
+    { path: 'EmployeeTimesheetDetails', element: <EmployeeTimesheetDetails /> },
+    { path: 'Logout', element: <Logout /> },
+    { path: 'LogoutPage', element: <LogoutPage /> },
     // for simple layout element , there is no path specified bt has index attribute That specifies this route as the default route for the parent route, which is /.
     {
       element: <SimpleLayout />,

@@ -37,7 +37,7 @@ const TABLE_HEAD = [
   { id: 'company', label: 'Company', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
-  { id: 'joiningDate', label: 'Joining Date', alignRight: false },
+  { id: 'resignation', label: 'Resignation Initiated', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -252,7 +252,7 @@ export default function ResignationInitiatedListITS() {
                                 employeeStatus,
                                 partnerName,
                                 supportDevelopment,
-                                joiningDate,
+                                resignationDate,
                               } = row;
                               const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
@@ -265,7 +265,7 @@ export default function ResignationInitiatedListITS() {
                                   selected={selectedUser}
                                   onClick={() => {
                                     console.log('EMPLOYEE DETAILS.....', row);
-                                    navigate('/ViewEmployeeTL', { state: { row } });
+                                    navigate('/ViewEmployeeITS', { state: { row } });
                                   }}
                                   sx={{ cursor: 'pointer' }}
                                 >
@@ -292,7 +292,7 @@ export default function ResignationInitiatedListITS() {
                                       {employeeStatus}
                                     </Label>
                                   </TableCell>
-                                  <TableCell align="left">{joiningDate || '-'}</TableCell>
+                                  <TableCell align="left">{resignationDate || '-'}</TableCell>
                                 </TableRow>
                               );
                             })}

@@ -37,7 +37,7 @@ const TABLE_HEAD = [
   { id: 'company', label: 'Company', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
-  { id: 'joiningDate', label: 'Joining Date', alignRight: false },
+  { id: 'resignation', label: 'Resignation Initiated', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -256,7 +256,7 @@ export default function ResignationInitiatedListSM() {
                                 employeeStatus,
                                 partnerName,
                                 supportDevelopment,
-                                joiningDate,
+                                resignationDate,
                               } = row;
                               const selectedUser = selected.indexOf(employeeFullName) !== -1;
 
@@ -269,7 +269,7 @@ export default function ResignationInitiatedListSM() {
                                   selected={selectedUser}
                                   onClick={() => {
                                     console.log('EMPLOYEE DETAILS.....', row);
-                                    navigate('/ViewEmployeeTL', { state: { row } });
+                                    navigate('/ViewEmployeeSM', { state: { row } });
                                   }}
                                   sx={{ cursor: 'pointer' }}
                                 >
@@ -296,7 +296,7 @@ export default function ResignationInitiatedListSM() {
                                       {employeeStatus}
                                     </Label>
                                   </TableCell>
-                                  <TableCell align="left">{joiningDate || '-'}</TableCell>
+                                  <TableCell align="left">{resignationDate || '-'}</TableCell>
                                 </TableRow>
                               );
                             })}

@@ -88,7 +88,7 @@ export default function TimeSheet() {
   const [selectedName, setSelectedName] = useState('');
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [showSelectedList, setShowSelectedList] = useState(false);
-
+  const [userListData, setUserListData] = useState([]);
   const [atsApiRes, setApiRes] = useState(empArray);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIsLoading, setSelectedIsLoading] = useState(false);
@@ -107,6 +107,7 @@ export default function TimeSheet() {
   const [pageRender, setPageRender] = useState(50);
   const [open, setOpen] = useState(false);
   const [searchApiRes, setSearchApiRes] = useState([]);
+  const [pendingDays, setPendingDays] = useState('')
 
   const ROLE = sessionStorage.getItem('ROLE');
   const USERDETAILS = sessionStorage.getItem('USERDETAILS');
@@ -226,7 +227,7 @@ export default function TimeSheet() {
               const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
               setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
               setApiRes(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-
+              setCsvData(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
               // setTimeout(() => {
               //   setIsLoading(false);
               // }, 500);
@@ -346,7 +347,11 @@ export default function TimeSheet() {
       myHeaders.append('Content-Type', 'application/json');
 
       fetchData(atsReq, index, arr.length, (resp) => {
-        const response = resp;
+        const response = resp?.stringObject10;
+        const userListResp = resp?.userList
+        // setUserListData(response)
+     
+        element.userList = userListResp !== null ? userListResp : '';
         element.timeSheetDtls = response !== null ? response : '';
         element.hideLoader = true;
         setApiRes([...arr]);
@@ -387,8 +392,9 @@ export default function TimeSheet() {
 
             setIsLoading(false);
             setShowSearchBar(true);
-
-            callback(atsRes.stringObject10);
+            setUserListData(atsRes?.userList);
+            // callback(atsRes.stringObject10);
+            callback(atsRes)
           }
           return atsRes;
         })
@@ -402,16 +408,14 @@ export default function TimeSheet() {
     );
 
   const handlePageClick = (event, newPage) => {
-    console.log("params=======>",event, newPage)
+    console.log('params=======>', event, newPage);
     setPage(newPage);
-    setPageRender(newPage)
+    setPageRender(newPage);
     setIsLoading(false);
-    const selected = event.selected? event.selected:newPage;
+    const selected = event.selected ? event.selected : newPage;
     const offset = selected * pagination.numberPerPage;
     setPagination({ ...pagination, offset });
   };
-
-
 
   const handleChangeRowsPerPage = (event, newPage) => {
     setPage(0);
@@ -425,7 +429,12 @@ export default function TimeSheet() {
     setOrderBy(property);
   };
 
+
+  // console.log(">>>>>>>>", pendingDays.join(","))
+
   const downloadEmployeeData = () => {
+    const pendingDaysList = userListData.filter((emp) => emp.status === 'NA').map((emp) => emp.date)
+    setPendingDays(pendingDaysList.join(","))
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     const empListItSpocReq = {
       itSpocId: USERDETAILS?.[0]?.spocEmailId,
@@ -433,7 +442,7 @@ export default function TimeSheet() {
     };
 
     exportToCSV();
-    // });
+    
   };
 
   const Heading = [
@@ -447,6 +456,7 @@ export default function TimeSheet() {
       'ATS filled Days',
       'ATS Not filled Days',
       'Leaves',
+      // 'Pending Days',
     ],
   ];
   const exportToCSV = () => {
@@ -460,7 +470,10 @@ export default function TimeSheet() {
       n.timeSheetDtls?.atsfilledDays,
       n.timeSheetDtls?.atsnotFilledDays,
       n.timeSheetDtls?.leave,
+      // n.userList
     ]);
+    // filter((emp) => emp.status === 'NA').map((emp) => emp.date)
+    console.log("csv data", csvData)
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet([]);
 
@@ -837,8 +850,8 @@ export default function TimeSheet() {
                                               ) : response?.stringObject10?.leave === null ? (
                                                 '-'
                                               ) : (
-                                                // response?.stringObject10?.leave || '-'
-                                                '-'
+                                                response?.stringObject10?.leave || '-'
+                                                // '-'
                                               )}
                                             </Typography>
                                           </Label>
@@ -940,8 +953,8 @@ export default function TimeSheet() {
                                         ) : response?.timeSheetDtls?.leave === null ? (
                                           '-'
                                         ) : (
-                                          // response?.timeSheetDtls?.leave || '-'
-                                          '-'
+                                          response?.timeSheetDtls?.leave || '-'
+                                          // '-'
                                         )}
                                       </Typography>
                                     </Label>
@@ -1192,22 +1205,21 @@ export default function TimeSheet() {
                     </Table>
                   </TableContainer>
                 </Scrollbar>
-            
               </>
             )}
-                <TablePagination
-                rowsPerPageOptions={[]}
-                component="div"
-                count={activeEmployees.length}
-                rowsPerPage={pageRender}
-                page={page}
-                onPageChange={handlePageClick}
-                // onRowsPerPageChange={handleChangeRowsPerPage}
-              />
+            <TablePagination
+              rowsPerPageOptions={[]}
+              component="div"
+              count={activeEmployees.length}
+              rowsPerPage={pageRender}
+              page={page}
+              onPageChange={handlePageClick}
+              // onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             {/* </Scrollbar> */}
 
             {/* <Stack sx={{ alignItems: 'center', justifyContent: 'flex-end', backgroundColor: 'red', }}> */}
-              {/* <ReactPaginate
+            {/* <ReactPaginate
                 previousLabel={'Previous'}
                 nextLabel={'Next'}
                 breakLabel={'...'}
@@ -1221,7 +1233,7 @@ export default function TimeSheet() {
                 nextClassName={'next'}
                 pageClassName={'page'}
               /> */}
-              
+
             {/* </Stack> */}
           </>
         </Card>

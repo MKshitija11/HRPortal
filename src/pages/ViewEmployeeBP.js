@@ -40,6 +40,8 @@ import CustomProgressBar from './CustomProgressBar';
 import Scrollbar from '../components/scrollbar';
 
 export default function ViewEmployee({ props }) {
+  const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+  console.log("userdetaisl>>>.", USERDETAILS)
   const location = useLocation();
   const [state, setState] = useState({
     employeeFirstName: '',
@@ -81,7 +83,8 @@ export default function ViewEmployee({ props }) {
     verticalMain: '',
     designation: '',
     verticalSub: '',
-    remarks: ''
+    remarks: '',
+    // role:  USERDETAILS?.[0]?.userProfile
     // onBoarding: '',
   });
   const [openModal, setOpenModal] = useState(false);
@@ -90,9 +93,9 @@ export default function ViewEmployee({ props }) {
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
   const [checked, setChecked] = useState(false);
+ 
   // const [failedModal, setFailedModal] = useState(false);
   const [showAlertMessage, setShowAlertMessage] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
   const [teamLead, setTeamLead] = useState();
   const [data, setData] = useState([
@@ -336,6 +339,12 @@ export default function ViewEmployee({ props }) {
           ...state,
           employeeStatus: 'Active',
         });
+      } else if (state.employeeStatus === 'Resignation Initiated') {
+        document.getElementById('employeeStatus').value = 'Resignation Initiated';
+        setState({
+          ...state,
+          employeeStatus: 'Resignation Initiated',
+        });
       }
       employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
       console.log('employeeFormData::', employeeFormData);
@@ -384,6 +393,7 @@ export default function ViewEmployee({ props }) {
   useEffect(() => {
     const viewEmployeeReq = {
       id: location.state.id,
+      // role: USERDETAILS?.[0]?.userProfile
     };
 
     setIsLoading(true);
@@ -434,7 +444,8 @@ export default function ViewEmployee({ props }) {
           verticalSub: EMP_DETAILS.verticalSub,
           departmentDesc: EMP_DETAILS.departmentDesc,
           lob: EMP_DETAILS.lob,
-          remarks: EMP_DETAILS.remarks
+          remarks: EMP_DETAILS.remarks,
+          // role: EMP_DETAILS.role,
         };
         setTimeout(() => {
           setIsLoading(false);
@@ -522,7 +533,8 @@ export default function ViewEmployee({ props }) {
     departmentDesc: state.departmentDesc || '',
     functionDesc: state.functionDesc || '',
     maximusOpus: state.maximusOpus || '',
-    remarks: state.remarks || ''
+    remarks: state.remarks || '',
+    // role: state.role || ''
     // onBoarding: state.onBoarding || '',
   };
   console.log('API INITIAL VALUEs', initialValues.reportingTeamLead);
@@ -1481,6 +1493,7 @@ export default function ViewEmployee({ props }) {
 
                               <Grid item xs={12} sm={4}>
                                 <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
+                                {/* <input type="hidden" id="role" name="role" value={state.role} /> */}
                                 {/* <input type="hidden" id="onBoarding" name="onBoarding" value={state.onBoarding} /> */}
 
                                 <input
@@ -1704,7 +1717,7 @@ export default function ViewEmployee({ props }) {
                                   helperText={formik.touched.skillSet || errors.skillSet ? formik.errors.skillSet : ''}
                                 />
                               </Grid>
-                              {values.employeeStatus === 'Resigned' ? (
+                              {values.employeeStatus === 'Resigned' || values.employeeStatus === 'Resignation Initiated' ? (
                                 <>
                                   <Grid item xs={12} sm={4}>
                                     <TextField
@@ -1894,7 +1907,7 @@ export default function ViewEmployee({ props }) {
                               </Grid>
                               {state.employeeStatus === 'Active' ||
                               state.employeeStatus === 'Revoke' ||
-                              state.employeeStatus === 'Resigned' ? (
+                              state.employeeStatus === 'Resigned' || state.employeeStatus === 'Resignation Initiated'? (
                                 <input type="hidden" value={state.id} id="id" name="id" />
                               ) : null}
 
@@ -1981,7 +1994,7 @@ export default function ViewEmployee({ props }) {
                                   </Button>
                                 ) : state.employeeStatus === 'Active' ||
                                   state.employeeStatus === 'Resigned' ||
-                                  state.employeeStatus === 'Revoke' ? (
+                                  state.employeeStatus === 'Revoke' || state.employeeStatus === 'Resignation Initiated' ? (
                                   <Button
                                     size="medium"
                                     variant="contained"

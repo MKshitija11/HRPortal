@@ -42,6 +42,7 @@ import Constants from '../Constants/Constants';
 import CustomProgressBar from './CustomProgressBar';
 
 export default function ViewEmployee() {
+  const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
   const [state, setState] = useState({
     employeeFirstName: '',
     employeeLastName: '',
@@ -66,7 +67,7 @@ export default function ViewEmployee() {
     verticalSub: '',
     // projectType: '',
     maximusOpus: '',
-    // billingSlab: '',
+    billingSlab: '',
     invoiceType: '',
     createdBy: '',
     employeeStatus: '',
@@ -90,6 +91,7 @@ export default function ViewEmployee() {
     lwd: '',
     resignationDate: '',
     remarks: '',
+    // role: USERDETAILS?.[0]?.userProfile,
   });
 
   const [userProfile, setUserProfile] = useState();
@@ -526,7 +528,7 @@ export default function ViewEmployee() {
           })
           .catch((error) => {
             setIsLoading(false);
-            alert('Something went wrong');
+            console.log('Something went wrong');
           });
       } else {
         setShowAlertMessage(true);
@@ -544,7 +546,7 @@ export default function ViewEmployee() {
         })
         .catch((error) => {
           setIsLoading(false);
-          alert('Something went wrong');
+          console.log('Something went wrong');
         });
     }
   };
@@ -555,6 +557,12 @@ export default function ViewEmployee() {
       setState({
         ...state,
         employeeStatus: 'Resigned',
+      });
+    } else if (state.employeeStatus === 'Resignation Initiated') {
+      document.getElementById('employeeStatus').value = 'Resignation Initiated';
+      setState({
+        ...state,
+        employeeStatus: 'Resignation Initiated',
       });
     } else {
       document.getElementById('employeeStatus').value = 'Active';
@@ -584,7 +592,7 @@ export default function ViewEmployee() {
         })
         .catch((error) => {
           setIsLoading(false);
-          alert('Something went wrong');
+          console.log('Something went wrong');
         });
     } else {
       setShowAlertMessage(true);
@@ -607,7 +615,6 @@ export default function ViewEmployee() {
   const [buttonDisable, setButtonDisable] = useState();
 
   useEffect(() => {
-    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
 
     if (USERDETAILS != null) {
@@ -648,6 +655,7 @@ export default function ViewEmployee() {
   useEffect(() => {
     const viewEmployeeReq = {
       id: location.state.row.id,
+      // role: USERDETAILS?.[0]?.userProfile,
     };
     setIsLoading(true);
     Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
@@ -696,6 +704,7 @@ export default function ViewEmployee() {
         lwd: EMP_DETAILS.lwd,
         resignationDate: EMP_DETAILS.resignationDate,
         remarks: EMP_DETAILS.remarks,
+        // role: EMP_DETAILS.role,
       };
       console.log('EMP_DETAILS.employeeStatus================>', EMP_DETAILS.employeeStatus === 'Resigned');
       if (EMP_DETAILS.employeeStatus === 'Resigned' && !data.includes('Resigned')) {
@@ -764,7 +773,7 @@ export default function ViewEmployee() {
     // projectType: state.projectType || '',
     invoiceType: state.invoiceType || '',
     maximusOpus: state.maximusOpus || '',
-    billingSlab: state.billingSlab || '',
+    billingSlab: state.billingSlab,
     gender: state.gender || '',
     dateOfBirth: state.dateOfBirth || '',
     experience: state.experience || '',
@@ -778,6 +787,7 @@ export default function ViewEmployee() {
     lwd: state.lwd || '',
     resignationDate: state.resignationDate || '',
     remarks: state.remarks || '',
+    // role: state.role || '',
   };
 
   console.log('state joining date', initialValues.verticalSub);
@@ -1200,7 +1210,8 @@ export default function ViewEmployee() {
                                   onChange={handleChangeWaSwitch}
                                   // defaultChecked={state.whatsappNumber !== '' ? false : null}
                                   defaultChecked={
-                                    state.whatsappNumber === state.mobileNumber || empData.mobileNumber === empData.whatsappNumber
+                                    state.whatsappNumber === state.mobileNumber ||
+                                    empData.mobileNumber === empData.whatsappNumber
                                   }
                                   // disabled={
                                   //   state.employeeStatus === 'Pending For TL Review' ||
@@ -1440,7 +1451,9 @@ export default function ViewEmployee() {
 
                             <Grid item xs={12} sm={4}>
                               <input type="hidden" value={state.id} id="id" name="id" />
-                              <input type="hidden" value={values.billingSlab} id="billingSlab" name="billingSlab" />
+                              {/* <input type="hidden" value={values.role} id="role" name="role" /> */}
+
+                              <input type="hidden" value={empData.billingSlab} id="billingSlab" name="billingSlab" />
                               <TextField
                                 InputLabelProps={{ shrink: true }}
                                 autoComplete="off"
@@ -1651,7 +1664,9 @@ export default function ViewEmployee() {
                               helperText={errors.employeeStatus}
                             /> */}
 
-                              {state.employeeStatus === 'Active' || state.employeeStatus === 'Resigned' ? (
+                              {state.employeeStatus === 'Active' ||
+                              state.employeeStatus === 'Resigned' ||
+                              state.employeeStatus === 'Resignation Initiated' ? (
                                 <TextField
                                   labelId="demo-select-small"
                                   id="employeeStatus"
@@ -1717,7 +1732,8 @@ export default function ViewEmployee() {
                               )}
                             </Grid>
 
-                            {values.employeeStatus === 'Resigned' ? (
+                            {values.employeeStatus === 'Resigned' ||
+                            values.employeeStatus === 'Resignation Initiated' ? (
                               <>
                                 <Grid item xs={12} sm={4}>
                                   <TextField
@@ -2016,34 +2032,7 @@ export default function ViewEmployee() {
                                 ))}
                               </TextField>
                             </Grid>
-
-                            <Grid item xs={12} sm={6} sx={{ display: 'none' }}>
-                              <TextField
-                                autoComplete="off"
-                                name="billingSlab"
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="billingSlab"
-                                type="number"
-                                label="Monthly Billing Rate"
-                                value={values.billingSlab}
-                                onChange={(evt) => {
-                                  handleChange(evt);
-                                  handleChangeEvent(evt);
-                                }}
-                                inputProps={{ min: 40000, max: 500000 }}
-                                onBlur={handleBlur}
-                                error={
-                                  formik.touched.billingSlab || errors.billingSlab
-                                    ? Boolean(formik.errors.billingSlab)
-                                    : ''
-                                }
-                                helperText={
-                                  formik.touched.billingSlab || errors.billingSlab ? formik.errors.billingSlab : ''
-                                }
-                              />
-                            </Grid>
+                            {/* {console.log('ency', values.billingSlab)} */}
                           </Grid>
                           <br />
                           <Typography variant="subtitle1" paddingBottom={'15px'}>
@@ -2281,29 +2270,32 @@ export default function ViewEmployee() {
                             <Grid item xs={12} sm={6}>
                               <TextField
                                 labelId="demo-select-small"
-                                id="lob"
-                                name="lob"
-                                // select={projectsList.length !== 0}
-                                // select={values.lob === ''}
+                                id="maximusOpus"
+                                name="maximusOpus"
+                                // select={maximusOpusList.length !== 0}
+                                // select
                                 select
-                                label="LOB"
+                                label="Maximus / Opus"
                                 fullWidth
                                 required
                                 onChange={(evt) => {
                                   handleChange(evt);
-                                  handleChangeProject(evt);
+                                  handleChangeEvent(evt);
                                 }}
-                                value={values.lob}
+                                // value={values.maximusOpus}
+                                value={values.maximusOpus === 'NA' ? 'NA' : values.maximusOpus}
                                 onBlur={handleBlur}
-                                error={touched.lob || errors.lob ? errors.lob : ''}
-                                helperText={touched.lob || errors.lob ? formik.errors.lob : ''}
-                                // disabled={
-                                //   state.employeeStatus === 'Pending For TL Review' ||
-                                //   state.employeeStatus === 'Pending For SM Review' ||
-                                //   state.employeeStatus === 'Pending For IT Spoc Review'
-                                // }
+                                onFocus={(e) => {
+                                  if (Constants.maximusOpusList?.length <= 0) {
+                                    e.target.value = empData.maximusOpus;
+                                    // handleChangeDpt(e, setFieldValue);
+                                    handleChangeEvent(e, setFieldValue);
+                                  }
+                                }}
+                                error={touched.maximusOpus || errors.maximusOpus ? errors.maximusOpus : ''}
+                                helperText={touched.maximusOpus || errors.maximusOpus ? formik.errors.maximusOpus : ''}
                               >
-                                {Constants.LOBList.map((option) => (
+                                {Constants.maximusOpusList.map((option) => (
                                   <MenuItem key={option.value} value={option.value}>
                                     {option.label}
                                   </MenuItem>
@@ -2311,7 +2303,43 @@ export default function ViewEmployee() {
                               </TextField>
                             </Grid>
 
-                            {values.lob === 'Others' || values.lob === 'Internal IT App' ? (
+                            {values.maximusOpus === 'Maximus' || values.maximusOpus === 'Maximus and Opus' ? (
+                              <Grid item xs={12} sm={6}>
+                                <TextField
+                                  labelId="demo-select-small"
+                                  id="lob"
+                                  name="lob"
+                                  // select={projectsList.length !== 0}
+                                  // select={values.lob === ''}
+                                  select
+                                  label="LOB"
+                                  fullWidth
+                                  required
+                                  onChange={(evt) => {
+                                    handleChange(evt);
+                                    handleChangeEvent(evt);
+                                  }}
+                                  value={values.lob}
+                                  onBlur={handleBlur}
+                                  error={touched.lob || errors.lob ? errors.lob : ''}
+                                  helperText={touched.lob || errors.lob ? formik.errors.lob : ''}
+                                  // disabled={
+                                  //   state.employeeStatus === 'Pending For TL Review' ||
+                                  //   state.employeeStatus === 'Pending For SM Review' ||
+                                  //   state.employeeStatus === 'Pending For IT Spoc Review'
+                                  // }
+                                >
+                                  {Constants.LOBList.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </MenuItem>
+                                  ))}
+                                </TextField>
+                              </Grid>
+                            ) :  <input type="hidden" id="lob" name="lob" value={values.lob || ''} />}
+
+                            {(values.lob === 'Others' || values.lob === 'Internal IT App') &&
+                          (values.maximusOpus === 'Maximus' || values.maximusOpus === 'Maximus and Opus') ? (
                               <Grid item xs={12} sm={6}>
                                 <TextField
                                   labelId="demo-select-small"
@@ -2339,7 +2367,7 @@ export default function ViewEmployee() {
                                 />
                               </Grid>
                             ) : (
-                              <input type="hidden" id="remarks" name="remarks" value="" />
+                              <input type="hidden" id="remarks" name="remarks" value={values.remarks || ''} />
                             )}
 
                             <Grid item xs={12} sm={6}>
@@ -2374,46 +2402,6 @@ export default function ViewEmployee() {
                                 ))}
                               </TextField>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
-                              <TextField
-                                labelId="demo-select-small"
-                                id="maximusOpus"
-                                name="maximusOpus"
-                                // select={maximusOpusList.length !== 0}
-                                // select
-                                select
-                                label="Maximus / Opus"
-                                fullWidth
-                                required
-                                onChange={(evt) => {
-                                  handleChange(evt);
-                                  handleChangeEvent(evt);
-                                }}
-                                // value={values.maximusOpus}
-                                value={values.maximusOpus === 'NA' ? 'NA' : values.maximusOpus}
-                                onBlur={handleBlur}
-                                onFocus={(e) => {
-                                  if (Constants.maximusOpusList?.length <= 0) {
-                                    e.target.value = empData.maximusOpus;
-                                    // handleChangeDpt(e, setFieldValue);
-                                    handleChangeEvent(e, setFieldValue);
-                                  }
-                                }}
-                                error={touched.maximusOpus || errors.maximusOpus ? errors.maximusOpus : ''}
-                                helperText={touched.maximusOpus || errors.maximusOpus ? formik.errors.maximusOpus : ''}
-                                // disabled={
-                                //   state.employeeStatus === 'Pending For TL Review' ||
-                                //   state.employeeStatus === 'Pending For SM Review' ||
-                                //   state.employeeStatus === 'Pending For IT Spoc Review'
-                                // }
-                              >
-                                {Constants.maximusOpusList.map((option) => (
-                                  <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                  </MenuItem>
-                                ))}
-                              </TextField>
-                            </Grid>
                           </Grid>
                           <br />
                           {/* <Stack flexDirection="row">
@@ -2436,7 +2424,9 @@ export default function ViewEmployee() {
                           {console.log('EMP STATUS>>', state.employeeStatus)}
                           <Grid container item xs={12} justifyContent={'center'}>
                             <Stack spacing={2} direction="row" justifyContent="center">
-                              {state.employeeStatus === 'Active' || state.employeeStatus === 'Resigned' ? (
+                              {state.employeeStatus === 'Active' ||
+                              state.employeeStatus === 'Resigned' ||
+                              state.employeeStatus === 'Resignation Initiated' ? (
                                 <Button
                                   size="medium"
                                   variant="contained"

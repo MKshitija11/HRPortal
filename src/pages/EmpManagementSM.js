@@ -145,12 +145,21 @@ export default function EmpManagmentSM() {
   };
 
   const handleClickedDataForTL = (OBstatus, chartName, chartData) => {
-    console.log(">>>>>", OBstatus, chartName, chartData)
-  }
+    console.log('>>>>>', OBstatus, chartName, chartData);
+    // if(OBstatus === 'Active') {
+    //   navigate('/EmployeesSM', {
+    //     state: {
+    //       filterByTL: true,
+    //       empOBStatus: OBstatus,
+    //       selectedTL: chartData 
+    //     }
+    //   })
+    // }
+  };
 
   const handleClickChart = () => {
-    console.log("insode handle click chart")
-  }
+    console.log('insode handle click chart');
+  };
 
   const chartOptions = useChart({
     colors: chartColors,
@@ -217,9 +226,10 @@ export default function EmpManagmentSM() {
 
   const chartOptionForTL = {
     series: [
-  
       {
+        name: 'Active',
         data: activeCount,
+        color: '#008000',
       },
     ],
     options: {

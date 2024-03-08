@@ -207,10 +207,10 @@ export default {
   ],
 
   supportDevelopmentList: [
-    {
-      value: 'NRCR and Support',
-      label: 'NRCR and Support',
-    },
+    // {
+    //   value: 'NRCR and Support',
+    //   label: 'NRCR and Support',
+    // },
     {
       value: 'Development',
       label: 'Development',
@@ -247,10 +247,10 @@ export default {
       value: 'Support',
       label: 'Support',
     },
-    {
-      value: 'Project',
-      label: 'Project',
-    },
+    // {
+    //   value: 'Project',
+    //   label: 'Project',
+    // },
     {
       value: 'Audit',
       label: 'Audit',
@@ -319,10 +319,10 @@ export default {
       value: 'Motor OD',
       label: 'Motor OD',
     },
-    {
-      value: 'Motor TP',
-      label: 'Motor TP',
-    },
+    // {
+    //   value: 'Motor TP',
+    //   label: 'Motor TP',
+    // },
     {
       value: 'Non-motor',
       label: 'Non-motor',

@@ -240,10 +240,16 @@ export default function LoginForm(props) {
 //     // console.log("after username", updatedUser)
 //     const userNameSso = 'sandipan.chakraborty@bajajallianz.co.in';
 //     const loginRequest = {
+//       // username: 'pooja.rebba@bajajallianz.co.in',
+//       // username: 'minal.shahapure@bajajallianz.co.in',
 //       // username: 'mandar.pathak@bajajallianz.co.in',
+//       // username: 'ravi.kumar044@bajajallianz.co.in',
+//       username: 'kavya.gogi@bajajallianz.co.in',
+
+//       // username: 'prashant.patil@bajajallianz.co.in',
+     
 //       // username: 'dilip.kodwani@bajajallianz.co.in',
 //       // username: 'jaldip.katre@bajajallianz.co.in',
-//       username: 'ravi.kumar044@bajajallianz.co.in',
 //       // username: 'kshitija.madhekar@pinnacle.com',
 //       // username: 'mohmadmujtaba.asmi@bajajallianz.co.in',
 //       // username: 'mohmad.asmi@bajajallianz.co.in',
@@ -255,16 +261,19 @@ export default function LoginForm(props) {
 //       // username: 'pinki.dutta@bajajallianz.co.in',
 //       // username: 'sarath.am@bajajallianz.co.in',
 //       // username: 'dharmesh.chauhan01@bajajallianz.co.in',
-//       // username: 'pooja.rebba@bajajallianz.co.in',
+
 //       // username: 'rajhans.gavali@bajajallianz.co.in',
 //       // username: 'rajhans.gavali@cloverinfotech.com',
 //       // username: 'niranjan.rote@bajajallianz.co.in',
 //       // username: 'kshitija.madhekar@pinnacle.com',
 //       // username: 'deepali.kalapure@bajajallianz.co.in',
-//       // username: 'kavya.gogi@bajajallianz.co.in',
+
 //       // username: 'ganesh.chopade@bajajallianz.co.in',
+//       // username: 'sonali.pednekar@bajajallianz.co.in',
 //       // username: 'avinash.naik@bajajallianz.co.in',
 //       // username: 'sandipan.chakraborty@bajajallianz.co.in',
+//       // username: 'satish.phirke@bajajallianz.co.in',
+//       // username: 'avinash.gawali@bajajallianz.co.in',
 //       password: 'password',
 //     };
 
@@ -348,8 +357,7 @@ export default function LoginForm(props) {
 //               navigate('/EmpManagmentSM');
 //             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ITS') {
 //               navigate('/Dashboard');
-//             } 
-//             else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_PRESIDENT') {
+//             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_PRESIDENT') {
 //               navigate('/Dashboard');
 //             }
 
@@ -618,7 +626,7 @@ export default function LoginForm(props) {
 //               navigate('/EmpManagmentSM');
 //             } else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_ITS') {
 //               navigate('/Dashboard');
-//             } 
+//             }
 //             else if (LoginResponse?.data?.[0]?.userProfile === 'BAGIC_PRESIDENT') {
 //               navigate('/Dashboard');
 //             }

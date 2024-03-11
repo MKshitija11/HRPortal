@@ -36,3 +36,27 @@
   margin-right: 5px;
   margin-left: 5px
 }
+.rbc-day-bg + .rbc-day-bg, .rbc-month-row + .rbc-month-row , .rbc-month-view, .rbc-header {
+border: 0px !important 
+}
+.rbc-header
+{
+  overflow:hidden !important;
+  text-transform: uppercase !important;
+  
+}
+
+.rbc-month-view{
+  box-shadow: 0px 0px 1px 1px lightgrey;
+}
+.rbc-button-link{
+  font-weight: bold;
+  margin: 20px !important;
+  /* font-size: 16px !important; */
+}
+.rbc-date-cell{
+  text-align: center !important;
+  margin-right: 1px !important;
+  margin-left: 1px !important;
+  border: '2px solid #F3F3F3' !important;
+}

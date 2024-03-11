@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Typography, Container, Card, Stack, Grid, TextField, Button, Box, Modal } from '@mui/material';
 import { grey } from '@mui/material/colors';
 // import Calendar from 'react-calendar';
@@ -152,13 +152,16 @@ export default function EmployeeTimesheetDetails() {
 
   const events = userListData.map((data, index) => ({
     title: (
-      <span style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+      <span style={{ display: 'flex', justifyContent: 'center', textAlign: 'center', margintop: '20px' }}>
         <span
           style={{
-            height: data.status ? 10 : 20,
-            width: 10,
-            borderRadius: '50%',
-
+            // height: data.status ? 10 : 20,
+            // width: 10,
+            // borderRadius: '50%',
+            borderRadius: '25px',
+            height: 4,
+            width: '60px',
+            marginBottom: 5,
             display: 'flex',
             backgroundColor:
               data.status === 'PH'
@@ -208,6 +211,14 @@ export default function EmployeeTimesheetDetails() {
       color: 'white',
       backgroundColor: 'transparent',
       top: 5,
+      bottom: 100,
+      // margin: 0,
+      // marginBottom: 20,
+      marginTop: -50,
+      paddingBottom: 10,
+      paddingTop: 40,
+      border: '2px solid #F3F3F3',
+      height: 40
     };
     return {
       style,
@@ -230,7 +241,7 @@ export default function EmployeeTimesheetDetails() {
   };
 
   const handleClickEvent = (evt) => {
-    console.log('handled clikced event', evt);
+    console.log('handled clikced event.........', evt);
     setShowATSDetails(false);
     setTimeout(() => {
       setShowATSDetails(true);
@@ -438,6 +449,7 @@ export default function EmployeeTimesheetDetails() {
                       endAccessor="end"
                       style={{
                         height: '70vh',
+                        // height: '70%',
                         // width: showATSDetails ? 620 : '60vw',
                         width: '45vw',
                         alignItems: 'center',

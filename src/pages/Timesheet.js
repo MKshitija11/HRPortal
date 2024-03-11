@@ -97,7 +97,7 @@ export default function TimeSheet() {
   const [selected, setSelected] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [filterName, setFilterName] = useState('');
-  const [csvData = [], setCsvData] = useState();
+  const [csvData, setCsvData] = useState([]);
   const [updateWebIdModal, setUpdateWebIdModal] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -107,7 +107,7 @@ export default function TimeSheet() {
   const [pageRender, setPageRender] = useState(50);
   const [open, setOpen] = useState(false);
   const [searchApiRes, setSearchApiRes] = useState([]);
-  const [pendingDays, setPendingDays] = useState('')
+  const [pendingDays, setPendingDays] = useState('');
 
   const ROLE = sessionStorage.getItem('ROLE');
   const USERDETAILS = sessionStorage.getItem('USERDETAILS');
@@ -265,7 +265,7 @@ export default function TimeSheet() {
               setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
               console.log('filtered its emp', filteredUsers);
               setApiRes(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-
+              // setCsvData(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
               // setTimeout(() => {
               //   setIsLoading(false);
               // }, 500);
@@ -348,9 +348,9 @@ export default function TimeSheet() {
 
       fetchData(atsReq, index, arr.length, (resp) => {
         const response = resp?.stringObject10;
-        const userListResp = resp?.userList
+        const userListResp = resp?.userList;
         // setUserListData(response)
-     
+
         element.userList = userListResp !== null ? userListResp : '';
         element.timeSheetDtls = response !== null ? response : '';
         element.hideLoader = true;
@@ -361,6 +361,8 @@ export default function TimeSheet() {
     }
 
     setApiRes([...arr]);
+    // setCsvData([...arr])
+    console.log('array length', empArray.length);
     setPagination((prevState) => ({
       ...prevState,
       pageCount: prevState.data.length / prevState.numberPerPage,
@@ -394,7 +396,7 @@ export default function TimeSheet() {
             setShowSearchBar(true);
             setUserListData(atsRes?.userList);
             // callback(atsRes.stringObject10);
-            callback(atsRes)
+            callback(atsRes);
           }
           return atsRes;
         })
@@ -429,12 +431,11 @@ export default function TimeSheet() {
     setOrderBy(property);
   };
 
-
   // console.log(">>>>>>>>", pendingDays.join(","))
 
   const downloadEmployeeData = () => {
-    const pendingDaysList = userListData.filter((emp) => emp.status === 'NA').map((emp) => emp.date)
-    setPendingDays(pendingDaysList.join(","))
+    const pendingDaysList = userListData.filter((emp) => emp.status === 'NA').map((emp) => emp.date);
+    setPendingDays(pendingDaysList.join(','));
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     const empListItSpocReq = {
       itSpocId: USERDETAILS?.[0]?.spocEmailId,
@@ -442,7 +443,6 @@ export default function TimeSheet() {
     };
 
     exportToCSV();
-    
   };
 
   const Heading = [

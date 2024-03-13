@@ -265,6 +265,7 @@ export default function TimeSheet() {
               setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
               console.log('filtered its emp', filteredUsers);
               setApiRes(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
+              setCsvData(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
               // setCsvData(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
               // setTimeout(() => {
               //   setIsLoading(false);
@@ -303,7 +304,7 @@ export default function TimeSheet() {
               const filteredUsers = applySortFilter(empListVendorRes.data, getComparator(order, orderBy), filterName);
               setActiveEmployees(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
               setApiRes(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
-
+              setCsvData(filteredUsers.filter((employees) => employees.employeeStatus === 'Active'));
               // setTimeout(() => {
               //   setIsLoading(false);
               // }, 500);

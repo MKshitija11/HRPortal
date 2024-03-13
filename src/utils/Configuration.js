@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export default {
-  // BASE_URL: 'https://api.bagicuat.bajajallianz.com/BagicHRSM/', // UAT
-  BASE_URL: 'https://webapi.bajajallianz.com/BagicHRSM/', // PROD
+  BASE_URL: 'https://api.bagicuat.bajajallianz.com/BagicHRSM/', // UAT
+  // BASE_URL: 'https://webapi.bajajallianz.com/BagicHRSM/', // PROD
 
   // TIMESHEET_URL: 'https://webservicesdev.bajajallianz.com/BagicVisitorAppWs/userTimeSheet', // dev
   TIMESHEET_URL: 'https://webservices.bajajallianz.com/BagicVisitorAppWs/', // prod

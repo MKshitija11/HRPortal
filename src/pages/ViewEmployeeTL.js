@@ -92,6 +92,8 @@ export default function ViewEmployee() {
     resignationDate: '',
     remarks: '',
     // role: USERDETAILS?.[0]?.userProfile,
+    // isOnboardingRequired: '',
+    // submittedBy: '',
   });
 
   const [userProfile, setUserProfile] = useState();
@@ -106,6 +108,7 @@ export default function ViewEmployee() {
   const [showAlertMessage, setShowAlertMessage] = useState(false);
   const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [checkboxValue, setcheckBoxValue] = useState();
   const [data, setData] = useState([
     'Pending For TL Review',
     'Pending For SM Review',
@@ -460,9 +463,9 @@ export default function ViewEmployee() {
     // if (document.employeeForm.projectType.value === '') {
     //   return failFocus(document.employeeForm.projectType);
     // }
-    if (document.employeeForm.lob.value === '') {
-      return failFocus(document.employeeForm.lob);
-    }
+    // if (document.employeeForm.lob.value === '') {
+    //   return failFocus(document.employeeForm.lob);
+    // }
 
     if (document.employeeForm.maximusOpus.value === '') {
       return failFocus(document.employeeForm.maximusOpus);
@@ -624,6 +627,7 @@ export default function ViewEmployee() {
 
       setPartnerName(USERDETAILS?.[0].partnerName);
       setUserProfile(USERDETAILS?.[0].userProfile);
+      state.submittedBy = USERDETAILS?.[0]?.spocEmailId.split('@')[0];
 
       setState({
         ...state,
@@ -705,6 +709,7 @@ export default function ViewEmployee() {
         resignationDate: EMP_DETAILS.resignationDate,
         remarks: EMP_DETAILS.remarks,
         // role: EMP_DETAILS.role,
+        // isOnboardingRequired: EMP_DETAILS.isOnboardingRequired,
       };
       console.log('EMP_DETAILS.employeeStatus================>', EMP_DETAILS.employeeStatus === 'Resigned');
       if (EMP_DETAILS.employeeStatus === 'Resigned' && !data.includes('Resigned')) {
@@ -788,6 +793,7 @@ export default function ViewEmployee() {
     resignationDate: state.resignationDate || '',
     remarks: state.remarks || '',
     // role: state.role || '',
+    // isOnboardingRequired: state.isOnboardingRequired || '',
   };
 
   console.log('state joining date', initialValues.verticalSub);
@@ -862,6 +868,23 @@ export default function ViewEmployee() {
   });
 
   console.log('selected lob value ', state.lob);
+  // const handleOnboardingProcess = (event) => {
+  //   setChecked(event.target.checked);
+  //   console.log('onboarding ticket setChecked', event.target.checked);
+  //   if (event.target.checked === true) {
+  //     setState({
+  //       ...state,
+  //       isOnboardingRequired: 'Yes',
+  //     });
+  //     setcheckBoxValue('Yes');
+  //   } else if (event.target.checked === false) {
+  //     setState({
+  //       ...state,
+  //       isOnboardingRequired: 'No',
+  //     });
+  //     setcheckBoxValue('No');
+  //   }
+  // };
 
   return (
     <>
@@ -1451,7 +1474,8 @@ export default function ViewEmployee() {
 
                             <Grid item xs={12} sm={4}>
                               <input type="hidden" value={state.id} id="id" name="id" />
-                              {/* <input type="hidden" value={values.role} id="role" name="role" /> */}
+                              {/* <input type="hidden" id="role" name="role" value={state.role} />
+                              <input type="hidden" id="submittedBy" name="submittedBy" value={state.submittedBy} /> */}
 
                               <input type="hidden" value={empData.billingSlab} id="billingSlab" name="billingSlab" />
                               <TextField
@@ -2336,10 +2360,12 @@ export default function ViewEmployee() {
                                   ))}
                                 </TextField>
                               </Grid>
-                            ) :  <input type="hidden" id="lob" name="lob" value={values.lob || ''} />}
+                            ) : (
+                              <input type="hidden" id="lob" name="lob" value={values.lob || ''} />
+                            )}
 
                             {(values.lob === 'Others' || values.lob === 'Internal IT App') &&
-                          (values.maximusOpus === 'Maximus' || values.maximusOpus === 'Maximus and Opus') ? (
+                            (values.maximusOpus === 'Maximus' || values.maximusOpus === 'Maximus and Opus') ? (
                               <Grid item xs={12} sm={6}>
                                 <TextField
                                   labelId="demo-select-small"
@@ -2420,6 +2446,24 @@ export default function ViewEmployee() {
                           />
                         </FormGroup>
                       </Stack> */}
+                          {/* <Stack flexDirection="row">
+                            <FormGroup>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    onChange={handleOnboardingProcess}
+                                    id="isOnboardingRequired"
+                                    name="isOnboardingRequired"
+                                    checked={values.isOnboardingRequired}
+                                    value={values.isOnboardingRequired}
+                                  />
+                                }
+                                label="Initiate On-boardinng Ticket of Employee"
+                                sx={{ color: 'black', fontWeight: 600 }}
+                              />
+                            </FormGroup>
+                          </Stack>
+                          <br /> */}
                           <br />
                           {console.log('EMP STATUS>>', state.employeeStatus)}
                           <Grid container item xs={12} justifyContent={'center'}>

@@ -426,9 +426,9 @@ export default function ViewEmployee() {
     // if (document.employeeForm.projectType.value === '') {
     //   return failFocus(document.employeeForm.projectType);
     // }
-    if (document.employeeForm.lob.value === '') {
-      return failFocus(document.employeeForm.lob);
-    }
+    // if (document.employeeForm.lob.value === '') {
+    //   return failFocus(document.employeeForm.lob);
+    // }
 
     if (document.employeeForm.maximusOpus.value === '') {
       return failFocus(document.employeeForm.maximusOpus);

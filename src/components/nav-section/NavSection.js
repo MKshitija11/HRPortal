@@ -24,7 +24,6 @@ export default function NavSection() {
   useEffect(() => {
     const loginRequest = {
       username: USERDETAILS?.[0]?.spocUsername,
-      // username: 'kshitija.madhekar@pinnacle.com'
     };
 
     Configuration.login(loginRequest).then((LoginResponse) => {
@@ -33,43 +32,37 @@ export default function NavSection() {
     });
   });
 
-  // useEffect(() => {
-  //   const getEmpListTLReq = {
-  //     teamLeadId: USERDETAILS?.[0]?.spocEmailId,
-  //   };
-  //   Configuration.getEmpListTeamLead(getEmpListTLReq)
-  //     .then((empListTLRes) => {
-  //       console.log('empListVendorRes=====> from nav section', empListTLRes.data);
-  //       setPendingCount(empListTLRes.data.filter((emp) => emp.employeeStatus === 'Pending For TL Review').length);
-  //       if (ROLE === 'BAGIC_TL' && empListTLRes.data.length === 'BAGIC_TL' > 0) {
-  //         setShowPendingEmp(true);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       alert('Something went wrong');
-  //     });
-
-  //   const empListManagerReq = {
-  //     managerId: USERDETAILS?.[0]?.spocEmailId,
-  //   };
-  //   Configuration.getEmpListManager(empListManagerReq)
-  //     .then((empListManagerRes) => {
-  //       console.log('empListVendorRes=====> from nav section', empListManagerRes.data);
-  //       setPendingCountSM(
-  //         empListManagerRes.data.filter((emp) => emp.employeeStatus === 'Pending For SM Review').length
-  //       );
-  //       if (ROLE === 'BAGIC_SM' && empListManagerRes.data.length > 0) {
-  //         setShowPendingEmp(true);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       alert('Something went wrong');
-  //     });
-  // }, []);
-
   useEffect(() => {
-    const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-    const ROLE = sessionStorage.getItem('ROLE');
+    // const getEmpListTLReq = {
+    //   teamLeadId: USERDETAILS?.[0]?.spocEmailId,
+    // };
+    // console.log("cehck details ", ROLE , USERDETAILS?.[0]?.userProfile)
+    // if(ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') {
+    //   Configuration.getEmpListTeamLead(getEmpListTLReq)
+    //   .then((empListTLRes) => {
+    //     const pendingList = empListTLRes.data.filter((emp) => emp.employeeStatus === 'Pending For TL Review').length;
+    //     console.log('empListVendorRes=====> from nav section from tl ', pendingList);
+    //     setPendingCount(pendingList);
+    //     console.log(
+    //       '>>>>>>>>>',
+    //       ROLE,
+    //       USERDETAILS,
+    //       pendingList,
+    //       'condition 2',
+    //       (ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') && pendingList >= 1,
+    //       'condition 3',
+    //       ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL'
+    //     );
+    //     if ((ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') && pendingList >= 1) {
+    //       // alert('true')
+    //       setShowPendingEmp(true);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     alert('Something went wrong');
+    //   });
+    // }
+
     if (!USERDETAILS) {
       console.log('inside first if');
       redirectUrl = '/login';
@@ -145,7 +138,7 @@ export default function NavSection() {
         title: 'Pending',
         path: ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : '/EmployeesListTL',
         icon: icon('ic_pending'),
-        // pendingIcon: pendingCount > 0 ? icon('ic_resignedUser') : null,
+        // pendingIcon: pendingCount >= 1 ? icon('ic_bell') : '',
       },
       {
         title: 'Resigned',
@@ -159,7 +152,6 @@ export default function NavSection() {
       },
       {
         title: 'Resignation Initiated',
-
         path:
           ROLE === 'BAGIC_TL'
             ? '/ResignationInitiatedListTL'
@@ -201,7 +193,7 @@ export default function NavSection() {
 
         path: ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : '/EmployeesListSM',
         icon: icon('ic_pending'),
-        // pendingIcon: pendingCountSM > 0 ? icon('ic_resignedUser') : null,
+        // pendingIcon: pendingCountSM >= 1 ? icon('ic_bell') : null,
       },
       {
         title: 'Resigned',
@@ -392,7 +384,11 @@ export default function NavSection() {
             >
               <StyledNavItemIcon>{item.icon && item.icon}</StyledNavItemIcon>
               <ListItemText disableTypography primary={item.title} />
-              {/* <StyledNavItemIcon>{item.pendingIcon && item.pendingIcon}</StyledNavItemIcon> */}
+              {/* {showPendingEmp ? (
+                <StyledNavItemIcon sx={{ color: 'red', height: 20, width: 20 }}>
+                  {item.pendingIcon && item.pendingIcon}
+                </StyledNavItemIcon>
+              ) : null} */}
             </StyledNavItem>
           </Stack>
         ))}

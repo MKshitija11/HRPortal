@@ -41,7 +41,7 @@ import Scrollbar from '../components/scrollbar';
 
 export default function ViewEmployee({ props }) {
   const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-  console.log("userdetaisl>>>.", USERDETAILS)
+  console.log('userdetaisl>>>.', USERDETAILS);
   const location = useLocation();
   const [state, setState] = useState({
     employeeFirstName: '',
@@ -84,16 +84,18 @@ export default function ViewEmployee({ props }) {
     designation: '',
     verticalSub: '',
     remarks: '',
-    // role:  USERDETAILS?.[0]?.userProfile
-    // onBoarding: '',
+    // role:  USERDETAILS?.[0]?.userProfile,
+    // isOnboardingRequired: false,
+    // submittedBy: ''
   });
   const [openModal, setOpenModal] = useState(false);
   const [openUpdateModal, setOpenUpdateModal] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [teamLeadBySMList = [], setTeamLeadBySMList] = useState();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
-  const [checked, setChecked] = useState(false);
- 
+  // const [checked, setChecked] = useState(false);
+  // const [checkboxValue, setcheckBoxValue] = useState('No')
+
   // const [failedModal, setFailedModal] = useState(false);
   const [showAlertMessage, setShowAlertMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -320,9 +322,25 @@ export default function ViewEmployee({ props }) {
   };
 
   const updateEmployeeData = () => {
-    document.getElementById('employeeStatus').value = 'Pending For TL Review';
+    // console.log('checked>>>>>.', checked);
 
+    document.getElementById('employeeStatus').value = 'Pending For TL Review';
     if (validForm()) {
+      // if (checked) {
+      //   // document.getElementById('isOnboardingRequired').value = state.isOnboardingRequired;
+      //   // setState({
+      //   //   ...state,
+      //   //   isOnboardingRequired: 'Yes',
+      //   // });
+      // } else {
+      //   document.getElementById('isOnboardingRequired').value = state.isOnboardingRequired;
+      //   setState({
+      //     ...state,
+      //     isOnboardingRequired: 'No',
+      //   });
+      // }
+      // document.getElementById('isOnboardingRequired').value = checkboxValue;
+
       state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
       const employeeFormObj = new FormData(document.getElementById('employeeForm'));
       const employeeFormData = Object.fromEntries(employeeFormObj.entries());
@@ -335,6 +353,7 @@ export default function ViewEmployee({ props }) {
 
       if (state.employeeStatus === 'Revoke') {
         employeeFormData.employeeStatus = 'Active';
+
         setState({
           ...state,
           employeeStatus: 'Active',
@@ -346,26 +365,42 @@ export default function ViewEmployee({ props }) {
           employeeStatus: 'Resignation Initiated',
         });
       }
+      // if (checked) {
+      //   console.log('checked>>>>>> if', checked, state.isOnboardingRequired);
+      //   document.getElementById('isOnboardingRequired').value = 'Yes';
+      //   setState({
+      //     ...state,
+      //     isOnboardingRequired: 'Yes',
+      //   });
+      // } else {
+      //   console.log('checked>>>>>> else', checked, state.isOnboardingRequired);
+      //   document.getElementById('isOnboardingRequired').value = 'No';
+      //   setState({
+      //     ...state,
+      //     isOnboardingRequired: 'No',
+      //   });
+      // }
       employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
       console.log('employeeFormData::', employeeFormData);
       console.log('JSON:employeeFormData from update ::', JSON.stringify(employeeFormData));
 
-      console.log('Data', employeeFormData);
+      console.log('Data>>>>>>', employeeFormData);
+
       setIsLoading(true);
-      Configuration.updateEmployeeData(employeeFormData)
-        .then((employeeFormRes) => {
-          console.log('employeeFormRes::', employeeFormRes.data);
-          if (employeeFormRes.data) {
-            setTimeout(() => {
-              setIsLoading(false);
-              setOpenSuccessModal(true);
-            }, 500);
-          }
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          alert('Something went wrong');
-        });
+      // Configuration.updateEmployeeData(employeeFormData)
+      //   .then((employeeFormRes) => {
+      //     console.log('employeeFormRes::', employeeFormRes.data);
+      //     if (employeeFormRes.data) {
+      //       setTimeout(() => {
+      //         setIsLoading(false);
+      //         setOpenSuccessModal(true);
+      //       }, 500);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     setIsLoading(false);
+      //     alert('Something went wrong');
+      //   });
     } else {
       // setFailedModal(true);
       setShowAlertMessage(true);
@@ -378,6 +413,7 @@ export default function ViewEmployee({ props }) {
 
   const [reportingList = [], setReportingList] = useState();
 
+
   useEffect(() => {
     const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
     const REPORTINGDETAILS = JSON.parse(sessionStorage.getItem('REPORTINGDETAILS'));
@@ -387,6 +423,7 @@ export default function ViewEmployee({ props }) {
       setPartnerName(USERDETAILS?.[0]?.partnerName);
       state.partnerName = USERDETAILS?.[0]?.partnerName;
       state.createdBy = USERDETAILS?.[0]?.spocEmailId;
+      // state.submittedBy =  USERDETAILS?.[0]?.spocEmailId.split('@')[0]
     }
   }, []);
 
@@ -446,6 +483,7 @@ export default function ViewEmployee({ props }) {
           lob: EMP_DETAILS.lob,
           remarks: EMP_DETAILS.remarks,
           // role: EMP_DETAILS.role,
+          // isOnboardingRequired: EMP_DETAILS.isOnboardingRequired
         };
         setTimeout(() => {
           setIsLoading(false);
@@ -534,8 +572,8 @@ export default function ViewEmployee({ props }) {
     functionDesc: state.functionDesc || '',
     maximusOpus: state.maximusOpus || '',
     remarks: state.remarks || '',
-    // role: state.role || ''
-    // onBoarding: state.onBoarding || '',
+    // role: state.role || '',
+    // isOnboardingRequired: state.isOnboardingRequired || '',
   };
   console.log('API INITIAL VALUEs', initialValues.reportingTeamLead);
 
@@ -588,10 +626,23 @@ export default function ViewEmployee({ props }) {
     resignationDate: Yup.string().required('Required field'),
   });
 
-  console.log('API TL', teamLead);
-
   // const handleOnboardingProcess = (event) => {
   //   setChecked(event.target.checked);
+  //   console.log('onboarding ticket setChecked', event.target.checked);
+  //   if (event.target.checked === true) {
+  //     // setState({
+  //     //   ...state,
+  //     //   isOnboardingRequired: 'Yes',
+  //     // });
+  //     setcheckBoxValue('Yes')
+  //   } else if (event.target.checked === false) {
+  //     // setState({
+  //     //   ...state,
+  //     //   isOnboardingRequired: 'No',
+  //     // });
+  //     setcheckBoxValue('No')
+  //   }
+  //   // state.isOnboardingRequired === 'Yes' : state.isOnboardingRequired === 'No'
   // };
 
   const theme = createTheme({
@@ -607,7 +658,7 @@ export default function ViewEmployee({ props }) {
   return (
     <>
       <Helmet>
-        {console.log('values on render', state.reportingTeamLead)}
+        {console.log('values on render isOnboardingRequired', state.isOnboardingRequired)}
         <title> HR Portal | Employee Details (Partner)</title>
       </Helmet>
       <Container>
@@ -621,7 +672,7 @@ export default function ViewEmployee({ props }) {
             Home
           </Button>
         </Stack>
-{/* 
+        {/* 
         {state.employeeStatus === 'Active' ||
         state.employeeStatus === 'Pending For TL Review' ||
         state.employeeStatus === 'Pending For SM Review' ||
@@ -1493,7 +1544,8 @@ export default function ViewEmployee({ props }) {
 
                               <Grid item xs={12} sm={4}>
                                 <input type="hidden" id="createdBy" name="createdBy" value={state.createdBy} />
-                                {/* <input type="hidden" id="role" name="role" value={state.role} /> */}
+                                <input type="hidden" id="role" name="role" value={state.role} />
+                                <input type='hidden' id="submittedBy" name="submittedBy" value={state.submittedBy}/>
                                 {/* <input type="hidden" id="onBoarding" name="onBoarding" value={state.onBoarding} /> */}
 
                                 <input
@@ -1717,7 +1769,8 @@ export default function ViewEmployee({ props }) {
                                   helperText={formik.touched.skillSet || errors.skillSet ? formik.errors.skillSet : ''}
                                 />
                               </Grid>
-                              {values.employeeStatus === 'Resigned' || values.employeeStatus === 'Resignation Initiated' ? (
+                              {values.employeeStatus === 'Resigned' ||
+                              values.employeeStatus === 'Resignation Initiated' ? (
                                 <>
                                   <Grid item xs={12} sm={4}>
                                     <TextField
@@ -1907,7 +1960,8 @@ export default function ViewEmployee({ props }) {
                               </Grid>
                               {state.employeeStatus === 'Active' ||
                               state.employeeStatus === 'Revoke' ||
-                              state.employeeStatus === 'Resigned' || state.employeeStatus === 'Resignation Initiated'? (
+                              state.employeeStatus === 'Resigned' ||
+                              state.employeeStatus === 'Resignation Initiated' ? (
                                 <input type="hidden" value={state.id} id="id" name="id" />
                               ) : null}
 
@@ -1958,23 +2012,25 @@ export default function ViewEmployee({ props }) {
                               </Grid>
                             </Grid>
                             <br />
+                          
                             {/* <Stack flexDirection="row">
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                // onChange={handleOnboardingProcess}
-                                id="onBoarding"
-                                disabled
-                                checked={checked ? state.onBoarding === 'Y' : !checked}
-                              />
-                            }
-                            label="Initiate On-boardinng Ticket of Employee"
-                            sx={{ color: 'black', fontWeight: 600 }}
-                          />
-                        </FormGroup>
-                      </Stack>
-                      <br /> */}
+                              <FormGroup>
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      onChange={handleOnboardingProcess}
+                                      id="isOnboardingRequired"
+                                      name="isOnboardingRequired"
+                                      checked={checked}
+                                      // value={values.isOnboardingRequired}
+                                    />
+                                  }
+                                  label="Initiate On-boardinng Ticket of Employee"
+                                  sx={{ color: 'black', fontWeight: 600 }}
+                                />
+                              </FormGroup>
+                            </Stack> */}
+                            <br />
 
                             <Grid container item xs={12} justifyContent={'center'}>
                               <Stack spacing={2} direction="row" justifyContent="center">
@@ -1994,7 +2050,8 @@ export default function ViewEmployee({ props }) {
                                   </Button>
                                 ) : state.employeeStatus === 'Active' ||
                                   state.employeeStatus === 'Resigned' ||
-                                  state.employeeStatus === 'Revoke' || state.employeeStatus === 'Resignation Initiated' ? (
+                                  state.employeeStatus === 'Revoke' ||
+                                  state.employeeStatus === 'Resignation Initiated' ? (
                                   <Button
                                     size="medium"
                                     variant="contained"

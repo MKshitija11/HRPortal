@@ -387,20 +387,20 @@ export default function ViewEmployee({ props }) {
       console.log('Data>>>>>>', employeeFormData);
 
       setIsLoading(true);
-      // Configuration.updateEmployeeData(employeeFormData)
-      //   .then((employeeFormRes) => {
-      //     console.log('employeeFormRes::', employeeFormRes.data);
-      //     if (employeeFormRes.data) {
-      //       setTimeout(() => {
-      //         setIsLoading(false);
-      //         setOpenSuccessModal(true);
-      //       }, 500);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setIsLoading(false);
-      //     alert('Something went wrong');
-      //   });
+      Configuration.updateEmployeeData(employeeFormData)
+        .then((employeeFormRes) => {
+          console.log('employeeFormRes::', employeeFormRes.data);
+          if (employeeFormRes.data) {
+            setTimeout(() => {
+              setIsLoading(false);
+              setOpenSuccessModal(true);
+            }, 500);
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          alert('Something went wrong');
+        });
     } else {
       // setFailedModal(true);
       setShowAlertMessage(true);

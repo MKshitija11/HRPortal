@@ -43,6 +43,7 @@ import CustomProgressBar from './CustomProgressBar';
 
 export default function ViewEmployee() {
   const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+  const ROLE = sessionStorage.getItem('ROLE');
   const [state, setState] = useState({
     employeeFirstName: '',
     employeeLastName: '',
@@ -91,7 +92,7 @@ export default function ViewEmployee() {
     lwd: '',
     resignationDate: '',
     remarks: '',
-    // role: USERDETAILS?.[0]?.userProfile,
+    // role: ROLE || USERDETAILS?.[0]?.userProfile,
     // isOnboardingRequired: '',
     // submittedBy: '',
   });
@@ -108,7 +109,7 @@ export default function ViewEmployee() {
   const [showAlertMessage, setShowAlertMessage] = useState(false);
   const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [checkboxValue, setcheckBoxValue] = useState();
+  const [checkboxValue, setcheckBoxValue] = useState('No');
   const [data, setData] = useState([
     'Pending For TL Review',
     'Pending For SM Review',
@@ -511,7 +512,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
-
+    // employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
     console.log('JSON:employeeFormData::', employeeFormData);
@@ -577,7 +578,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
-
+    // employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
     console.log('EMP STATUS active update>>', state.employeeStatus);
@@ -868,27 +869,18 @@ export default function ViewEmployee() {
   });
 
   console.log('selected lob value ', state.lob);
-  // const handleOnboardingProcess = (event) => {
-  //   setChecked(event.target.checked);
-  //   console.log('onboarding ticket setChecked', event.target.checked);
-  //   if (event.target.checked === true) {
-  //     setState({
-  //       ...state,
-  //       isOnboardingRequired: 'Yes',
-  //     });
-  //     setcheckBoxValue('Yes');
-  //   } else if (event.target.checked === false) {
-  //     setState({
-  //       ...state,
-  //       isOnboardingRequired: 'No',
-  //     });
-  //     setcheckBoxValue('No');
-  //   }
-  // };
+  const handleOnboardingProcess = (event) => {
+    setChecked(event.target.checked);
+    console.log('onboarding ticket setChecked', event.target.checked);
+    if (event.target.checked) {
+      setcheckBoxValue('Yes');
+    } else {
+      setcheckBoxValue('No');
+    }
+  };
 
   return (
     <>
-      {console.log('updated data', data)}
       <Helmet>
         <title> HR Portal | Employee Details (Team Lead)</title>
       </Helmet>
@@ -1474,8 +1466,8 @@ export default function ViewEmployee() {
 
                             <Grid item xs={12} sm={4}>
                               <input type="hidden" value={state.id} id="id" name="id" />
-                              {/* <input type="hidden" id="role" name="role" value={state.role} />
-                              <input type="hidden" id="submittedBy" name="submittedBy" value={state.submittedBy} /> */}
+                              {/* <input type="hidden" id="role" name="role" value={state.role} /> */}
+                              {/* <input type="hidden" id="submittedBy" name="submittedBy" value={state.submittedBy} /> */}
 
                               <input type="hidden" value={empData.billingSlab} id="billingSlab" name="billingSlab" />
                               <TextField
@@ -2430,40 +2422,26 @@ export default function ViewEmployee() {
                             </Grid>
                           </Grid>
                           <br />
-                          {/* <Stack flexDirection="row">
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                // onChange={handleOnboardingProcess}
-                                id="onBoarding"
-                                disabled
-                                checked={checked ? state.onBoarding === 'Y' : !checked}
-                              />
-                            }
-                            label="Initiate On-boardinng Ticket of Employee"
-                            sx={{ color: 'black', fontWeight: 600 }}
-                          />
-                        </FormGroup>
-                      </Stack> */}
-                          {/* <Stack flexDirection="row">
-                            <FormGroup>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox
-                                    onChange={handleOnboardingProcess}
-                                    id="isOnboardingRequired"
-                                    name="isOnboardingRequired"
-                                    checked={values.isOnboardingRequired}
-                                    value={values.isOnboardingRequired}
-                                  />
-                                }
-                                label="Initiate On-boardinng Ticket of Employee"
-                                sx={{ color: 'black', fontWeight: 600 }}
-                              />
-                            </FormGroup>
-                          </Stack>
-                          <br /> */}
+                          {/* <Typography variant="subtitle1" paddingBottom={'15px'}>
+                            <b> Onboarding Details</b>
+                          </Typography> */}
+                         
+                          {/* <FormGroup>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  onChange={handleOnboardingProcess}
+                                  id="isOnboardingRequired"
+                                  name="isOnboardingRequired"
+                                  checked={checked}
+                                  value={checked ? 'Yes' : 'No'}
+                                />
+                              }
+                              label="Initiate On-boardinng Ticket of Employee"
+                              sx={{ color: 'black', fontWeight: 600 }}
+                            />
+                          </FormGroup> */}
+
                           <br />
                           {console.log('EMP STATUS>>', state.employeeStatus)}
                           <Grid container item xs={12} justifyContent={'center'}>

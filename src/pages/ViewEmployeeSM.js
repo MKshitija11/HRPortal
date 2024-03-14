@@ -17,6 +17,9 @@ import {
   Switch,
   Modal,
   Box,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -34,6 +37,7 @@ import CustomProgressBar from './CustomProgressBar';
 
 export default function ViewEmployee() {
   const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+  const ROLE = sessionStorage.getItem('ROLE');
   const [state, setState] = useState({
     employeeFirstName: '',
     employeeLastName: '',
@@ -83,7 +87,9 @@ export default function ViewEmployee() {
     lwd: '',
     resignationDate: '',
     remarks: '',
-    // role: USERDETAILS?.[0]?.userProfile,
+    // role: ROLE || USERDETAILS?.[0]?.userProfile,
+    // isOnboardingRequired: '',
+
   });
   const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
@@ -100,6 +106,8 @@ export default function ViewEmployee() {
     'Pending For IT Spoc Review',
     'Active',
   ]);
+  const [checked, setChecked] = useState(false);
+  const [checkboxValue, setcheckBoxValue] = useState('No');
   // const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
   const handleChangeWaSwitch = (evt) => {
     if (evt.target.checked) {
@@ -480,6 +488,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
+    // employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
@@ -549,6 +558,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
+    // employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
@@ -675,6 +685,7 @@ export default function ViewEmployee() {
         lwd: EMP_DETAILS.lwd,
         resignationDate: EMP_DETAILS.resignationDate,
         remarks: EMP_DETAILS.remarks,
+        // isOnboardingRequired: EMP_DETAILS.isOnboardingRequired,
       };
 
       if (EMP_DETAILS.employeeStatus === 'Resigned' && !data.includes('Resigned')) {
@@ -750,6 +761,7 @@ export default function ViewEmployee() {
     resignationDate: state.resignationDate || '',
     remarks: state.remarks || '',
     // role: state.role || '',
+    // isOnboardingRequired: state.isOnboardingRequired || '',
   };
   console.log('INITIAL VALUES', initialValues.employeeStatus);
 
@@ -822,6 +834,16 @@ export default function ViewEmployee() {
       },
     },
   });
+
+  // const handleOnboardingProcess = (event) => {
+  //   setChecked(event.target.checked);
+  //   console.log('onboarding ticket setChecked', event.target.checked);
+  //   if (event.target.checked) {
+  //     setcheckBoxValue('Yes');
+  //   } else {
+  //     setcheckBoxValue('No');
+  //   }
+  // };
 
   return (
     <>
@@ -2287,6 +2309,28 @@ export default function ViewEmployee() {
                             />
                           </Grid>
                         </Grid>
+                        {/* <Typography variant="subtitle1" paddingBottom={'15px'}>
+                            <b> Onboarding Details</b>
+                          </Typography> */}
+
+                          {/* <FormGroup>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  onChange={handleOnboardingProcess}
+                                  id="isOnboardingRequired"
+                                  name="isOnboardingRequired"
+                               
+                                  checked={checked}
+                                  value={checked ? 'Yes' : 'No'}
+                                />
+                              }
+                              label="Initiate On-boardinng Ticket of Employee"
+                              sx={{ color: 'black', fontWeight: 600 }}
+                            />
+                          </FormGroup> */}
+
+                         
                         <br />
 
                         <Grid container item xs={12} justifyContent={'center'}>

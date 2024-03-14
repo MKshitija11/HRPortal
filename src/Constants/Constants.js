@@ -29,7 +29,7 @@ export default {
     // { value: 'Newgen Technologies', label: 'Newgen Technologies' },
     { value: 'PREDOOLE ANALYTICS', label: 'PREDOOLE ANALYTICS' },
     { value: 'Pinnacle Technology', label: 'Pinnacle Technology' },
-    // { value: 'Precision Techserv', label: 'Precision Techserv' },
+    { value: 'Precision Techserv', label: 'Precision Techserv' },
     // { value: 'Pentagon', label: 'Pentagon' },
     { value: 'TCS', label: 'TCS' },
     // { value: 'Teknopoint', label: 'Teknopoint' },
@@ -45,9 +45,9 @@ export default {
     // { value: 'iNube Software Solutions', label: 'iNube Software Solutions' },
     // { value: 'Varutra Infoshare Pvt Ltd', label: 'Varutra Infoshare Pvt Ltd' },
     // { value: 'Crisp analytics Pvt Ltd', label: 'Crisp analytics Pvt Ltd' },
-    { value: 'FluidLive', label: 'FluidLive' },
-    { value: 'Lumiq', label: 'Lumiq' },
-    { value: 'HoneyBee', label: 'HoneyBee' },
+    { value: 'Fludonomics', label: 'Fludonomics' },
+    { value: 'Crisp Analytics Pvt Ltd', label: 'Crisp Analytics Pvt Ltd' },
+    { value: 'Xangars Solutions Pvt Ltd', label: 'Xangars Solutions Pvt Ltd' },
   ],
 
   timesheetEmpList: [

@@ -13,9 +13,15 @@ const icon = (name) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ 
 let redirectUrl = '';
 export default function NavSection() {
   const [menuList = [], setMenuList] = useState();
-  const [pendingCount, setPendingCount] = useState();
+  const [pendingCountTL, setPendingCountTL] = useState();
   const [pendingCountSM, setPendingCountSM] = useState();
+  const [pendingCountBP, setPendingCountBP] = useState();
+  const [pendingCountITS, setPendingCountITS] = useState();
   const [showPendingEmp, setShowPendingEmp] = useState(false);
+  const [showPendingEmpSM, setShowPendingEmpSM] = useState(false);
+  const [showPendingEmpBP, setShowPendingEmpBP] = useState(false);
+  const [showPendingEmpITS, setShowPendingEmpITS] = useState(false);
+
   const location = useLocation();
   // console.log('pending count', pendingCountSM);
   const ROLE = sessionStorage.getItem('ROLE');
@@ -32,37 +38,126 @@ export default function NavSection() {
     });
   });
 
+  // TL
   useEffect(() => {
-    // const getEmpListTLReq = {
-    //   teamLeadId: USERDETAILS?.[0]?.spocEmailId,
-    // };
-    // console.log("cehck details ", ROLE , USERDETAILS?.[0]?.userProfile)
-    // if(ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') {
-    //   Configuration.getEmpListTeamLead(getEmpListTLReq)
-    //   .then((empListTLRes) => {
-    //     const pendingList = empListTLRes.data.filter((emp) => emp.employeeStatus === 'Pending For TL Review').length;
-    //     console.log('empListVendorRes=====> from nav section from tl ', pendingList);
-    //     setPendingCount(pendingList);
-    //     console.log(
-    //       '>>>>>>>>>',
-    //       ROLE,
-    //       USERDETAILS,
-    //       pendingList,
-    //       'condition 2',
-    //       (ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') && pendingList >= 1,
-    //       'condition 3',
-    //       ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL'
-    //     );
-    //     if ((ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') && pendingList >= 1) {
-    //       // alert('true')
-    //       setShowPendingEmp(true);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     alert('Something went wrong');
-    //   });
-    // }
+    // TL employees
+    const getEmpListTLReq = {
+      teamLeadId: USERDETAILS?.[0]?.spocEmailId,
+    };
+    console.log('cehck details ', ROLE, USERDETAILS?.[0]?.userProfile);
+    if (ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') {
+      Configuration.getEmpListTeamLead(getEmpListTLReq)
+        .then((empListTLRes) => {
+          const pendingList = empListTLRes.data.filter((emp) => emp.employeeStatus === 'Pending For TL Review').length;
+          setPendingCountTL(pendingList);
+          if ((ROLE === 'BAGIC_TL' || USERDETAILS?.[0]?.userProfile === 'BAGIC_TL') && pendingList >= 1) {
+            console.log('PENDING DETAILS inside conditions');
+            setShowPendingEmp(true);
+          }
+        })
+        .catch((error) => {
+          alert('Something went wrong');
+        });
+    }
+  }, [pendingCountTL, showPendingEmp, location]);
 
+  // SM
+  useEffect(() => {
+    // SM employees
+    const empListManagerReq = {
+      managerId: USERDETAILS?.[0]?.spocEmailId,
+    };
+    console.log('cehck details ', ROLE, USERDETAILS?.[0]?.userProfile);
+    if (ROLE === 'BAGIC_SM' || USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') {
+      Configuration.getEmpListManager(empListManagerReq)
+        .then((empListManagerRes) => {
+          const pendingList = empListManagerRes.data.filter(
+            (emp) => emp.employeeStatus === 'Pending For SM Review'
+          ).length;
+          setPendingCountSM(pendingList);
+          if ((ROLE === 'BAGIC_SM' || USERDETAILS?.[0]?.userProfile === 'BAGIC_SM') && pendingList >= 1) {
+            console.log('PENDING DETAILS inside conditions');
+            setShowPendingEmpSM(true);
+          }
+        })
+        .catch((error) => {
+          alert('Something went wrong');
+        });
+    }
+  }, [pendingCountSM, showPendingEmpSM, location]);
+
+  // BP
+  useEffect(() => {
+    // BP employees
+    const empListVendorReq = {
+      partnerName: USERDETAILS?.[0]?.partnerName,
+      itSpocId: 'NA',
+    };
+
+    console.log('cehck details ', ROLE, USERDETAILS?.[0]?.userProfile);
+    if (ROLE === 'BAGIC_PARTNER' || USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') {
+      Configuration.getEmpListVendor(empListVendorReq)
+        .then((empListVendorRes) => {
+          const pendingList = empListVendorRes.data.filter(
+            (emp) =>
+              emp.employeeStatus === 'Pending For SM Review' ||
+              emp.employeeStatus === 'Pending For TL Review' ||
+              emp.employeeStatus === 'Pending For IT Spoc Review'
+          ).length;
+          setPendingCountBP(pendingList);
+          if ((ROLE === 'BAGIC_PARTNER' || USERDETAILS?.[0]?.userProfile === 'BAGIC_PARTNER') && pendingList >= 1) {
+            console.log('PENDING DETAILS inside conditions');
+            setShowPendingEmpBP(true);
+          }
+        })
+        .catch((error) => {
+          alert('Something went wrong');
+        });
+    }
+  }, [pendingCountBP, showPendingEmpBP, location]);
+
+  // ITS
+  useEffect(() => {
+    // ITS employees
+    const empListItSpocReq = {
+      itSpocId:
+        ROLE === 'BAGIC_PRESIDENT'
+          ? 'pooja.rebba@bajajallianz.co.in'
+          : ROLE === 'BAGIC_ITS'
+          ? USERDETAILS?.[0]?.spocEmailId
+          : null,
+    };
+    console.log('cehck details ', ROLE, USERDETAILS?.[0]?.userProfile);
+    if (
+      ROLE === 'BAGIC_ITS' ||
+      ROLE === 'BAGIC_PRESIDENT' ||
+      USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS' ||
+      USERDETAILS?.[0]?.userProfile === 'BAGIC_PRESIDENT'
+    ) {
+      Configuration.getEmpListItSpoc(empListItSpocReq)
+        .then((empListVendorRes) => {
+          const pendingList = empListVendorRes.data.filter(
+            (emp) => emp.employeeStatus === 'Pending For IT Spoc Review'
+          ).length;
+          setPendingCountITS(pendingList);
+          if (
+            (ROLE === 'BAGIC_ITS' ||
+              ROLE === 'BAGIC_PRESIDENT' ||
+              USERDETAILS?.[0]?.userProfile === 'BAGIC_ITS' ||
+              USERDETAILS?.[0]?.userProfile === 'BAGIC_PRESIDENT') &&
+            pendingList >= 1
+          ) {
+            console.log('PENDING DETAILS inside conditions');
+            setShowPendingEmpITS(true);
+          }
+        })
+        .catch((error) => {
+          alert('Something went wrong');
+        });
+    }
+  }, [pendingCountITS, showPendingEmpITS, location]);
+
+  useEffect(() => {
     if (!USERDETAILS) {
       console.log('inside first if');
       redirectUrl = '/login';
@@ -100,6 +195,7 @@ export default function NavSection() {
         title: 'Pending',
         path: '/PendingEmployeesBP',
         icon: icon('ic_pending'),
+        pendingIcon: pendingCountBP >= 1 ? icon('ic_bell') : '',
       },
       {
         title: 'Rejected',
@@ -138,7 +234,7 @@ export default function NavSection() {
         title: 'Pending',
         path: ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : '/EmployeesListTL',
         icon: icon('ic_pending'),
-        // pendingIcon: pendingCount >= 1 ? icon('ic_bell') : '',
+        pendingIcon: pendingCountTL >= 1 ? icon('ic_bell') : '',
       },
       {
         title: 'Resigned',
@@ -193,7 +289,7 @@ export default function NavSection() {
 
         path: ROLE === 'BAGIC_SM' ? '/EmployeesListSM' : ROLE === 'BAGIC_TL' ? '/EmployeesListTL' : '/EmployeesListSM',
         icon: icon('ic_pending'),
-        // pendingIcon: pendingCountSM >= 1 ? icon('ic_bell') : null,
+        pendingIcon: pendingCountSM >= 1 ? icon('ic_bell') : '',
       },
       {
         title: 'Resigned',
@@ -255,6 +351,7 @@ export default function NavSection() {
         title: 'Pending',
         path: '/PendingEmployeesITS',
         icon: icon('ic_pending'),
+        pendingIcon: pendingCountITS >= 1 ? icon('ic_bell') : '',
       },
 
       {
@@ -303,6 +400,7 @@ export default function NavSection() {
         title: 'Pending',
         path: '/PendingEmployeesITS',
         icon: icon('ic_pending'),
+        pendingIcon: pendingCountITS >= 1 ? icon('ic_bell') : '',
       },
 
       {
@@ -351,7 +449,18 @@ export default function NavSection() {
     } else {
       setMenuList(userLogin);
     }
-  }, [location, ROLE]);
+  }, [
+    location,
+    ROLE,
+    pendingCountTL,
+    showPendingEmp,
+    pendingCountSM,
+    showPendingEmpSM,
+    pendingCountBP,
+    showPendingEmpBP,
+    pendingCountITS,
+    showPendingEmpITS,
+  ]);
 
   return (
     <Box>
@@ -384,11 +493,26 @@ export default function NavSection() {
             >
               <StyledNavItemIcon>{item.icon && item.icon}</StyledNavItemIcon>
               <ListItemText disableTypography primary={item.title} />
-              {/* {showPendingEmp ? (
+              {pendingCountTL >= 1 ? (
                 <StyledNavItemIcon sx={{ color: 'red', height: 20, width: 20 }}>
                   {item.pendingIcon && item.pendingIcon}
                 </StyledNavItemIcon>
-              ) : null} */}
+              ) : null}
+              {pendingCountSM >= 1 ? (
+                <StyledNavItemIcon sx={{ color: 'red', height: 20, width: 20 }}>
+                  {item.pendingIcon && item.pendingIcon}
+                </StyledNavItemIcon>
+              ) : null}
+              {pendingCountBP >= 1 ? (
+                <StyledNavItemIcon sx={{ color: 'red', height: 20, width: 20 }}>
+                  {item.pendingIcon && item.pendingIcon}
+                </StyledNavItemIcon>
+              ) : null}
+              {pendingCountITS >= 1 ? (
+                <StyledNavItemIcon sx={{ color: 'red', height: 20, width: 20 }}>
+                  {item.pendingIcon && item.pendingIcon}
+                </StyledNavItemIcon>
+              ) : null}
             </StyledNavItem>
           </Stack>
         ))}

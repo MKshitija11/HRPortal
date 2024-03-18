@@ -92,8 +92,9 @@ export default function ViewEmployee() {
     lwd: '',
     resignationDate: '',
     remarks: '',
-    // role: ROLE || USERDETAILS?.[0]?.userProfile,
-    // isOnboardingRequired: '',
+    role: ROLE || USERDETAILS?.[0]?.userProfile,
+    isOnboardingRequired: 'No',
+    designation: ''
     // submittedBy: '',
   });
 
@@ -487,6 +488,13 @@ export default function ViewEmployee() {
     if (document.employeeForm.totalExperience.value === '') {
       return failFocus(document.employeeForm.totalExperience);
     }
+  
+   if (document.employeeForm.totalExperience.value === '') {
+      return failFocus(document.employeeForm.totalExperience);
+    }
+    // if (document.employeeForm.designation.value === '') {
+    //   return failFocus(document.employeeForm.designation);
+    // }
 
     return true;
   };
@@ -512,7 +520,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
-    // employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
+    employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
     console.log('JSON:employeeFormData::', employeeFormData);
@@ -578,7 +586,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
-    // employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
+    employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
     console.log('EMP STATUS active update>>', state.employeeStatus);
@@ -660,7 +668,7 @@ export default function ViewEmployee() {
   useEffect(() => {
     const viewEmployeeReq = {
       id: location.state.row.id,
-      // role: USERDETAILS?.[0]?.userProfile,
+      role: USERDETAILS?.[0]?.userProfile,
     };
     setIsLoading(true);
     Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
@@ -710,9 +718,14 @@ export default function ViewEmployee() {
         resignationDate: EMP_DETAILS.resignationDate,
         remarks: EMP_DETAILS.remarks,
         // role: EMP_DETAILS.role,
-        // isOnboardingRequired: EMP_DETAILS.isOnboardingRequired,
+        isOnboardingRequired: EMP_DETAILS?.isOnboardingRequired,
+        designation: EMP_DETAILS?.designation,
       };
-      console.log('EMP_DETAILS.employeeStatus================>', EMP_DETAILS.employeeStatus === 'Resigned');
+      console.log("<<<<<<<<<<<", tempData?.isOnboardingRequired)
+      if (tempData?.isOnboardingRequired === 'Yes') {
+        setChecked(true)
+      } else { setChecked(false)}
+        console.log('EMP_DETAILS.employeeStatus================>', EMP_DETAILS.employeeStatus === 'Resigned');
       if (EMP_DETAILS.employeeStatus === 'Resigned' && !data.includes('Resigned')) {
         console.log('EMP_DETAILS.employeeStatus================>2222', EMP_DETAILS.employeeStatus === 'Resigned');
         setData([...data, 'Resigned']);
@@ -793,8 +806,9 @@ export default function ViewEmployee() {
     lwd: state.lwd || '',
     resignationDate: state.resignationDate || '',
     remarks: state.remarks || '',
-    // role: state.role || '',
-    // isOnboardingRequired: state.isOnboardingRequired || '',
+    role: state.role || '',
+    isOnboardingRequired: empData?.isOnboardingRequired || '',
+    designation: state?.designation || ''
   };
 
   console.log('state joining date', initialValues.verticalSub);
@@ -851,6 +865,7 @@ export default function ViewEmployee() {
     totalExperience: Yup.string().required('Total Experience required'),
     skillSet: Yup.string().required('Skill set are required'),
     lob: Yup.string().required('Please Select'),
+    designation: Yup.string().required("Designation is required field")
   });
 
   const theme = createTheme({
@@ -868,15 +883,15 @@ export default function ViewEmployee() {
     password: Yup.string().min(3, 'Password must be 3 characters at minimum').required('Password is required'),
   });
 
-  console.log('selected lob value ', state.lob);
+
   const handleOnboardingProcess = (event) => {
     setChecked(event.target.checked);
     console.log('onboarding ticket setChecked', event.target.checked);
-    if (event.target.checked) {
-      setcheckBoxValue('Yes');
-    } else {
-      setcheckBoxValue('No');
-    }
+    // if (event.target.checked) {
+    //   setcheckBoxValue('Yes');
+    // } else {
+    //   setcheckBoxValue('No');
+    // }
   };
 
   return (
@@ -1466,7 +1481,7 @@ export default function ViewEmployee() {
 
                             <Grid item xs={12} sm={4}>
                               <input type="hidden" value={state.id} id="id" name="id" />
-                              {/* <input type="hidden" id="role" name="role" value={state.role} /> */}
+                              <input type="hidden" id="role" name="role" value={state.role} />
                               {/* <input type="hidden" id="submittedBy" name="submittedBy" value={state.submittedBy} /> */}
 
                               <input type="hidden" value={empData.billingSlab} id="billingSlab" name="billingSlab" />
@@ -2422,11 +2437,51 @@ export default function ViewEmployee() {
                             </Grid>
                           </Grid>
                           <br />
-                          {/* <Typography variant="subtitle1" paddingBottom={'15px'}>
+                          {console.log("length", state?.designation?.length)}
+                          <Typography variant="subtitle1" paddingBottom={'15px'}>
                             <b> Onboarding Details</b>
-                          </Typography> */}
-                         
-                          {/* <FormGroup>
+                          </Typography>
+                          {checked ? (
+                            <>
+                             <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                              <TextField
+                                labelId="demo-select-small"
+                                id="designation"
+                                name="designation"
+                                select
+                                label="Designation"
+                                fullWidth
+                                required
+                                onChange={(evt) => {
+                                  handleChange(evt);
+                                  handleChangeEvent(evt);
+                                }}
+                                value={values.designation}
+                                onBlur={handleBlur}
+                                error={touched.designation ? errors.designation : ''}
+                                helperText={touched.designation ? formik.errors.designation : ''}
+                                onFocus={(e) => {
+                                  if (state.designation?.length <= 0) {
+                                    e.target.value = empData.designation;
+                                    // handleChangeMv(e, setFieldValue);
+                                   
+                                  }
+                                }}
+                           
+                              >
+                                {Constants.designationList.map((option) => (
+                                  <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                            </Grid>
+                            </Grid>
+                            </>
+                          ) : <input type="hidden" value="" id="designation" name="designation" />}
+                          {console.log('>>>>>>>>>>', empData?.isOnboardingRequired)}
+                          <FormGroup>
                             <FormControlLabel
                               control={
                                 <Checkbox
@@ -2438,9 +2493,9 @@ export default function ViewEmployee() {
                                 />
                               }
                               label="Initiate On-boardinng Ticket of Employee"
-                              sx={{ color: 'black', fontWeight: 600 }}
+                              sx={{ color: 'black', fontWeight: 600 , }}
                             />
-                          </FormGroup> */}
+                          </FormGroup>
 
                           <br />
                           {console.log('EMP STATUS>>', state.employeeStatus)}

@@ -81,15 +81,14 @@ export default function ViewEmployee() {
     lob: '',
     skillSet: '',
     tlList: [],
-    // designation: '',
+    designation: '',
     webUserId: '',
     projectType: '',
     lwd: '',
     resignationDate: '',
     remarks: '',
-    // role: ROLE || USERDETAILS?.[0]?.userProfile,
-    // isOnboardingRequired: '',
-
+    role: ROLE || USERDETAILS?.[0]?.userProfile,
+    isOnboardingRequired: '',
   });
   const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
@@ -488,7 +487,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
-    // employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
+    employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
@@ -558,7 +557,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
-    // employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
+    employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
@@ -632,10 +631,11 @@ export default function ViewEmployee() {
     });
   };
 
+  console.log(">>>>>>>>>>>>", ROLE || USERDETAILS?.[0]?.userProfile)
   useEffect(() => {
     const viewEmployeeReq = {
       id: location.state.row.id,
-      // role: USERDETAILS?.[0]?.userProfile,
+      role: ROLE || USERDETAILS?.[0]?.userProfile,
     };
     setIsLoading(true);
     Configuration.viewEmployeeData(viewEmployeeReq).then((viewEmployeeRes) => {
@@ -685,8 +685,14 @@ export default function ViewEmployee() {
         lwd: EMP_DETAILS.lwd,
         resignationDate: EMP_DETAILS.resignationDate,
         remarks: EMP_DETAILS.remarks,
-        // isOnboardingRequired: EMP_DETAILS.isOnboardingRequired,
+        isOnboardingRequired: EMP_DETAILS.isOnboardingRequired,
+        designation: EMP_DETAILS?.designation,
       };
+      if (tempData?.isOnboardingRequired === 'Yes') {
+        setChecked(true)
+      } else { 
+        setChecked(false)
+      }
 
       if (EMP_DETAILS.employeeStatus === 'Resigned' && !data.includes('Resigned')) {
         console.log('EMP_DETAILS.employeeStatus================>2222', EMP_DETAILS.employeeStatus === 'Resigned');
@@ -755,13 +761,13 @@ export default function ViewEmployee() {
     totalExperience: state.totalExperience || '',
     lob: state.lob || '',
     skillSet: state.skillSet || '',
-    // designation: state.designation || '',
+    designation: state.designation || '',
     webUserId: state.webUserId || '',
     lwd: state.lwd || '',
     resignationDate: state.resignationDate || '',
     remarks: state.remarks || '',
-    // role: state.role || '',
-    // isOnboardingRequired: state.isOnboardingRequired || '',
+    role: state.role || '',
+    isOnboardingRequired: empData?.isOnboardingRequired || '',
   };
   console.log('INITIAL VALUES', initialValues.employeeStatus);
 
@@ -835,15 +841,15 @@ export default function ViewEmployee() {
     },
   });
 
-  // const handleOnboardingProcess = (event) => {
-  //   setChecked(event.target.checked);
-  //   console.log('onboarding ticket setChecked', event.target.checked);
-  //   if (event.target.checked) {
-  //     setcheckBoxValue('Yes');
-  //   } else {
-  //     setcheckBoxValue('No');
-  //   }
-  // };
+  const handleOnboardingProcess = (event) => {
+    setChecked(event.target.checked);
+    console.log('onboarding ticket setChecked', event.target.checked);
+    // if (event.target.checked) {
+    //   setcheckBoxValue('Yes');
+    // } else {
+    //   setcheckBoxValue('No');
+    // }
+  };
 
   return (
     <>
@@ -1402,7 +1408,7 @@ export default function ViewEmployee() {
 
                           <Grid item xs={12} sm={4}>
                             <input type="hidden" value={state.id} id="id" name="id" />
-                            {/* <input type="hidden" value={values.role} id="role" name="role" /> */}
+                            <input type="hidden" value={values.role} id="role" name="role" />
                             <TextField
                               InputLabelProps={{ shrink: true }}
                               autoComplete="off"
@@ -2309,28 +2315,67 @@ export default function ViewEmployee() {
                             />
                           </Grid>
                         </Grid>
-                        {/* <Typography variant="subtitle1" paddingBottom={'15px'}>
+                        <br />
+                        <Typography variant="subtitle1" paddingBottom={'15px'}>
                             <b> Onboarding Details</b>
-                          </Typography> */}
+                          </Typography>
+                          {checked ? (
+                            <>
+                             <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                              <TextField
+                                labelId="demo-select-small"
+                                id="designation"
+                                name="designation"
+                                select
+                                label="Designation"
+                                fullWidth
+                                required
+                                onChange={(evt) => {
+                                  handleChange(evt);
+                                  handleChangeEvent(evt);
+                                }}
+                                value={values.designation}
+                                onBlur={handleBlur}
+                                error={touched.designation ? errors.designation : ''}
+                                helperText={touched.designation ? formik.errors.designation : ''}
+                                onFocus={(e) => {
+                                  if (state.designation?.length <= 0) {
+                                    e.target.value = empData.designation;
+                                    // handleChangeMv(e, setFieldValue);
+                                   
+                                  }
+                                }}
+                           
+                              >
+                                {Constants.designationList.map((option) => (
+                                  <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                            </Grid>
+                            </Grid>
+                            </>
+                          ) : <input type="hidden" value="" id="designation" name="designation" />}
 
-                          {/* <FormGroup>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  onChange={handleOnboardingProcess}
-                                  id="isOnboardingRequired"
-                                  name="isOnboardingRequired"
-                               
-                                  checked={checked}
-                                  value={checked ? 'Yes' : 'No'}
-                                />
-                              }
-                              label="Initiate On-boardinng Ticket of Employee"
-                              sx={{ color: 'black', fontWeight: 600 }}
-                            />
-                          </FormGroup> */}
+                        {console.log('state.isOnboardingRequired', state.isOnboardingRequired)}
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                onChange={handleOnboardingProcess}
+                                id="isOnboardingRequired"
+                                name="isOnboardingRequired"
+                                checked={checked}
+                                value={checked ? 'Yes' : 'No'}
+                              />
+                            }
+                            label="Initiate On-boardinng Ticket of Employee"
+                            sx={{ color: 'black', fontWeight: 600 }}
+                          />
+                        </FormGroup>
 
-                         
                         <br />
 
                         <Grid container item xs={12} justifyContent={'center'}>

@@ -17,6 +17,9 @@ import {
   Switch,
   Modal,
   Box,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -34,7 +37,7 @@ import CustomProgressBar from './CustomProgressBar';
 
 export default function ViewEmployee() {
   const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
-
+  const ROLE = sessionStorage.getItem('ROLE');
   const [state, setState] = useState({
     employeeFirstName: '',
     employeeLastName: '',
@@ -84,7 +87,9 @@ export default function ViewEmployee() {
     resignationDate: '',
     // role: USERDETAILS?.[0]?.userProfile,
     webUserId: '',
-    // designation: '',
+    role: ROLE || USERDETAILS?.[0]?.userProfile,
+    isOnboardingRequired: '',
+    designation: '',
   });
 
   const [userProfile, setUserProfile] = useState();
@@ -106,7 +111,8 @@ export default function ViewEmployee() {
   const [showAlertMessage, setShowAlertMessage] = useState(false);
   const [updateActiveEmp, setUpdateActiveEmp] = useState(false);
   const [approvalResponse, setApprovalResponse] = useState();
-
+  const [checked, setChecked] = useState(false);
+  const [checkboxValue, setcheckBoxValue] = useState('No');
   const handleChangeWaSwitch = (evt) => {
     if (evt.target.checked) {
       document.getElementById('whatsappNumber').value = state.mobileNumber;
@@ -501,7 +507,7 @@ export default function ViewEmployee() {
   useEffect(() => {
     const viewEmployeeReq = {
       id: location.state.row.id,
-      // role: USERDETAILS?.[0]?.userProfile,
+      role: USERDETAILS?.[0]?.userProfile,
     };
 
     setIsLoading(true);
@@ -554,8 +560,16 @@ export default function ViewEmployee() {
           lwd: EMP_DETAILS.lwd,
           resignationDate: EMP_DETAILS.resignationDate,
           webUserId: EMP_DETAILS.webUserId,
-          // designation: EMP_DETAILS.designation,
+          isOnboardingRequired: EMP_DETAILS.isOnboardingRequired,
+          designation: EMP_DETAILS.designation,
         };
+
+        if (tempData?.isOnboardingRequired === 'Yes') {
+          setChecked(true)
+        } else { 
+          setChecked(false)
+        }
+
         setPartnerName(EMP_DETAILS.partnerName);
         if (state.employeeStatus !== 'Pending For IT Spoc Review') {
           setButtonDisable(true);
@@ -608,6 +622,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
+    employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
@@ -675,6 +690,7 @@ export default function ViewEmployee() {
     state.employeeFullName = `${state.employeeFirstName} ${state.employeeLastName}`;
 
     const employeeFormObj = new FormData(document.getElementById('employeeForm'));
+    employeeFormObj.set('isOnboardingRequired', employeeFormObj.has('isOnboardingRequired') ? 'Yes' : 'No');
 
     const employeeFormData = Object.fromEntries(employeeFormObj.entries());
     employeeFormData.reportingTeamLead = state.reportingTeamLead.teamLeadEmail;
@@ -740,14 +756,12 @@ export default function ViewEmployee() {
     remarks: state.remarks || '',
     lwd: state.lwd || '',
     resignationDate: state.resignationDate || '',
-    // role: state.role || '',
+    role: state.role || '',
     webUserId: state.webUserId || '',
-    // designation: state.designation || '',
+    isOnboardingRequired: state?.isOnboardingRequired || '',
+    designation: state?.designation || ''
   };
-  // console.log('reporting tl', empData?.reportingTeamLead?.includes('@bajajallianz'));
-  // console.log('reporting tl check true', state.reportingTeamLead.teamLeadName);
-  // console.log('reporting tl check false', state.reportingTeamLead);
-  // console.log('RT>>>', initialValues.reportingTeamLead);
+
   const validationSchema = Yup.object({
     // employeeFirstName: Yup.string()
     //   .required('First name is required')
@@ -1009,6 +1023,16 @@ export default function ViewEmployee() {
       },
     },
   });
+
+  const handleOnboardingProcess = (event) => {
+    setChecked(event.target.checked);
+    console.log('onboarding ticket setChecked', event.target.checked);
+    // if (event.target.checked) {
+    //   setcheckBoxValue('Yes');
+    // } else {
+    //   setcheckBoxValue('No');
+    // }
+  };
 
   return (
     <>
@@ -1564,7 +1588,7 @@ export default function ViewEmployee() {
 
                           <Grid item xs={12} sm={4}>
                             <input type="hidden" value={state.id} id="id" name="id" />
-                            {/* <input type="hidden" value={values.role} id="role" name="role" /> */}
+                            <input type="hidden" value={values.role} id="role" name="role" />
 
                             <TextField
                               InputLabelProps={{ shrink: true }}
@@ -2521,7 +2545,65 @@ export default function ViewEmployee() {
                           </Grid>
                         </Grid>
                         <br />
-
+                        <Typography variant="subtitle1" paddingBottom={'15px'}>
+                            <b> Onboarding Details</b>
+                          </Typography>
+                          {checked ? (
+                            <>
+                             <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                              <TextField
+                                labelId="demo-select-small"
+                                id="designation"
+                                name="designation"
+                                select
+                                label="Designation"
+                                fullWidth
+                                required
+                                onChange={(evt) => {
+                                  handleChange(evt);
+                                  handleChangeEvent(evt);
+                                }}
+                                value={values.designation}
+                                onBlur={handleBlur}
+                                error={touched.designation ? errors.designation : ''}
+                                helperText={touched.designation ? formik.errors.designation : ''}
+                                onFocus={(e) => {
+                                  if (state.designation?.length <= 0) {
+                                    e.target.value = empData.designation;
+                                    // handleChangeMv(e, setFieldValue);
+                                   
+                                  }
+                                }}
+                           
+                              >
+                                {Constants.designationList.map((option) => (
+                                  <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                            </Grid>
+                            </Grid>
+                            </>
+                          ) : <input type="hidden" value="" id="designation" name="designation" />}
+                        {console.log("isOnboardingRequired", values.isOnboardingRequired)}
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                onChange={handleOnboardingProcess}
+                                id="isOnboardingRequired"
+                                name="isOnboardingRequired"
+                                checked={checked}
+                              //  checked={checked}
+                                value={checked ? 'Yes' : 'No'}
+                              />
+                            }
+                            label="Initiate On-boardinng Ticket of Employee"
+                            sx={{ color: 'black', fontWeight: 600 }}
+                          />
+                        </FormGroup>
                         <Grid container item xs={12} justifyContent={'center'}>
                           {/* {state.employeeStatus === 'Active' ? null : (
                         <Stack spacing={2} direction="row" justifyContent="center">

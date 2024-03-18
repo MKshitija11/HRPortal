@@ -41,6 +41,7 @@ import Scrollbar from '../components/scrollbar';
 
 export default function ViewEmployee({ props }) {
   const USERDETAILS = JSON.parse(sessionStorage.getItem('USERDETAILS'));
+  const ROLE = sessionStorage.getItem('ROLE');
   console.log('userdetaisl>>>.', USERDETAILS);
   const location = useLocation();
   const [state, setState] = useState({
@@ -430,7 +431,7 @@ export default function ViewEmployee({ props }) {
   useEffect(() => {
     const viewEmployeeReq = {
       id: location.state.id,
-      // role: USERDETAILS?.[0]?.userProfile
+      role: ROLE || USERDETAILS?.[0]?.userProfile
     };
 
     setIsLoading(true);

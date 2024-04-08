@@ -245,9 +245,9 @@ export default function LoginForm() {
       // username: 'mandar.pathak@bajajallianz.co.in',
       // username: 'ravi.kumar044@bajajallianz.co.in',
       username: 'kavya.gogi@bajajallianz.co.in',
-// username: 'rahul.mahamuni@bajajallianz.co.in',
+      // username: 'rahul.mahamuni@bajajallianz.co.in',
       // username: 'prashant.patil@bajajallianz.co.in',
-     
+
       // username: 'dilip.kodwani@bajajallianz.co.in',
       // username: 'jaldip.katre@bajajallianz.co.in',
       // username: 'kshitija.madhekar@pinnacle.com',
@@ -275,6 +275,7 @@ export default function LoginForm() {
       // username: 'satish.phirke@bajajallianz.co.in',
       // username: 'avinash.gawali@bajajallianz.co.in',
       // username: 'rajendrakumar.pradhan@bajajallianz.co.in',
+      // username: 'nitesh.mandal@bajajallianz.co.in',
       password: 'password',
     };
 
@@ -499,7 +500,7 @@ export default function LoginForm() {
 //   const navigate = useNavigate();
 //   const [open, setOpen] = useState(false);
 //   const [showPassword, setShowPassword] = useState(false);
-//   const [userName, setUsername] = useState('');
+//   const [userName, setUsername] = useState('');s
 //   const [passWord, setPassword] = useState('');
 //   const [errorMessage, setErrorMessage] = useState('');
 //   const [updatedUser, setUpdatedUser] = useState('');

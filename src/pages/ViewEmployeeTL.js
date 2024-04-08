@@ -94,7 +94,8 @@ export default function ViewEmployee() {
     remarks: '',
     role: ROLE || USERDETAILS?.[0]?.userProfile,
     isOnboardingRequired: 'No',
-    designation: ''
+    designation: '',
+    onBoardingNumber: '',
     // submittedBy: '',
   });
 
@@ -488,8 +489,8 @@ export default function ViewEmployee() {
     if (document.employeeForm.totalExperience.value === '') {
       return failFocus(document.employeeForm.totalExperience);
     }
-  
-   if (document.employeeForm.totalExperience.value === '') {
+
+    if (document.employeeForm.totalExperience.value === '') {
       return failFocus(document.employeeForm.totalExperience);
     }
     // if (document.employeeForm.designation.value === '') {
@@ -720,12 +721,15 @@ export default function ViewEmployee() {
         // role: EMP_DETAILS.role,
         isOnboardingRequired: EMP_DETAILS?.isOnboardingRequired,
         designation: EMP_DETAILS?.designation,
+        onBoardingNumber: EMP_DETAILS?.onBoardingNumber,
       };
-      console.log("<<<<<<<<<<<", tempData?.isOnboardingRequired)
+      console.log('<<<<<<<<<<<', tempData?.isOnboardingRequired);
       if (tempData?.isOnboardingRequired === 'Yes') {
-        setChecked(true)
-      } else { setChecked(false)}
-        console.log('EMP_DETAILS.employeeStatus================>', EMP_DETAILS.employeeStatus === 'Resigned');
+        setChecked(true);
+      } else {
+        setChecked(false);
+      }
+      console.log('EMP_DETAILS.employeeStatus================>', EMP_DETAILS.employeeStatus === 'Resigned');
       if (EMP_DETAILS.employeeStatus === 'Resigned' && !data.includes('Resigned')) {
         console.log('EMP_DETAILS.employeeStatus================>2222', EMP_DETAILS.employeeStatus === 'Resigned');
         setData([...data, 'Resigned']);
@@ -808,7 +812,8 @@ export default function ViewEmployee() {
     remarks: state.remarks || '',
     role: state.role || '',
     isOnboardingRequired: empData?.isOnboardingRequired || '',
-    designation: state?.designation || ''
+    designation: state?.designation || '',
+    onBoardingNumber: state?.onBoardingNumber || '',
   };
 
   console.log('state joining date', initialValues.verticalSub);
@@ -865,7 +870,7 @@ export default function ViewEmployee() {
     totalExperience: Yup.string().required('Total Experience required'),
     skillSet: Yup.string().required('Skill set are required'),
     lob: Yup.string().required('Please Select'),
-    designation: Yup.string().required("Designation is required field")
+    designation: Yup.string().required('Designation is required field'),
   });
 
   const theme = createTheme({
@@ -882,7 +887,6 @@ export default function ViewEmployee() {
     email: Yup.string().email('Invalid email address format').required('Email is required'),
     password: Yup.string().min(3, 'Password must be 3 characters at minimum').required('Password is required'),
   });
-
 
   const handleOnboardingProcess = (event) => {
     setChecked(event.target.checked);
@@ -2437,50 +2441,76 @@ export default function ViewEmployee() {
                             </Grid>
                           </Grid>
                           <br />
-                          {console.log("length", state?.designation?.length)}
+                          {console.log('length', state?.designation?.length)}
                           <Typography variant="subtitle1" paddingBottom={'15px'}>
                             <b> Onboarding Details</b>
                           </Typography>
                           {checked ? (
                             <>
-                             <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                              <TextField
-                                labelId="demo-select-small"
-                                id="designation"
-                                name="designation"
-                                select
-                                label="Designation"
-                                fullWidth
-                                required
-                                onChange={(evt) => {
-                                  handleChange(evt);
-                                  handleChangeEvent(evt);
-                                }}
-                                value={values.designation}
-                                onBlur={handleBlur}
-                                error={touched.designation ? errors.designation : ''}
-                                helperText={touched.designation ? formik.errors.designation : ''}
-                                onFocus={(e) => {
-                                  if (state.designation?.length <= 0) {
-                                    e.target.value = empData.designation;
-                                    // handleChangeMv(e, setFieldValue);
-                                   
-                                  }
-                                }}
-                           
-                              >
-                                {Constants.designationList.map((option) => (
-                                  <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                  </MenuItem>
-                                ))}
-                              </TextField>
-                            </Grid>
-                            </Grid>
+                              <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                  <TextField
+                                    labelId="demo-select-small"
+                                    id="designation"
+                                    name="designation"
+                                    select
+                                    label="Designation"
+                                    fullWidth
+                                    required
+                                    onChange={(evt) => {
+                                      handleChange(evt);
+                                      handleChangeEvent(evt);
+                                    }}
+                                    value={values.designation}
+                                    onBlur={handleBlur}
+                                    error={touched.designation ? errors.designation : ''}
+                                    helperText={touched.designation ? formik.errors.designation : ''}
+                                    onFocus={(e) => {
+                                      if (state.designation?.length <= 0) {
+                                        e.target.value = empData.designation;
+                                        // handleChangeMv(e, setFieldValue);
+                                      }
+                                    }}
+                                  >
+                                    {Constants.designationList.map((option) => (
+                                      <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                      </MenuItem>
+                                    ))}
+                                  </TextField>
+                                </Grid>
+
+                                {empData?.onBoardingNumber ? (
+                                  <Grid item xs={12} sm={6}>
+                                    <TextField
+                                      labelId="demo-select-small"
+                                      id="onBoardingNumber"
+                                      name="onBoardingNumber"
+                                      label="On Boarding Number"
+                                      fullWidth
+                                      required
+                                      onChange={(evt) => {
+                                        handleChange(evt);
+                                        handleChangeEvent(evt);
+                                      }}
+                                      value={values.onBoardingNumber}
+                                      onBlur={handleBlur}
+                                      error={touched.onBoardingNumber ? errors.onBoardingNumber : ''}
+                                      helperText={touched.onBoardingNumber ? formik.errors.onBoardingNumber : ''}
+                                      onFocus={(e) => {
+                                        if (state.designation?.length <= 0) {
+                                          e.target.value = empData.onBoardingNumber;
+                                          // handleChangeMv(e, setFieldValue);
+                                        }
+                                      }}
+                                    />
+                                  </Grid>
+                                ) : null}
+                              </Grid>
                             </>
-                          ) : <input type="hidden" value="" id="designation" name="designation" />}
-                          {console.log('>>>>>>>>>>', empData?.isOnboardingRequired)}
+                          ) : (
+                            <input type="hidden" value="" id="designation" name="designation" />
+                          )}
                           <FormGroup>
                             <FormControlLabel
                               control={
@@ -2493,7 +2523,7 @@ export default function ViewEmployee() {
                                 />
                               }
                               label="Initiate On-boardinng Ticket of Employee"
-                              sx={{ color: 'black', fontWeight: 600 , }}
+                              sx={{ color: 'black', fontWeight: 600 }}
                             />
                           </FormGroup>
 

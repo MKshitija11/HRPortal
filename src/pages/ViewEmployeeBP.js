@@ -85,6 +85,7 @@ export default function ViewEmployee({ props }) {
     designation: '',
     verticalSub: '',
     remarks: '',
+    onBoardingNumber: '',
     // role:  USERDETAILS?.[0]?.userProfile,
     // isOnboardingRequired: false,
     // submittedBy: ''
@@ -483,6 +484,7 @@ export default function ViewEmployee({ props }) {
           departmentDesc: EMP_DETAILS.departmentDesc,
           lob: EMP_DETAILS.lob,
           remarks: EMP_DETAILS.remarks,
+          onBoardingNumber: EMP_DETAILS.onBoardingNumber,
           // role: EMP_DETAILS.role,
           // isOnboardingRequired: EMP_DETAILS.isOnboardingRequired
         };
@@ -573,6 +575,7 @@ export default function ViewEmployee({ props }) {
     functionDesc: state.functionDesc || '',
     maximusOpus: state.maximusOpus || '',
     remarks: state.remarks || '',
+    onBoardingNumber: empData?.onBoardingNumber || ''
     // role: state.role || '',
     // isOnboardingRequired: state.isOnboardingRequired || '',
   };
@@ -2013,6 +2016,42 @@ export default function ViewEmployee({ props }) {
                               </Grid>
                             </Grid>
                             <br />
+                            {empData?.onBoardingNumber ? (
+                              <>
+                            <Typography variant="subtitle1" paddingBottom={'15px'}>
+                              <b>Reporting Authorities</b>
+                            </Typography>
+
+                            <Grid container spacing={2}>
+                               <Grid item xs={12} sm={6}>
+                                    <TextField
+                                      labelId="demo-select-small"
+                                      id="onBoardingNumber"
+                                      name="onBoardingNumber"
+                                      label="On Boarding Number"
+                                      fullWidth
+                                      required
+                                      onChange={(evt) => {
+                                        handleChange(evt);
+                                        handleChangeEvent(evt);
+                                      }}
+                                      value={values.onBoardingNumber}
+                                      onBlur={handleBlur}
+                                      error={touched.onBoardingNumber ? errors.onBoardingNumber : ''}
+                                      helperText={touched.onBoardingNumber ? formik.errors.onBoardingNumber : ''}
+                                      onFocus={(e) => {
+                                        if (state.designation?.length <= 0) {
+                                          e.target.value = empData.onBoardingNumber;
+                                          // handleChangeMv(e, setFieldValue);
+                                        }
+                                      }}
+                                    />
+                                  </Grid>
+                              
+
+                            </Grid>
+                            </>
+                          ) : null}
                           
                             {/* <Stack flexDirection="row">
                               <FormGroup>

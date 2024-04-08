@@ -89,6 +89,7 @@ export default function ViewEmployee() {
     remarks: '',
     role: ROLE || USERDETAILS?.[0]?.userProfile,
     isOnboardingRequired: '',
+    onBoardingNumber: ''
   });
   const [openApprovalModal, setApprovalModal] = useState(false);
   const [openRejectionModal, setRejectionModal] = useState(false);
@@ -687,6 +688,7 @@ export default function ViewEmployee() {
         remarks: EMP_DETAILS.remarks,
         isOnboardingRequired: EMP_DETAILS.isOnboardingRequired,
         designation: EMP_DETAILS?.designation,
+        onBoardingNumber: EMP_DETAILS?.onBoardingNumber
       };
       if (tempData?.isOnboardingRequired === 'Yes') {
         setChecked(true)
@@ -768,6 +770,7 @@ export default function ViewEmployee() {
     remarks: state.remarks || '',
     role: state.role || '',
     isOnboardingRequired: empData?.isOnboardingRequired || '',
+    onBoardingNumber: empData?.onBoardingNumber || ''
   };
   console.log('INITIAL VALUES', initialValues.employeeStatus);
 
@@ -2355,6 +2358,33 @@ export default function ViewEmployee() {
                                 ))}
                               </TextField>
                             </Grid>
+
+                            {empData?.onBoardingNumber ? (
+                                  <Grid item xs={12} sm={6}>
+                                    <TextField
+                                      labelId="demo-select-small"
+                                      id="onBoardingNumber"
+                                      name="onBoardingNumber"
+                                      label="On Boarding Number"
+                                      fullWidth
+                                      required
+                                      onChange={(evt) => {
+                                        handleChange(evt);
+                                        handleChangeEvent(evt);
+                                      }}
+                                      value={values.onBoardingNumber}
+                                      onBlur={handleBlur}
+                                      error={touched.onBoardingNumber ? errors.onBoardingNumber : ''}
+                                      helperText={touched.onBoardingNumber ? formik.errors.onBoardingNumber : ''}
+                                      onFocus={(e) => {
+                                        if (state.designation?.length <= 0) {
+                                          e.target.value = empData.onBoardingNumber;
+                                          // handleChangeMv(e, setFieldValue);
+                                        }
+                                      }}
+                                    />
+                                  </Grid>
+                                ) : null}
                             </Grid>
                             </>
                           ) : <input type="hidden" value="" id="designation" name="designation" />}

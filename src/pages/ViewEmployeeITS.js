@@ -90,6 +90,7 @@ export default function ViewEmployee() {
     role: ROLE || USERDETAILS?.[0]?.userProfile,
     isOnboardingRequired: '',
     designation: '',
+    onBoardingNumber: '',
   });
 
   const [userProfile, setUserProfile] = useState();
@@ -562,12 +563,13 @@ export default function ViewEmployee() {
           webUserId: EMP_DETAILS.webUserId,
           isOnboardingRequired: EMP_DETAILS.isOnboardingRequired,
           designation: EMP_DETAILS.designation,
+          onBoardingNumber: EMP_DETAILS.onBoardingNumber,
         };
 
         if (tempData?.isOnboardingRequired === 'Yes') {
-          setChecked(true)
-        } else { 
-          setChecked(false)
+          setChecked(true);
+        } else {
+          setChecked(false);
         }
 
         setPartnerName(EMP_DETAILS.partnerName);
@@ -592,7 +594,7 @@ export default function ViewEmployee() {
           state.tlList = getTLBySMListRes?.data;
           setTeamLeadBySMList(state.tlList);
           tempData.reportingTeamLead = TLObj;
-          setState({...tempData});
+          setState({ ...tempData });
         });
       })
       .catch((error) => {
@@ -716,8 +718,6 @@ export default function ViewEmployee() {
     }
   };
 
- 
-
   const initialValues = {
     employeeFirstName: state.employeeFirstName || '',
     employeeLastName: state.employeeLastName || '',
@@ -759,7 +759,8 @@ export default function ViewEmployee() {
     role: state.role || '',
     webUserId: state.webUserId || '',
     isOnboardingRequired: state?.isOnboardingRequired || '',
-    designation: state?.designation || ''
+    designation: state?.designation || '',
+    onBoardingNumber: empData?.onBoardingNumber || '',
   };
 
   const validationSchema = Yup.object({
@@ -840,179 +841,6 @@ export default function ViewEmployee() {
     skillSet: Yup.string().required('Skill set are required'),
     // designation: Yup.string().required('Please Select'),
   });
-
-  const handleOnBoardingTicket = () => {
-    const onBoardingRequest = {
-      requestType: 'GET_TICKET',
-      integrationLogId: 'unique_id_for_each_request',
-      iteration: 0,
-      ticket: {
-        project: {
-          projectName: 'Employee On/Offboarding',
-        },
-        service: {
-          id: '83',
-        },
-        title: 'Test Ticket for UAT',
-        submittedBy: {
-          username: 'sanket.gavhane',
-        },
-        category: {
-          id: '319',
-        },
-        subCategory: {
-          id: '1105',
-        },
-        location: {
-          name: 'Marvel',
-        },
-        department: {
-          name: 'IT',
-        },
-        priority: {
-          name: 'P3',
-        },
-        urgency: {
-          name: 'Low',
-        },
-        impact: {
-          name: 'Low',
-        },
-        probDescription: 'Test Ticket for UAT employee onboarding',
-        ccMailId: '',
-        alternativeEmail: '',
-        submittedThrough: 0,
-        source: {
-          name: 'Web',
-        },
-        additionalParams: {
-          updated: false,
-          attribute76: {
-            updated: false,
-            data: '',
-            fieldid: '330',
-          },
-          attribute77: {
-            updated: false,
-            // data: "firstname",
-            data: approvalResponse.employeeFirstName,
-            fieldid: '331',
-          },
-          attribute78: {
-            updated: false,
-            // data: "lastname",
-            data: approvalResponse.employeeLastName,
-            fieldid: '332',
-          },
-          attribute79: {
-            updated: false,
-            // data: "employeecode",
-            data: approvalResponse.employeeId,
-            fieldid: '333',
-          },
-          attribute80: {
-            updated: false,
-            data: '1019',
-            fieldid: '334',
-          },
-          attribute81: {
-            updated: false,
-            // data: "mobilenumber",
-            data: approvalResponse.mobileNumber,
-            fieldid: '335',
-          },
-          attribute82: {
-            updated: false,
-            // data: "joiningDate",
-            data: approvalResponse.joiningDate,
-            fieldid: '336',
-          },
-          attribute83: {
-            updated: false,
-            data: 'bagic_reporting_auth_empcode',
-            fieldid: '337',
-          },
-          attribute84: {
-            updated: false,
-            // data: "bagic_reporting_auth_email",
-            data: approvalResponse.reportingTeamLead,
-            fieldid: '338',
-          },
-          attribute85: {
-            updated: false,
-            // data: "vendor comapany name (partner name)",
-            data: approvalResponse.partnerName,
-            fieldid: '339',
-          },
-          attribute86: {
-            updated: false,
-            data: 'senior manager email',
-            fieldid: '340',
-          },
-          attribute87: {
-            updated: false,
-            // data: "designation",
-            data: approvalResponse.designation,
-            fieldid: '341',
-          },
-          // Domain Id required
-          attribute23: {
-            updated: false,
-            data: 'No',
-            fieldid: '246',
-          },
-          // email Id required
-          attribute24: {
-            updated: false,
-            data: 'No',
-            fieldid: '247',
-          },
-          attribute122: {
-            updated: false,
-            data: 'icewrap',
-            fieldid: '289',
-          },
-          // firewall access required
-          attribute64: {
-            updated: false,
-            data: 'No',
-            fieldid: '317',
-          },
-          // source ip
-          attribute65: {
-            updated: false,
-            data: '10.1.1.1',
-            fieldid: '318',
-          },
-          // destination ip
-          attribute66: {
-            updated: false,
-            data: '10.2.2.2',
-            fieldid: '319',
-          },
-          // port
-          attribute67: {
-            updated: false,
-            data: '8080',
-            fieldid: '320',
-          },
-          // pc allocation
-          attribute73: {
-            updated: false,
-            data: 'Laptop',
-            fieldid: '327',
-          },
-          // softwares installed
-          attribute75: {
-            updated: false,
-            data: 'Notepad++',
-            fieldid: '329',
-          },
-        },
-        rpaEvent: 'false',
-      },
-    };
-  };
 
   const theme = createTheme({
     components: {
@@ -2136,15 +1964,11 @@ export default function ViewEmployee() {
                                 // handleChangeEvent(evt);
                                 setState({
                                   ...state,
-                                  reportingTeamLead: teamLeadBySMList.find(
-                                    (o) => o.teamLeadName === evt.target.value
-                                  ),
+                                  reportingTeamLead: teamLeadBySMList.find((o) => o.teamLeadName === evt.target.value),
                                 });
                               }}
-                              value={
-                                values.reportingTeamLead.teamLeadName ? values.reportingTeamLead.teamLeadName : ''
-                              }                           
-                             onBlur={handleBlur}
+                              value={values.reportingTeamLead.teamLeadName ? values.reportingTeamLead.teamLeadName : ''}
+                              onBlur={handleBlur}
                               error={
                                 touched.reportingTeamLead || errors.reportingTeamLead ? errors.reportingTeamLead : ''
                               }
@@ -2191,7 +2015,6 @@ export default function ViewEmployee() {
                               onChange={(evt) => {
                                 handleChange(evt);
                                 handleChangeMv(evt, setFieldValue);
-                            
                               }}
                               onBlur={handleBlur}
                               onFocus={(e) => {
@@ -2546,48 +2369,75 @@ export default function ViewEmployee() {
                         </Grid>
                         <br />
                         <Typography variant="subtitle1" paddingBottom={'15px'}>
-                            <b> Onboarding Details</b>
-                          </Typography>
-                          {checked ? (
-                            <>
-                             <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                              <TextField
-                                labelId="demo-select-small"
-                                id="designation"
-                                name="designation"
-                                select
-                                label="Designation"
-                                fullWidth
-                                required
-                                onChange={(evt) => {
-                                  handleChange(evt);
-                                  handleChangeEvent(evt);
-                                }}
-                                value={values.designation}
-                                onBlur={handleBlur}
-                                error={touched.designation ? errors.designation : ''}
-                                helperText={touched.designation ? formik.errors.designation : ''}
-                                onFocus={(e) => {
-                                  if (state.designation?.length <= 0) {
-                                    e.target.value = empData.designation;
-                                    // handleChangeMv(e, setFieldValue);
-                                   
-                                  }
-                                }}
-                           
-                              >
-                                {Constants.designationList.map((option) => (
-                                  <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                  </MenuItem>
-                                ))}
-                              </TextField>
+                          <b> Onboarding Details</b>
+                        </Typography>
+                        {checked ? (
+                          <>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} sm={6}>
+                                <TextField
+                                  labelId="demo-select-small"
+                                  id="designation"
+                                  name="designation"
+                                  select
+                                  label="Designation"
+                                  fullWidth
+                                  required
+                                  onChange={(evt) => {
+                                    handleChange(evt);
+                                    handleChangeEvent(evt);
+                                  }}
+                                  value={values.designation}
+                                  onBlur={handleBlur}
+                                  error={touched.designation ? errors.designation : ''}
+                                  helperText={touched.designation ? formik.errors.designation : ''}
+                                  onFocus={(e) => {
+                                    if (state.designation?.length <= 0) {
+                                      e.target.value = empData.designation;
+                                      // handleChangeMv(e, setFieldValue);
+                                    }
+                                  }}
+                                >
+                                  {Constants.designationList.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </MenuItem>
+                                  ))}
+                                </TextField>
+                              </Grid>
+
+                              {empData?.onBoardingNumber ? (
+                                <Grid item xs={12} sm={6}>
+                                  <TextField
+                                    labelId="demo-select-small"
+                                    id="onBoardingNumber"
+                                    name="onBoardingNumber"
+                                    label="On Boarding Number"
+                                    fullWidth
+                                    required
+                                    onChange={(evt) => {
+                                      handleChange(evt);
+                                      handleChangeEvent(evt);
+                                    }}
+                                    value={values.onBoardingNumber}
+                                    onBlur={handleBlur}
+                                    error={touched.onBoardingNumber ? errors.onBoardingNumber : ''}
+                                    helperText={touched.onBoardingNumber ? formik.errors.onBoardingNumber : ''}
+                                    onFocus={(e) => {
+                                      if (state.designation?.length <= 0) {
+                                        e.target.value = empData.onBoardingNumber;
+                                        // handleChangeMv(e, setFieldValue);
+                                      }
+                                    }}
+                                  />
+                                </Grid>
+                              ) : null}
                             </Grid>
-                            </Grid>
-                            </>
-                          ) : <input type="hidden" value="" id="designation" name="designation" />}
-                        {console.log("isOnboardingRequired", values.isOnboardingRequired)}
+                          </>
+                        ) : (
+                          <input type="hidden" value="" id="designation" name="designation" />
+                        )}
+                        {console.log('isOnboardingRequired', values.isOnboardingRequired)}
                         <FormGroup>
                           <FormControlLabel
                             control={
@@ -2596,7 +2446,7 @@ export default function ViewEmployee() {
                                 id="isOnboardingRequired"
                                 name="isOnboardingRequired"
                                 checked={checked}
-                              //  checked={checked}
+                                //  checked={checked}
                                 value={checked ? 'Yes' : 'No'}
                               />
                             }
